@@ -1,0 +1,38 @@
+[
+    {
+        "merged": "com.funpixelnest.civilcampro.app-merged_res-27:/layout_activity_splash.xml.flat",
+        "source": "com.funpixelnest.civilcampro.app-main-29:/layout/activity_splash.xml"
+    },
+    {
+        "merged": "com.funpixelnest.civilcampro.app-merged_res-27:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "com.funpixelnest.civilcampro.app-main-29:/mipmap-anydpi-v26/ic_launcher_round.xml"
+    },
+    {
+        "merged": "com.funpixelnest.civilcampro.app-merged_res-27:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.funpixelnest.civilcampro.app-main-29:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "com.funpixelnest.civilcampro.app-merged_res-27:/layout_activity_main.xml.flat",
+        "source": "com.funpixelnest.civilcampro.app-main-29:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.funpixelnest.civilcampro.app-merged_res-27:/mipmap_ic_launcher.xml.flat",
+        "source": "com.funpixelnest.civilcampro.app-main-29:/mipmap/ic_launcher.xml"
+    },
+    {
+        "merged": "com.funpixelnest.civilcampro.app-merged_res-27:/drawable_ic_launcher_background.xml.flat",
+        "source": "com.funpixelnest.civilcampro.app-main-29:/drawable/ic_launcher_background.xml"
+    },
+    {
+        "merged": "com.funpixelnest.civilcampro.app-merged_res-27:/xml_file_paths.xml.flat",
+        "source": "com.funpixelnest.civilcampro.app-main-29:/xml/file_paths.xml"
+    },
+    {
+        "merged": "com.funpixelnest.civilcampro.app-merged_res-27:/mipmap_ic_launcher_round.xml.flat",
+        "source": "com.funpixelnest.civilcampro.app-main-29:/mipmap/ic_launcher_round.xml"
+    },
+    {
+        "merged": "com.funpixelnest.civilcampro.app-merged_res-27:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "com.funpixelnest.civilcampro.app-main-29:/drawable/ic_launcher_foreground.xml"
+    }
+]

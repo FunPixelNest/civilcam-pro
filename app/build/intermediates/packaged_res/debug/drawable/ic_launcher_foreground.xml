@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Amber circle background -->
+    <path
+        android:fillColor="#f59e0b"
+        android:pathData="M54,18 A36,36 0 1,1 53.999,18 Z" />
+
+    <!-- Bold letter C (construction cam) -->
+    <path
+        android:fillColor="#0f172a"
+        android:pathData="
+M57,30
+C44,30 36,40 36,54
+C36,68 44,78 57,78
+C64,78 70,74 74,68
+L66,62
+C63,66 60,68 57,68
+C50,68 46,62 46,54
+C46,46 50,40 57,40
+C60,40 63,42 66,46
+L74,40
+C70,34 64,30 57,30 Z" />
+</vector>

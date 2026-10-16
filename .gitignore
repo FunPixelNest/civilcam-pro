@@ -1,0 +1,13 @@
+*.iml
+.gradle
+/local.properties
+/.idea
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+# Downloaded automatically at build time
+app/src/main/assets/civilcam/jspdf.umd.min.js
+app/src/main/assets/civilcam/xlsx.full.min.js

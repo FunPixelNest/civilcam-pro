@@ -1,0 +1,71 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
+
+android {
+    namespace 'com.funpixelnest.civilcampro'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.funpixelnest.civilcampro"
+        minSdk 21
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.activity:activity-ktx:1.8.2'
+}
+
+// ---------------------------------------------------------------------------
+// Downloads the PDF (jsPDF) and Excel (SheetJS) libraries into the app's
+// assets so exports work offline. Runs once; skipped if the files exist.
+// If the download fails the build still succeeds, and the app loads the
+// libraries from the internet instead.
+// ---------------------------------------------------------------------------
+def webLibs = [
+    'jspdf.umd.min.js': 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
+    'xlsx.full.min.js': 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'
+]
+def webLibDir = file('src/main/assets/civilcam')
+
+tasks.register('fetchWebLibs') {
+    doLast {
+        webLibs.each { name, url ->
+            def target = new File(webLibDir, name)
+            if (target.exists() && target.length() > 0) return
+            try {
+                def conn = new URL(url).openConnection()
+                conn.connectTimeout = 15000
+                conn.readTimeout = 60000
+                conn.inputStream.withStream { input -> target.withOutputStream { out -> out << input } }
+                println "CivilCam: downloaded $name"
+            } catch (Exception e) {
+                target.delete()
+                println "CivilCam: could not download $name (${e.message}); the app will load it online instead"
+            }
+        }
+    }
+}
+preBuild.dependsOn 'fetchWebLibs'

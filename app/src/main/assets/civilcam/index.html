@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0f172a">
+<title>CivilCam Pro</title>
+<link rel="stylesheet" href="css/app.css">
+<!-- PDF / Excel libraries: bundled copies first, internet copies as a fallback -->
+<script src="jspdf.umd.min.js"></script>
+<script src="xlsx.full.min.js"></script>
+<script>
+if (!window.jspdf) document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"><\/script>');
+if (!window.XLSX) document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"><\/script>');
+</script>
+</head>
+<body>
+
+<!-- ===== SETUP SCREEN ===== -->
+<div id="setup-screen">
+  <div class="setup-logo">🏗️</div>
+  <div class="setup-brand">CivilCam Pro</div>
+  <div class="setup-sub">Field Photography for Civil Engineers</div>
+  <div class="setup-card">
+    <h2>Enter Project Name to Begin</h2>
+    <input type="text" class="setup-input" id="project-name-input" placeholder="e.g. NH-44 Road Expansion" maxlength="60">
+    <button class="setup-btn" onclick="startSession()">▶ Start Session</button>
+    <div class="setup-recent" id="recent-projects-wrap" style="display:none">
+      <div class="setup-recent-label">Recent Projects</div>
+      <div id="recent-projects-chips"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MAIN APP ===== -->
+<div id="app">
+  <!-- Header -->
+  <div class="app-header">
+    <div class="header-project">
+      <div class="header-project-icon">🏗️</div>
+      <div class="header-project-info">
+        <div class="header-project-label">Active Project</div>
+        <div class="header-project-name" id="header-project-name">—</div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="header-btn" onclick="changeProject()" title="Change Project">🔄</button>
+    </div>
+  </div>
+
+  <!-- Screens -->
+  <div id="camera-screen" class="screen active">
+    <video id="camera-video" autoplay playsinline muted></video>
+    <canvas id="camera-canvas"></canvas>
+    <div class="capture-flash" id="capture-flash"></div>
+
+    <!-- Top bar -->
+    <div class="cam-top">
+      <button class="cam-pill project-pill" onclick="changeProject()" title="Change project">
+        <span>🏗️</span><span id="cam-project-name">Project</span><span class="pill-caret">▼</span>
+      </button>
+      <div class="cam-top-right">
+        <button class="cam-pill stamp-pill" id="meta-toggle" onclick="toggleMetadata()" title="Print details on the photo">🏷️ <span id="meta-toggle-lbl">Stamp OFF</span></button>
+        <button class="cam-round" id="flash-btn" onclick="toggleFlash()" title="Torch">⚡</button>
+      </div>
+    </div>
+
+    <!-- Live preview of the stamp printed on the photo -->
+    <div class="stamp-preview" id="cam-overlay">
+      <div class="sp-project" id="ov-proj-name">Project</div>
+      <div class="sp-main"><span id="ov-activity">Activity</span> <span id="ov-site"></span></div>
+      <div><span id="ov-date"></span>  <span id="ov-time"></span></div>
+      <div class="sp-gps" id="ov-gps">GPS: Locating...</div>
+      <div id="ov-remarks"></div>
+    </div>
+
+    <!-- Bottom controls -->
+    <div class="cam-bottom">
+      <button class="details-card" onclick="openDetailsSheet()">
+        <div class="dc-text">
+          <div class="dc-main" id="dc-main">Earthwork</div>
+          <div class="dc-sub" id="dc-sub">Tap to add chainage, side and remarks</div>
+        </div>
+        <span class="dc-edit">Edit</span>
+      </button>
+      <div class="shutter-row">
+        <button class="last-thumb" id="last-thumb" onclick="openGalleryFromCamera()" title="Gallery">🖼️</button>
+        <button class="shutter" onclick="capturePhoto()" aria-label="Take photo"><span></span></button>
+        <button class="cam-round" id="cam-switch-btn" onclick="switchCamera()" title="Flip camera">🔄</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Site details sheet -->
+  <div class="sheet-backdrop" id="details-sheet" onclick="if (event.target === this) closeDetailsSheet()">
+    <div class="sheet">
+      <div class="sheet-handle"></div>
+      <div class="sheet-title">Site details</div>
+      <div class="sheet-hint">Saved with every photo until you change them.</div>
+
+      <div class="sheet-label">Activity</div>
+      <div class="chip-wrap" id="activity-row"></div>
+
+      <div class="sheet-label">Chainage</div>
+      <input type="text" class="sheet-input" id="chainage-input" placeholder="e.g. 12+350" maxlength="20" autocomplete="off" oninput="updateOverlayMeta()">
+
+      <div class="sheet-label">Side</div>
+      <div class="chip-wrap" id="side-row"></div>
+
+      <div class="sheet-label">Remarks</div>
+      <textarea class="sheet-input" id="remarks-input" rows="2" placeholder="e.g. Subgrade compaction done" oninput="updateOverlayMeta()"></textarea>
+
+      <button class="sheet-done" onclick="closeDetailsSheet()">Done</button>
+    </div>
+  </div>
+
+  <div id="gallery-screen" class="screen">
+    <!-- Search bar -->
+    <div class="gallery-search">
+      <input type="text" id="gallery-search-input" placeholder="🔍 Search activity, chainage, side, remarks..." oninput="filterGallery()">
+      <button class="search-clear-btn" onclick="clearSearch()">✕</button>
+    </div>
+
+    <!-- Time tabs -->
+    <div class="time-tabs" id="time-tabs">
+      <button class="time-tab active" data-period="all" onclick="setTimePeriod('all',this)">All</button>
+      <button class="time-tab" data-period="today" onclick="setTimePeriod('today',this)">Today</button>
+      <button class="time-tab" data-period="week" onclick="setTimePeriod('week',this)">This Week</button>
+      <button class="time-tab" data-period="month" onclick="setTimePeriod('month',this)">This Month</button>
+      <button class="time-tab" data-period="quarter" onclick="setTimePeriod('quarter',this)">Quarter</button>
+      <button class="time-tab" data-period="year" onclick="setTimePeriod('year',this)">Year</button>
+      <button class="time-tab" data-period="activity" onclick="setTimePeriod('activity',this)">Activity</button>
+    </div>
+
+    <!-- Activity filter row (hidden unless activity tab active) -->
+    <div class="activity-filter-row" id="gallery-activity-filter" style="display:none"></div>
+
+    <!-- Action bar when selecting -->
+    <div class="gallery-action-bar" id="gallery-action-bar">
+      <div class="sel-count" id="sel-count-lbl">0 selected</div>
+      <div class="action-btns">
+        <button class="action-btn" onclick="shareSelected()">📤 Share</button>
+        <button class="action-btn" onclick="exportSelectedToGallery()">📥 Export</button>
+        <button class="action-btn danger" onclick="deleteSelected()">🗑️ Delete</button>
+        <button class="action-btn" onclick="clearSelection()">✕</button>
+      </div>
+    </div>
+
+    <!-- Grid -->
+    <div class="gallery-grid" id="gallery-grid"></div>
+  </div>
+
+  <div id="export-screen" class="screen">
+    <!-- Time period -->
+    <div class="export-section">
+      <div class="export-section-title">📅 Time Period</div>
+      <div class="period-grid">
+        <div class="period-btn active" data-exp-period="all" onclick="setExportPeriod('all',this)">
+          <div class="period-btn-icon">📂</div>
+          <div class="period-btn-label">All Photos</div>
+        </div>
+        <div class="period-btn" data-exp-period="today" onclick="setExportPeriod('today',this)">
+          <div class="period-btn-icon">📅</div>
+          <div class="period-btn-label">Today</div>
+        </div>
+        <div class="period-btn" data-exp-period="week" onclick="setExportPeriod('week',this)">
+          <div class="period-btn-icon">📆</div>
+          <div class="period-btn-label">This Week</div>
+        </div>
+        <div class="period-btn" data-exp-period="month" onclick="setExportPeriod('month',this)">
+          <div class="period-btn-icon">🗓️</div>
+          <div class="period-btn-label">This Month</div>
+        </div>
+        <div class="period-btn" data-exp-period="quarter" onclick="setExportPeriod('quarter',this)">
+          <div class="period-btn-icon">📊</div>
+          <div class="period-btn-label">Quarter</div>
+        </div>
+        <div class="period-btn" data-exp-period="year" onclick="setExportPeriod('year',this)">
+          <div class="period-btn-icon">📈</div>
+          <div class="period-btn-label">This Year</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Report heading -->
+    <div class="export-section">
+      <div class="export-section-title">📋 Report Details</div>
+      <div class="report-inputs">
+        <input type="text" class="report-input" id="report-heading" placeholder="Report Heading (e.g. Monthly Progress Photographs)">
+        <input type="text" class="report-input" id="report-prepared-by" placeholder="Prepared By (Engineer Name)">
+      </div>
+    </div>
+
+    <!-- Templates -->
+    <div class="export-section">
+      <div class="export-section-title">🎨 Template</div>
+      <div class="template-grid">
+        <!-- Template 1: Grid (4 per page) -->
+        <div class="template-card active" data-tmpl="grid" onclick="selectTemplate('grid',this)">
+          <div class="template-preview">
+            <div class="tp-header"></div>
+            <div class="tp-sub"></div>
+            <div class="tp-grid">
+              <div class="tp-photo"></div><div class="tp-photo"></div>
+              <div class="tp-photo"></div><div class="tp-photo"></div>
+            </div>
+          </div>
+          <div class="template-name">Grid Layout</div>
+          <div class="template-desc">4 photos/page, symmetric table</div>
+        </div>
+        <!-- Template 2: Inspection (1 per page + metadata) -->
+        <div class="template-card" data-tmpl="inspection" onclick="selectTemplate('inspection',this)">
+          <div class="template-preview">
+            <div class="tp-header"></div>
+            <div class="tp-sub"></div>
+            <div class="tp-row" style="height:32px">
+              <div class="tp-photo-lg"></div>
+              <div class="tp-meta-col">
+                <div class="tp-line"></div><div class="tp-line"></div>
+                <div class="tp-line"></div><div class="tp-line"></div>
+              </div>
+            </div>
+            <div class="tp-row" style="height:20px;margin-top:4px">
+              <div class="tp-photo-lg"></div>
+              <div class="tp-meta-col">
+                <div class="tp-line"></div><div class="tp-line"></div>
+              </div>
+            </div>
+          </div>
+          <div class="template-name">Inspection Report</div>
+          <div class="template-desc">Photo + metadata per row</div>
+        </div>
+        <!-- Template 3: Activity grouped -->
+        <div class="template-card" data-tmpl="activity" onclick="selectTemplate('activity',this)">
+          <div class="template-preview">
+            <div class="tp-header"></div>
+            <div class="tp-sub" style="background:rgba(245,158,11,0.4)"></div>
+            <div class="tp-grid">
+              <div class="tp-photo"></div><div class="tp-photo"></div>
+            </div>
+            <div class="tp-sub" style="background:rgba(245,158,11,0.4);margin-top:4px"></div>
+            <div class="tp-grid">
+              <div class="tp-photo"></div><div class="tp-photo"></div>
+            </div>
+          </div>
+          <div class="template-name">Activity-wise</div>
+          <div class="template-desc">Grouped by work type</div>
+        </div>
+        <!-- Template 4: Table sheet -->
+        <div class="template-card" data-tmpl="table" onclick="selectTemplate('table',this)">
+          <div class="template-preview">
+            <div class="tp-header"></div>
+            <div class="tp-sub"></div>
+            <div style="width:100%">
+              <div class="tp-tbl-row"><div class="tp-tbl-cell" style="background:var(--accent);opacity:0.6"></div><div class="tp-tbl-cell" style="background:var(--accent);opacity:0.6"></div><div class="tp-tbl-cell" style="background:var(--accent);opacity:0.6"></div></div>
+              <div class="tp-tbl-row"><div class="tp-tbl-cell"></div><div class="tp-tbl-cell"></div><div class="tp-tbl-cell"></div></div>
+              <div class="tp-tbl-row"><div class="tp-tbl-cell"></div><div class="tp-tbl-cell"></div><div class="tp-tbl-cell"></div></div>
+              <div class="tp-tbl-row"><div class="tp-tbl-cell"></div><div class="tp-tbl-cell"></div><div class="tp-tbl-cell"></div></div>
+            </div>
+          </div>
+          <div class="template-name">Log Sheet</div>
+          <div class="template-desc">Summary table + photo index</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Format -->
+    <div class="export-section">
+      <div class="export-section-title">📥 Export Format</div>
+      <div class="format-grid">
+        <div class="format-btn active" data-fmt="pdf" onclick="selectFormat('pdf',this)">
+          <div class="format-icon">📄</div>
+          <div class="format-name">PDF</div>
+          <div class="format-ext">.pdf</div>
+        </div>
+        <div class="format-btn" data-fmt="excel" onclick="selectFormat('excel',this)">
+          <div class="format-icon">📊</div>
+          <div class="format-name">Excel</div>
+          <div class="format-ext">.xlsx</div>
+        </div>
+        <div class="format-btn" data-fmt="word" onclick="selectFormat('word',this)">
+          <div class="format-icon">📝</div>
+          <div class="format-name">Word</div>
+          <div class="format-ext">.doc</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Photos count -->
+    <div class="export-section">
+      <div class="export-section-title">🖼️ Photos to Export</div>
+      <div class="export-photos-count">
+        <div>
+          <div class="export-photos-count-num" id="export-photo-count">0</div>
+          <div class="export-photos-count-label">photos selected for export</div>
+        </div>
+        <button class="change-sel-btn" onclick="switchTab('gallery')">Select Photos ›</button>
+      </div>
+    </div>
+
+    <!-- Generate -->
+    <div class="export-section">
+      <button class="export-generate-btn" id="export-generate-btn" onclick="generateExport()">
+        ⬇️ Generate & Download
+      </button>
+    </div>
+    <div style="height:16px"></div>
+  </div>
+
+  <!-- Tab bar -->
+  <div class="tab-bar">
+    <button class="tab-btn active" data-tab="camera" onclick="switchTab('camera')">
+      <div class="tab-icon">📷</div>
+      <div class="tab-label">Camera</div>
+    </button>
+    <button class="tab-btn" data-tab="gallery" onclick="switchTab('gallery')">
+      <div class="tab-icon">🖼️</div>
+      <div class="tab-label">Gallery</div>
+    </button>
+    <button class="tab-btn" data-tab="export" onclick="switchTab('export')">
+      <div class="tab-icon">📥</div>
+      <div class="tab-label">Export</div>
+    </button>
+  </div>
+</div>
+
+<!-- Photo detail modal -->
+<div class="modal-overlay" id="photo-modal">
+  <div class="modal-card">
+    <div class="modal-img-wrap">
+      <img id="modal-img" src="" alt="">
+      <div class="modal-img-actions">
+        <button class="modal-img-btn" onclick="closePhotoModal()">✕</button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-title" id="modal-title"></div>
+      <div class="meta-grid" id="modal-meta-grid"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-footer-btn secondary" onclick="sharePhoto(currentModalPhoto)">📤 Share</button>
+      <button class="modal-footer-btn primary" onclick="downloadPhoto(currentModalPhoto)">⬇️ Save</button>
+      <button class="modal-footer-btn danger" onclick="deletePhotoFromModal()">🗑️</button>
+    </div>
+  </div>
+</div>
+
+<!-- Loading overlay -->
+<div class="loading-overlay" id="loading-overlay">
+  <div class="loading-spinner"></div>
+  <div class="loading-text" id="loading-text">Generating...</div>
+  <div class="loading-sub" id="loading-sub">Please wait</div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script src="js/core.js"></script>
+<script src="js/camera.js"></script>
+<script src="js/gallery.js"></script>
+<script src="js/export-pdf.js"></script>
+<script src="js/export-office.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
