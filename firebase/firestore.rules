@@ -1,0 +1,27 @@
+rules_version = '2';
+
+// Everything lives under orgs/{org}/...
+//   org = the company e-mail domain (e.g. "lnt.com") for company accounts, so engineers of
+//         one company share projects, photos and their custom list values;
+//   org = "u_<uid>" for personal accounts (gmail.com, outlook.com ...), private to that person.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function trustedProvider() {
+      return request.auth.token.firebase.sign_in_provider in ['google.com', 'microsoft.com', 'apple.com'];
+    }
+    function emailDomain() {
+      return request.auth.token.email.lower().split('@')[1];
+    }
+    function member(org) {
+      return signedIn() && (
+        org == 'u_' + request.auth.uid ||
+        (trustedProvider() && request.auth.token.email != null && emailDomain() == org)
+      );
+    }
+
+    match /orgs/{org}/{collection}/{doc} {
+      allow read, write: if member(org) && collection in ['projects', 'photos', 'options'];
+    }
+  }
+}

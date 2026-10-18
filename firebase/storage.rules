@@ -1,0 +1,23 @@
+rules_version = '2';
+
+// Photo files: orgs/{org}/photos/{id}.jpg — same membership rule as firestore.rules
+service firebase.storage {
+  match /b/{bucket}/o {
+    function trustedProvider() {
+      return request.auth.token.firebase.sign_in_provider in ['google.com', 'microsoft.com', 'apple.com'];
+    }
+    function member(org) {
+      return request.auth != null && (
+        org == 'u_' + request.auth.uid ||
+        (trustedProvider() && request.auth.token.email != null &&
+         request.auth.token.email.lower().split('@')[1] == org)
+      );
+    }
+
+    match /orgs/{org}/photos/{file} {
+      allow read: if member(org);
+      allow write: if member(org) && request.resource.size < 15 * 1024 * 1024
+                   && request.resource.contentType.matches('image/.*');
+    }
+  }
+}

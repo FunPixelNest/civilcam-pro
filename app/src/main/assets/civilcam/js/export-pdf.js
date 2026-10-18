@@ -1,447 +1,139 @@
 // ============================================================
-// EXPORT
+// PDF REPORT (jsPDF, A4 portrait, millimetres)
 // ============================================================
-function setExportPeriod(period, el) {
-  currentExportPeriod = period;
-  document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
-  el.classList.add('active');
-  updateExportCount();
-}
+const PDF_FONT_SIZE = { A: 10, B: 9.5, C: 8.5, D: 8, E: 8.5 };
 
-function selectTemplate(tmpl, el) {
-  currentTemplate = tmpl;
-  document.querySelectorAll('.template-card').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
-}
+function pdfRGB(hex) { return [parseInt(hex.slice(0, 2), 16), parseInt(hex.slice(2, 4), 16), parseInt(hex.slice(4, 6), 16)]; }
 
-function selectFormat(fmt, el) {
-  currentFormat = fmt;
-  document.querySelectorAll('.format-btn').forEach(b => b.classList.remove('active'));
-  el.classList.add('active');
-}
-
-function getExportPhotos() {
-  const now = new Date();
-  let sel = [...photos];
-
-  // Use selected photos from gallery if any
-  if (selectedPhotos.size > 0) {
-    sel = photos.filter(p => selectedPhotos.has(p.id));
-  } else {
-    // Filter by period
-    if (currentExportPeriod !== 'all') {
-      sel = sel.filter(p => {
-        const d = new Date(p.timestamp);
-        if (currentExportPeriod === 'today') return p.date === now.toISOString().split('T')[0];
-        if (currentExportPeriod === 'week') return getWeekNumber(d) === getWeekNumber(now);
-        if (currentExportPeriod === 'month') return p.month === `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
-        if (currentExportPeriod === 'quarter') { const q = Math.ceil((now.getMonth()+1)/3); return p.quarter === `${now.getFullYear()}-Q${q}`; }
-        if (currentExportPeriod === 'year') return p.year === String(now.getFullYear());
-        return true;
-      });
-    }
-  }
-  return sel;
-}
-
-function updateExportCount() {
-  const count = getExportPhotos().length;
-  document.getElementById('export-photo-count').textContent = count;
-  const btn = document.getElementById('export-generate-btn');
-  btn.disabled = count === 0;
-}
-
-async function generateExport() {
-  const exportPhotos = getExportPhotos();
-  if (exportPhotos.length === 0) { showToast('No photos to export', 'danger'); return; }
-
-  const heading = document.getElementById('report-heading').value.trim() || 'Site Progress Photographs';
-  const prepBy = document.getElementById('report-prepared-by').value.trim() || 'Civil Engineer';
-
-  showLoading('Generating ' + currentFormat.toUpperCase() + '...', `Processing ${exportPhotos.length} photos`);
-
-  try {
-    await new Promise(r => setTimeout(r, 100)); // Let UI update
-
-    if (currentFormat === 'pdf') {
-      await generatePDF(exportPhotos, heading, prepBy);
-    } else if (currentFormat === 'excel') {
-      await generateExcel(exportPhotos, heading, prepBy);
-    } else if (currentFormat === 'word') {
-      await generateWord(exportPhotos, heading, prepBy);
-    }
-  } catch(e) {
-    console.error('Export error:', e);
-    showToast('Export failed: ' + e.message, 'danger');
-  } finally {
-    hideLoading();
-  }
-}
-
-// ============================================================
-// PDF GENERATION
-// ============================================================
-async function generatePDF(exportPhotos, heading, prepBy) {
-  const { jsPDF } = window.jspdf;
-  if (!jsPDF) { showToast('PDF library not loaded', 'danger'); return; }
-
-  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-  const W = 210, H = 297;
-  const margin = 14;
-
-  // ---- Cover Page ----
-  // Background
-  doc.setFillColor(15, 23, 42);
-  doc.rect(0, 0, W, H, 'F');
-
-  // Header bar
-  doc.setFillColor(245, 158, 11);
-  doc.rect(0, 0, W, 6, 'F');
-  doc.rect(0, H - 6, W, 6, 'F');
-
-  // Left accent bar
-  doc.setFillColor(245, 158, 11);
-  doc.rect(margin - 2, 20, 4, 60, 'F');
-
-  // Title
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(26);
-  doc.setTextColor(245, 158, 11);
-  doc.text(heading, margin + 8, 40, {maxWidth: W - margin * 2 - 8});
-
-  doc.setFontSize(14);
-  doc.setTextColor(148, 163, 184);
-  doc.text(projectName, margin + 8, 60);
-
-  // Stats boxes
-  const now = new Date();
-  const statsY = 85;
-  const boxW = (W - margin * 2 - 8) / 3;
-  [
-    {label: 'Total Photos', value: String(exportPhotos.length)},
-    {label: 'Generated', value: now.toLocaleDateString('en-IN')},
-    {label: 'Prepared By', value: prepBy},
-  ].forEach((item, i) => {
-    const x = margin + i * (boxW + 4);
-    doc.setFillColor(30, 41, 59);
-    doc.roundedRect(x, statsY, boxW, 24, 3, 3, 'F');
-    doc.setFontSize(18);
-    doc.setFont('helvetica', 'bold');
-    doc.setTextColor(245, 158, 11);
-    doc.text(item.value, x + boxW / 2, statsY + 12, {align:'center'});
-    doc.setFontSize(8);
-    doc.setFont('helvetica', 'normal');
-    doc.setTextColor(100, 116, 139);
-    doc.text(item.label, x + boxW / 2, statsY + 19, {align:'center'});
-  });
-
-  // Activity breakdown
-  const actMap = {};
-  exportPhotos.forEach(p => { actMap[p.activity] = (actMap[p.activity] || 0) + 1; });
-  let actY = statsY + 34;
-  doc.setFontSize(10);
-  doc.setFont('helvetica', 'bold');
-  doc.setTextColor(148, 163, 184);
-  doc.text('ACTIVITY BREAKDOWN', margin, actY);
-  actY += 6;
-  Object.entries(actMap).forEach(([act, count]) => {
-    doc.setFillColor(30, 41, 59);
-    doc.rect(margin, actY, W - margin * 2, 8, 'F');
-    doc.setFontSize(9);
-    doc.setFont('helvetica', 'normal');
-    doc.setTextColor(241, 245, 249);
-    doc.text(act, margin + 3, actY + 5.5);
-    const barW = ((W - margin * 2 - 40) * count / exportPhotos.length);
-    doc.setFillColor(245, 158, 11);
-    doc.rect(margin + (W - margin * 2) * 0.55, actY + 1.5, barW * 0.4, 5, 'F');
-    doc.setTextColor(245, 158, 11);
-    doc.text(String(count), W - margin - 2, actY + 5.5, {align:'right'});
-    actY += 10;
-    if (actY > H - 30) return;
-  });
-
-  // Footer
-  doc.setFontSize(8);
-  doc.setTextColor(100, 116, 139);
-  doc.text('Generated by CivilCam Pro', margin, H - 10);
-  doc.text(now.toLocaleString('en-IN'), W - margin, H - 10, {align:'right'});
-
-  // ---- Photo Pages ----
-  if (currentTemplate === 'grid') {
-    await pdfGridLayout(doc, exportPhotos, heading, prepBy);
-  } else if (currentTemplate === 'inspection') {
-    await pdfInspectionLayout(doc, exportPhotos, heading, prepBy);
-  } else if (currentTemplate === 'activity') {
-    await pdfActivityLayout(doc, exportPhotos, heading, prepBy);
-  } else if (currentTemplate === 'table') {
-    await pdfTableLayout(doc, exportPhotos, heading, prepBy);
-  }
-
-  // Save
-  const filename = `${projectName}_${heading}_${now.toISOString().split('T')[0]}.pdf`;
-  const ok = await saveFile(doc.output('blob'), filename, 'application/pdf');
-  savedMessage(ok, 'PDF', 'application/pdf');
-}
-
-async function pdfGridLayout(doc, photos, heading, prepBy) {
-  const W = 210, H = 297, margin = 10;
-  const photoW = (W - margin * 2 - 6) / 2;
-  const photoH = photoW * 0.7;
-  const cellH = photoH + 14;
-  const cols = 2, rows = 2;
-  const perPage = cols * rows;
-
-  for (let page = 0; page < Math.ceil(photos.length / perPage); page++) {
-    doc.addPage();
-    const pagePhotos = photos.slice(page * perPage, (page + 1) * perPage);
-
-    // Page header
-    doc.setFillColor(245, 158, 11);
-    doc.rect(0, 0, W, 14, 'F');
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(9);
-    doc.setTextColor(0, 0, 0);
-    doc.text(projectName, margin, 9);
-    doc.text(heading, W / 2, 9, {align:'center'});
-    doc.text(`Page ${page + 2}`, W - margin, 9, {align:'right'});
-
-    // Grid
-    pagePhotos.forEach((photo, idx) => {
-      const col = idx % cols;
-      const row = Math.floor(idx / cols);
-      const x = margin + col * (photoW + 6);
-      const y = 18 + row * (cellH + 6);
-
-      // Photo border box
-      doc.setDrawColor(51, 65, 85);
-      doc.setLineWidth(0.3);
-      doc.rect(x, y, photoW, photoH + 12);
-
-      // Photo
-      try {
-        doc.addImage(photo.imageData, 'JPEG', x + 0.5, y + 0.5, photoW - 1, photoH - 1);
-      } catch(e) {}
-
-      // Caption bar
-      doc.setFillColor(15, 23, 42);
-      doc.rect(x, y + photoH, photoW, 12, 'F');
-      doc.setFontSize(7);
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor(245, 158, 11);
-      doc.text([photo.activity, siteLabel(photo.chainage, photo.side)].filter(Boolean).join('  |  ').slice(0, 60), x + 2, y + photoH + 5);
-      doc.setFont('helvetica', 'normal');
-      doc.setTextColor(148, 163, 184);
-      doc.text(photo.displayDate + ' ' + photo.displayTime, x + 2, y + photoH + 10);
-      if (photo.remarks) {
-        doc.setTextColor(200, 200, 200);
-        doc.text(photo.remarks.slice(0, 30), x + photoW / 2, y + photoH + 10, {align:'center'});
+// Lays out "Label: value | Label: value" lines with bold labels, wrapping words.
+// Returns the height used; draws only when draw = true.
+function pdfRichText(doc, lines, x, y, w, size, draw) {
+  const lh = size * 0.42;
+  let cy = y + lh * 0.85;
+  const space = () => { doc.setFont('helvetica', 'normal'); doc.setFontSize(size); return doc.getTextWidth(' '); };
+  lines.forEach(line => {
+    const tokens = [];
+    line.forEach(([label, value], i) => {
+      if (i) tokens.push({ t: '|', sep: true });
+      tokens.push({ t: label + ':', b: true });
+      String(value).split(/\s+/).filter(Boolean).forEach(word => tokens.push({ t: word }));
+    });
+    let cx = x;
+    tokens.forEach(tok => {
+      doc.setFont('helvetica', tok.b ? 'bold' : 'normal');
+      doc.setFontSize(size);
+      let word = tok.t;
+      let tw = doc.getTextWidth(word);
+      if (cx > x && cx + tw > x + w) { cx = x; cy += lh; }
+      // a single word longer than the line (e.g. a long number) is broken up
+      while (tw > w) {
+        let cut = word.length - 1;
+        while (cut > 1 && doc.getTextWidth(word.slice(0, cut)) > w) cut--;
+        if (draw) doc.text(word.slice(0, cut), cx, cy);
+        word = word.slice(cut); tw = doc.getTextWidth(word); cx = x; cy += lh;
       }
+      if (draw) {
+        doc.setTextColor(...pdfRGB(tok.sep ? '8A96A8' : tok.b ? RC.ink : '3C4858'));
+        doc.text(word, cx, cy);
+      }
+      cx += tw + space();
     });
-
-    // Page footer
-    doc.setFontSize(7);
-    doc.setTextColor(100, 116, 139);
-    doc.text(`Prepared by: ${prepBy}  |  ${new Date().toLocaleDateString('en-IN')}  |  CivilCam Pro`, W / 2, H - 6, {align:'center'});
-  }
+    cy += lh;
+  });
+  return cy - y - lh * 0.55;
 }
 
-async function pdfInspectionLayout(doc, photos, heading, prepBy) {
-  const W = 210, H = 297, margin = 12;
-  const perPage = 3;
+async function buildPDF(pages, imgs, meta, opts) {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4', compress: true });
+  const PW = 210, PH = 297, M = 15;
+  const W = PW - 2 * M;
+  const size = PDF_FONT_SIZE[meta.layout];
+  const L = LAYOUTS[meta.layout];
 
-  for (let page = 0; page < Math.ceil(photos.length / perPage); page++) {
-    doc.addPage();
-    const pagePhotos = photos.slice(page * perPage, (page + 1) * perPage);
+  // Header: full project name, report title below
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(12.5);
+  const nameLines = doc.splitTextToSize(meta.fullName, W - 10);
+  const headH = 9 + nameLines.length * 5.4 + 6;
 
-    // Header
-    doc.setFillColor(245, 158, 11);
-    doc.rect(0, 0, W, 14, 'F');
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(9);
-    doc.setTextColor(0, 0, 0);
-    doc.text(projectName, margin, 9);
-    doc.text(heading, W / 2, 9, {align:'center'});
-    doc.text(`Page ${page + 2}`, W - margin, 9, {align:'right'});
+  const drawHeader = () => {
+    doc.setTextColor(...pdfRGB(RC.ink));
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(12.5);
+    nameLines.forEach((ln, i) => doc.text(ln, PW / 2, 13 + i * 5.4, { align: 'center' }));
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(9.5);
+    doc.setTextColor(...pdfRGB('3C4858'));
+    doc.text(meta.title, PW / 2, 13 + nameLines.length * 5.4 + 0.6, { align: 'center' });
+    doc.setDrawColor(...pdfRGB(RC.navy)); doc.setLineWidth(0.6);
+    doc.line(M, headH, PW - M, headH);
+  };
 
-    let y = 20;
-    const itemH = (H - 30 - 20) / perPage;
-    const photoW = itemH * 0.85;
-    const metaX = margin + photoW + 4;
-    const metaW = W - margin - photoW - 4 - margin;
+  const top = headH + 6, bottom = PH - 17;
+  let photoNo = 0;
 
-    pagePhotos.forEach(photo => {
-      // Box
-      doc.setDrawColor(51, 65, 85);
-      doc.setLineWidth(0.3);
-      doc.rect(margin, y, W - margin * 2, itemH - 3);
+  pages.forEach((page, pi) => {
+    if (pi) doc.addPage();
+    drawHeader();
+    let y = top;
 
-      // Photo
-      try {
-        doc.addImage(photo.imageData, 'JPEG', margin + 1, y + 1, photoW - 2, itemH - 5);
-      } catch(e) {}
-
-      // Meta panel
-      doc.setFillColor(15, 23, 42);
-      doc.rect(metaX, y, metaW, itemH - 3, 'F');
-
-      let my = y + 6;
-      const line = (label, value, color = [241, 245, 249]) => {
-        doc.setFontSize(6.5);
-        doc.setFont('helvetica', 'bold');
-        doc.setTextColor(100, 116, 139);
-        doc.text(label, metaX + 3, my);
-        doc.setFont('helvetica', 'normal');
-        doc.setTextColor(...color);
-        doc.text(String(value || '-').slice(0, 24), metaX + 3, my + 4.5);
-        my += 10;
-      };
-
-      line('ACTIVITY', photo.activity, [245, 158, 11]);
-      line('CHAINAGE', photo.chainage || '-');
-      line('SIDE', photo.side || '-');
-      line('DATE & TIME', `${photo.displayDate} ${photo.displayTime}`);
-      if (photo.location) line('GPS COORDINATES', `${photo.location.lat}, ${photo.location.lng}`);
-      if (photo.remarks) line('REMARKS', photo.remarks);
-
-      y += itemH;
-    });
-
-    // Footer
-    doc.setFontSize(7);
-    doc.setTextColor(100, 116, 139);
-    doc.text(`Prepared by: ${prepBy}  |  CivilCam Pro`, W / 2, H - 6, {align:'center'});
-  }
-}
-
-async function pdfActivityLayout(doc, photos, heading, prepBy) {
-  const W = 210, H = 297, margin = 12;
-  const actMap = {};
-  photos.forEach(p => { if (!actMap[p.activity]) actMap[p.activity] = []; actMap[p.activity].push(p); });
-
-  let actPage = 0;
-  for (const [activity, actPhotos] of Object.entries(actMap)) {
-    const photoW = (W - margin * 2 - 6) / 3;
-    const photoH = photoW * 0.75;
-    const perPage = 6;
-
-    for (let page = 0; page < Math.ceil(actPhotos.length / perPage); page++) {
-      doc.addPage();
-      const pagePhotos = actPhotos.slice(page * perPage, (page + 1) * perPage);
-
-      // Header
-      doc.setFillColor(245, 158, 11);
-      doc.rect(0, 0, W, 14, 'F');
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(9);
-      doc.setTextColor(0, 0, 0);
-      doc.text(projectName, margin, 9);
-      doc.text(heading, W / 2, 9, {align:'center'});
-      doc.text(`Page ${actPage + 2}`, W - margin, 9, {align:'right'});
-
-      // Activity heading
-      doc.setFillColor(30, 41, 59);
-      doc.rect(0, 14, W, 12, 'F');
-      doc.setFontSize(11);
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor(245, 158, 11);
-      doc.text(`▌ ${activity.toUpperCase()}`, margin, 22);
-      doc.setFontSize(8);
-      doc.setTextColor(148, 163, 184);
-      doc.text(`${actPhotos.length} photo${actPhotos.length > 1 ? 's' : ''}`, W - margin, 22, {align:'right'});
-
-      // Photos grid (3 cols x 2 rows)
-      pagePhotos.forEach((photo, idx) => {
-        const col = idx % 3;
-        const row = Math.floor(idx / 3);
-        const x = margin + col * (photoW + 3);
-        const y = 30 + row * (photoH + 16);
-
-        doc.setDrawColor(51, 65, 85);
-        doc.setLineWidth(0.3);
-        doc.rect(x, y, photoW, photoH + 12);
-
-        try { doc.addImage(photo.imageData, 'JPEG', x + 0.5, y + 0.5, photoW - 1, photoH - 1); } catch(e) {}
-
-        doc.setFillColor(15, 23, 42);
-        doc.rect(x, y + photoH, photoW, 12, 'F');
-        doc.setFontSize(6.5);
-        doc.setFont('helvetica', 'normal');
-        doc.setTextColor(148, 163, 184);
-        doc.text([photo.displayDate, siteLabel(photo.chainage, photo.side)].filter(Boolean).join('  ').slice(0, 34), x + 2, y + photoH + 5);
-        doc.setTextColor(200, 200, 200);
-        if (photo.remarks) doc.text(photo.remarks.slice(0, 16), x + 2, y + photoH + 10);
-      });
-
-      doc.setFontSize(7);
-      doc.setTextColor(100, 116, 139);
-      doc.text(`Prepared by: ${prepBy}  |  CivilCam Pro`, W / 2, H - 6, {align:'center'});
-      actPage++;
+    if (page.group) {
+      const gl = [page.group.header];
+      const h = pdfRichText(doc, gl, M + 4, y + 2.5, W - 8, size + 0.5, false) + 6.5 + size * 0.42;
+      doc.setFillColor(...pdfRGB('F7F9FB')); doc.setDrawColor(...pdfRGB(RC.line)); doc.setLineWidth(0.25);
+      doc.rect(M, y, W, h, 'FD');
+      pdfRichText(doc, gl, M + 4, y + 2.5, W - 8, size + 0.5, true);
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(size - 0.5); doc.setTextColor(...pdfRGB(RC.muted));
+      doc.text(page.group.note, M + 4, y + h - 3);
+      y += h + 5;
     }
-  }
-}
 
-async function pdfTableLayout(doc, photos, heading, prepBy) {
-  const W = 210, H = 297, margin = 10;
+    const rows = Math.ceil(L.perPage / L.cols);
+    const gapX = 6, gapY = L.perPage > 2 ? 5 : 7;
+    const cellW = (W - gapX * (L.cols - 1)) / L.cols;
+    const cellH = (bottom - y - gapY * (rows - 1)) / rows;
+    const caps = page.items.map(p => captionLines(p, opts, !!page.group));
+    const capH = Math.min(cellH * 0.45, Math.max(...caps.map(c => pdfRichText(doc, c, 0, 0, cellW - 6, size, false))) + 5);
+    const boxH = Math.min(cellH - capH, cellW * 0.75);
 
-  // Page with table log
-  const perPage = 30;
-  for (let page = 0; page < Math.ceil(photos.length / perPage); page++) {
-    doc.addPage();
-    const pagePhotos = photos.slice(page * perPage, (page + 1) * perPage);
+    page.items.forEach((p, i) => {
+      photoNo++;
+      const col = i % L.cols, row = Math.floor(i / L.cols);
+      const x = M + col * (cellW + gapX);
+      const cy = y + row * (boxH + capH + gapY);
+      const im = imgs.get(p.id);
 
-    doc.setFillColor(245, 158, 11);
-    doc.rect(0, 0, W, 14, 'F');
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(9);
-    doc.setTextColor(0, 0, 0);
-    doc.text(projectName, margin, 9);
-    doc.text(heading, W / 2, 9, {align:'center'});
-    doc.text(`Page ${page + 2}`, W - margin, 9, {align:'right'});
+      doc.setFillColor(...pdfRGB('E9EDF2'));
+      doc.rect(x, cy, cellW, boxH, 'F');
+      if (im) {
+        const f = fitBox(im.w, im.h, cellW, boxH);
+        doc.addImage(im.data, 'JPEG', x + f.dx, cy + f.dy, f.w, f.h, undefined, 'FAST');
+      }
+      // badge: photo number, or the date in the date-wise layout
+      const badge = page.group ? p.displayDate : `Photo ${photoNo}`;
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(size - 1);
+      const bw = doc.getTextWidth(badge) + 4;
+      doc.setFillColor(...pdfRGB(RC.badge));
+      doc.rect(x + 2, cy + 2, bw, size * 0.5, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.text(badge, x + 4, cy + 2 + size * 0.36);
 
-    // Table header
-    const cols = [['#','8'],['Date','21'],['Activity','36'],['Chainage','22'],['Side','20'],['GPS','40'],['Remarks','43']];
-    let x = margin, y = 20;
-    const rowH = 7;
-
-    doc.setFillColor(30, 41, 59);
-    doc.rect(margin, y, W - margin * 2, rowH, 'F');
-    x = margin;
-    cols.forEach(([label, w]) => {
-      doc.setFontSize(7);
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor(245, 158, 11);
-      doc.text(label, x + 2, y + 5);
-      x += parseFloat(w);
+      doc.setFillColor(...pdfRGB('F7F9FB')); doc.setDrawColor(...pdfRGB(RC.line)); doc.setLineWidth(0.25);
+      doc.rect(x, cy + boxH, cellW, capH, 'FD');
+      doc.rect(x, cy, cellW, boxH, 'S');
+      pdfRichText(doc, caps[i], x + 3, cy + boxH + 2, cellW - 6, size, true);
     });
-    y += rowH;
+  });
 
-    pagePhotos.forEach((photo, i) => {
-      if (i % 2 === 0) { doc.setFillColor(15, 23, 42); doc.rect(margin, y, W - margin * 2, rowH, 'F'); }
-      x = margin;
-      const gpsStr = photo.location ? `${photo.location.lat}, ${photo.location.lng}` : '-';
-      const values = [String(page * perPage + i + 1), photo.displayDate, photo.activity, photo.chainage || '-', photo.side || '-', gpsStr, photo.remarks || '-'];
-      cols.forEach(([, w], ci) => {
-        doc.setFontSize(6.5);
-        doc.setFont('helvetica', 'normal');
-        doc.setTextColor(241, 245, 249);
-        doc.text(String(values[ci]).slice(0, Math.floor(parseFloat(w) / 2.5)), x + 2, y + 4.8);
-        x += parseFloat(w);
-      });
-      // Grid lines
-      doc.setDrawColor(51, 65, 85);
-      doc.setLineWidth(0.1);
-      doc.line(margin, y + rowH, W - margin, y + rowH);
-      y += rowH;
-    });
-
-    // Outer border
-    doc.setDrawColor(245, 158, 11);
-    doc.setLineWidth(0.4);
-    doc.rect(margin, 20, W - margin * 2, y - 20);
-
-    doc.setFontSize(7);
-    doc.setTextColor(100, 116, 139);
-    doc.text(`Prepared by: ${prepBy}  |  CivilCam Pro`, W / 2, H - 6, {align:'center'});
+  // Footer on every page: engineer and page numbers
+  const total = doc.getNumberOfPages();
+  for (let i = 1; i <= total; i++) {
+    doc.setPage(i);
+    doc.setDrawColor(...pdfRGB(RC.line)); doc.setLineWidth(0.25);
+    doc.line(M, PH - 12, PW - M, PH - 12);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5); doc.setTextColor(...pdfRGB(RC.muted));
+    if (meta.preparedBy) doc.text('Prepared by: ' + meta.preparedBy, M, PH - 7.5);
+    doc.text(`Page ${i} of ${total}`, PW - M, PH - 7.5, { align: 'right' });
   }
-}
 
+  doc.setProperties({ title: `${meta.fullName} — ${meta.title}`, author: meta.preparedBy || '', creator: 'CivilCam Pro' });
+  return doc.output('blob');
+}

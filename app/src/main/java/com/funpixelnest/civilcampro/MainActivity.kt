@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat
 class MainActivity : AppCompatActivity() {
 
     private lateinit var webView: WebView
+    private lateinit var auth: AuthHelper
 
     private val requiredPermissions: Array<String>
         get() {
@@ -73,7 +74,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Native bridge used by the page for saving and sharing files
-        webView.addJavascriptInterface(WebAppBridge(this), "AndroidBridge")
+        auth = AuthHelper(this, webView)
+        webView.addJavascriptInterface(WebAppBridge(this, auth), "AndroidBridge")
 
         webView.webChromeClient = object : WebChromeClient() {
             override fun onPermissionRequest(request: PermissionRequest) {
@@ -126,9 +128,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // The page closes its own sheets / goes up a screen first; only then does Back leave the app
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
-        if (webView.canGoBack()) webView.goBack() else super.onBackPressed()
+        webView.evaluateJavascript("(window.onAndroidBack && window.onAndroidBack()) ? 'y' : 'n'") { result ->
+            if (result?.contains("y") != true) finish()
+        }
     }
 
     override fun onPause() {

@@ -23,8 +23,23 @@ import java.io.File
  *  - saveFile(): images go to Pictures/CivilCam (so they show in the Gallery),
  *    PDF / Excel / Word reports go to Download/CivilCam.
  *  - shareFiles(): opens the Android share sheet (WhatsApp, Gmail, Drive...).
+ *  - shareToApp(): sends straight to one app, e.g. "whatsapp".
+ *  - authAvailable() / signIn() / getIdToken() / signOut(): Firebase sign-in.
  */
-class WebAppBridge(private val activity: Activity) {
+class WebAppBridge(private val activity: Activity, private val auth: AuthHelper) {
+
+    // ----- sign-in (see AuthHelper) -----
+    @JavascriptInterface
+    fun authAvailable(): Boolean = auth.available()
+
+    @JavascriptInterface
+    fun signIn(provider: String) = auth.signIn(provider)
+
+    @JavascriptInterface
+    fun getIdToken(requestId: String) = auth.getIdToken(requestId)
+
+    @JavascriptInterface
+    fun signOut() = auth.signOut()
 
     private fun cleanName(name: String): String =
         name.replace(Regex("[\\\\/:*?\"<>|\\s]+"), "_").take(150)
@@ -104,37 +119,72 @@ class WebAppBridge(private val activity: Activity) {
 
     @JavascriptInterface
     fun shareFiles(filesJson: String, text: String) {
-        try {
+        val intent = buildShareIntent(filesJson, text) ?: return
+        activity.runOnUiThread { activity.startActivity(Intent.createChooser(intent, "Share")) }
+    }
+
+    /** app: "whatsapp" sends straight to WhatsApp (or WhatsApp Business); falls back to the share sheet. */
+    @JavascriptInterface
+    fun shareToApp(filesJson: String, text: String, app: String) {
+        val intent = buildShareIntent(filesJson, text) ?: return
+        val packages = when (app) {
+            "whatsapp" -> listOf("com.whatsapp", "com.whatsapp.w4b")
+            else -> emptyList()
+        }
+        val target = packages.firstOrNull { isInstalled(it) }
+        activity.runOnUiThread {
+            try {
+                if (target != null) {
+                    intent.setPackage(target)
+                    activity.startActivity(intent)
+                } else {
+                    if (packages.isNotEmpty()) Toast.makeText(activity, "WhatsApp is not installed", Toast.LENGTH_SHORT).show()
+                    activity.startActivity(Intent.createChooser(intent, "Share"))
+                }
+            } catch (e: ActivityNotFoundException) {
+                intent.setPackage(null)
+                activity.startActivity(Intent.createChooser(intent, "Share"))
+            }
+        }
+    }
+
+    private fun isInstalled(pkg: String): Boolean = try {
+        @Suppress("DEPRECATION")
+        activity.packageManager.getPackageInfo(pkg, 0)
+        true
+    } catch (e: Exception) {
+        false
+    }
+
+    private fun buildShareIntent(filesJson: String, text: String): Intent? {
+        return try {
             val items = JSONArray(filesJson)
             val dir = File(activity.cacheDir, "shared").apply {
                 deleteRecursively()
                 mkdirs()
             }
             val uris = ArrayList<Uri>()
-            var mime = "image/jpeg"
+            val mimes = HashSet<String>()
             for (i in 0 until items.length()) {
                 val item = items.getJSONObject(i)
                 val file = File(dir, cleanName(item.getString("name")))
                 file.writeBytes(Base64.decode(item.getString("data"), Base64.DEFAULT))
                 uris.add(FileProvider.getUriForFile(activity, activity.packageName + ".fileprovider", file))
-                mime = item.optString("mime", mime)
+                mimes.add(item.optString("mime", "application/octet-stream"))
             }
-            if (uris.isEmpty()) return
-
+            if (uris.isEmpty()) return null
             val intent = if (uris.size == 1) {
                 Intent(Intent.ACTION_SEND).putExtra(Intent.EXTRA_STREAM, uris[0])
             } else {
                 Intent(Intent.ACTION_SEND_MULTIPLE).putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris)
             }
-            intent.type = mime
+            intent.type = if (mimes.size == 1) mimes.first() else "*/*"
             if (text.isNotBlank()) intent.putExtra(Intent.EXTRA_TEXT, text)
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-
-            activity.runOnUiThread {
-                activity.startActivity(Intent.createChooser(intent, "Share photos"))
-            }
+            intent
         } catch (e: Exception) {
-            Log.e("CivilCam", "shareFiles failed", e)
+            Log.e("CivilCam", "share failed", e)
+            null
         }
     }
 }

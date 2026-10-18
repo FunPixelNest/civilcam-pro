@@ -3,13 +3,19 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
+// Firebase sign-in turns on once google-services.json is placed in this folder (see firebase/SETUP.md).
+// Without it the app builds and runs fully offline.
+if (file('google-services.json').exists()) {
+    apply plugin: 'com.google.gms.google-services'
+}
+
 android {
     namespace 'com.funpixelnest.civilcampro'
     compileSdk 34
 
     defaultConfig {
         applicationId "com.funpixelnest.civilcampro"
-        minSdk 21
+        minSdk 23   // Android 6.0+, needed by Firebase sign-in
         targetSdk 34
         versionCode 1
         versionName "1.0"
@@ -36,36 +42,14 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.12.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.activity:activity-ktx:1.8.2'
+
+    // Sign-in: Firebase Auth (Google, Microsoft / company accounts, Apple)
+    implementation platform('com.google.firebase:firebase-bom:33.7.0')
+    implementation 'com.google.firebase:firebase-auth'
+    implementation 'androidx.credentials:credentials:1.3.0'
+    implementation 'androidx.credentials:credentials-play-services-auth:1.3.0'
+    implementation 'com.google.android.libraries.identity.googleid:googleid:1.1.1'
 }
 
-// ---------------------------------------------------------------------------
-// Downloads the PDF (jsPDF) and Excel (SheetJS) libraries into the app's
-// assets so exports work offline. Runs once; skipped if the files exist.
-// If the download fails the build still succeeds, and the app loads the
-// libraries from the internet instead.
-// ---------------------------------------------------------------------------
-def webLibs = [
-    'jspdf.umd.min.js': 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
-    'xlsx.full.min.js': 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'
-]
-def webLibDir = file('src/main/assets/civilcam')
-
-tasks.register('fetchWebLibs') {
-    doLast {
-        webLibs.each { name, url ->
-            def target = new File(webLibDir, name)
-            if (target.exists() && target.length() > 0) return
-            try {
-                def conn = new URL(url).openConnection()
-                conn.connectTimeout = 15000
-                conn.readTimeout = 60000
-                conn.inputStream.withStream { input -> target.withOutputStream { out -> out << input } }
-                println "CivilCam: downloaded $name"
-            } catch (Exception e) {
-                target.delete()
-                println "CivilCam: could not download $name (${e.message}); the app will load it online instead"
-            }
-        }
-    }
-}
-preBuild.dependsOn 'fetchWebLibs'
+// The PDF, Word, Excel and PowerPoint libraries are bundled in
+// app/src/main/assets/civilcam/lib, so reports work offline.
