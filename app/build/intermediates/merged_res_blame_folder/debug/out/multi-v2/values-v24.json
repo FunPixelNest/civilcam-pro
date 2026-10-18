@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.funpixelnest.civilcampro.app-mergeDebugResources-25:/values-v24/values-v24.xml",
+            "outputFile": "com.funpixelnest.civilcampro.app-mergeDebugResources-33:/values-v24/values-v24.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\Amith Personal\\.gradle\\caches\\transforms-3\\2303021cb7f3f78c4bc1b8231e5ae854\\transformed\\appcompat-1.6.1\\res\\values-v24\\values-v24.xml",
+                    "source": "C:\\Users\\Amith Personal\\.gradle\\caches\\transforms-3\\be9b93a471d02bcce0658e6ce8d6abb6\\transformed\\appcompat-1.6.1\\res\\values-v24\\values-v24.xml",
                     "from": {
                         "startLines": "2,3",
                         "startColumns": "4,4",

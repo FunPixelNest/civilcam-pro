@@ -1,119 +1,219 @@
 // ============================================================
-// GALLERY
+// GALLERY FILTERS
 // ============================================================
+const galleryFilter = {
+  period: 'all',
+  activity: new Set(), side: new Set(), photoType: new Set(),
+  chFrom: null, chTo: null,        // metres
+  text: '', smart: null             // smart: parsed search {chMid, chTol, period, activity, side, text}
+};
+
+function matchesFilter(p, f) {
+  const period = (f.smart && f.smart.period) || f.period;
+  if (!inPeriod(p, period)) return false;
+  if (f.activity.size && !f.activity.has(p.activity)) return false;
+  if (f.side.size && !f.side.has(p.side)) return false;
+  if (f.photoType && f.photoType.size && !f.photoType.has(p.photoType)) return false;
+  const mid = photoChMid(p);
+  if ((f.chFrom != null || f.chTo != null) && mid == null) return false;
+  if (f.chFrom != null && mid < f.chFrom) return false;
+  if (f.chTo != null && mid > f.chTo) return false;
+  const s = f.smart;
+  if (s) {
+    if (s.chMid != null && (mid == null || Math.abs(mid - s.chMid) > (s.chTol || 250))) return false;
+    if (s.activity && !String(p.activity).toLowerCase().includes(s.activity.toLowerCase())) return false;
+    if (s.side && p.side !== s.side) return false;
+    if (s.dateFrom && p.date < s.dateFrom) return false;
+    if (s.dateTo && p.date > s.dateTo) return false;
+  }
+  const text = s ? s.text : f.text;
+  if (text) {
+    const hay = [p.activity, p.side, p.chFrom, p.chTo, p.description, fieldsText(p), p.displayDate, p.photoType,
+      p.engineer && p.engineer.name].join(' ').toLowerCase();
+    if (!text.toLowerCase().split(/\s+/).every(w => hay.includes(w))) return false;
+  }
+  return true;
+}
+
 function getFilteredPhotos() {
-  const now = new Date();
-  let filtered = [...photos];
+  return projectPhotos().filter(p => matchesFilter(p, galleryFilter));
+}
 
-  // Time filter
-  if (currentTimePeriod !== 'all' && currentTimePeriod !== 'activity') {
-    filtered = filtered.filter(p => {
-      const d = new Date(p.timestamp);
-      if (currentTimePeriod === 'today') {
-        return p.date === now.toISOString().split('T')[0];
-      } else if (currentTimePeriod === 'week') {
-        return getWeekNumber(d) === getWeekNumber(now);
-      } else if (currentTimePeriod === 'month') {
-        return p.month === `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
-      } else if (currentTimePeriod === 'quarter') {
-        const q = Math.ceil((now.getMonth() + 1) / 3);
-        return p.quarter === `${now.getFullYear()}-Q${q}`;
-      } else if (currentTimePeriod === 'year') {
-        return p.year === String(now.getFullYear());
-      }
-      return true;
+function renderGalleryFilters() {
+  const per = document.getElementById('gallery-period');
+  per.innerHTML = PERIODS.map(([k, label]) =>
+    `<button class="chip ${galleryFilter.period === k ? 'active' : ''}" onclick="galleryFilter.period='${k}';renderGallery()">${label}</button>`).join('');
+  const fl = document.getElementById('gallery-filters');
+  fl.innerHTML = filterButtonsHTML(galleryFilter, 'galleryFilter', 'renderGallery');
+  document.getElementById('smart-search-btn').style.display = AI.available() ? '' : 'none';
+}
+
+// Shared by the gallery and the chainage strip
+function filterButtonsHTML(f, varName, rerender) {
+  const label = (set, name) => set.size === 0 ? name : set.size === 1 ? [...set][0] : `${name} (${set.size})`;
+  const chLabel = f.chFrom != null || f.chTo != null ? `Ch ${f.chFrom != null ? fmtCh(f.chFrom) : '…'} – ${f.chTo != null ? fmtCh(f.chTo) : '…'}` : 'Chainage';
+  const btn = (key, text, on) => `<button class="chip filter ${on ? 'active' : ''}" onclick="openFilterSheet('${key}', ${varName}, ${rerender})">${ic('filter', 13)}${esc(text)}</button>`;
+  let html = btn('activity', label(f.activity, 'Activity'), f.activity.size) +
+    btn('side', label(f.side, 'Side'), f.side.size) +
+    (f.photoType ? btn('photoType', label(f.photoType, 'Type'), f.photoType.size) : '') +
+    btn('chainage', chLabel, f.chFrom != null || f.chTo != null);
+  const any = f.activity.size || f.side.size || (f.photoType && f.photoType.size) || f.chFrom != null || f.chTo != null || f.smart;
+  if (any) html += `<button class="chip clear" onclick="clearFilters(${varName}, ${rerender})">${ic('x', 13)}Clear</button>`;
+  return html;
+}
+
+function clearFilters(f, rerender) {
+  f.activity.clear(); f.side.clear(); if (f.photoType) f.photoType.clear();
+  f.chFrom = null; f.chTo = null; f.smart = null;
+  if (f === galleryFilter) { f.text = ''; document.getElementById('gallery-search-input').value = ''; }
+  rerender();
+}
+
+function openFilterSheet(key, f, rerender) {
+  const titles = { activity: 'Activity', side: 'Side', photoType: 'Photo type', chainage: 'Chainage range' };
+  document.getElementById('filter-sheet-title').textContent = titles[key];
+  const chips = document.getElementById('filter-sheet-chips');
+  const extra = document.getElementById('filter-sheet-extra');
+  extra.innerHTML = '';
+  if (key === 'chainage') {
+    chips.innerHTML = '';
+    extra.innerHTML = `<div class="ch-row">
+      <label class="field compact"><span>From</span><input class="input" id="flt-from" inputmode="decimal" placeholder="0+000" value="${f.chFrom != null ? fmtCh(f.chFrom) : ''}"></label>
+      <label class="field compact"><span>To</span><input class="input" id="flt-to" inputmode="decimal" placeholder="25+000" value="${f.chTo != null ? fmtCh(f.chTo) : ''}"></label></div>`;
+    const apply = () => { f.chFrom = parseCh(document.getElementById('flt-from').value); f.chTo = parseCh(document.getElementById('flt-to').value); rerender(); };
+    extra.querySelectorAll('input').forEach(i => { i.oninput = apply; });
+  } else {
+    // Values in use in this project come first, so custom ones are easy to find
+    const used = new Set(projectPhotos().map(p => p[key]).filter(Boolean));
+    const values = [...new Set([...used, ...getOptions(key)])];
+    const draw = () => renderChips(chips, key, f[key], v => {
+      if (f[key].has(v)) f[key].delete(v); else f[key].add(v);
+      draw(); rerender();
+    }, { multi: true, values, others: true, othersLabel: 'Add a value to the list' });
+    draw();
+    extra.innerHTML = `<div class="sheet-hint" style="margin-top:12px">Pick one or more. "Others" adds a value that isn't listed; it's saved for next time.</div>`;
+  }
+  openSheet('filter-sheet');
+}
+
+// ============================================================
+// SEARCH (plain words; AI understands longer questions when signed in)
+// ============================================================
+let searchTimer;
+function onGallerySearch() {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => {
+    const q = document.getElementById('gallery-search-input').value.trim();
+    galleryFilter.text = '';
+    galleryFilter.smart = q ? parseSearch(q) : null;
+    renderGallery();
+  }, 200);
+}
+
+// Understands things like "culvert near 14 km last month", "12+300 rhs", "hindrance october"
+function parseSearch(q) {
+  const out = { text: '', chMid: null, chTol: null, period: null, activity: null, side: null, dateFrom: null, dateTo: null };
+  let s = ' ' + q.toLowerCase() + ' ';
+  const take = re => { const m = s.match(re); if (m) s = s.replace(m[0], ' '); return m; };
+  let m;
+  if ((m = take(/\b(?:near|at|around|ch\.?|chainage)?\s*(\d+\+\d+)\b/))) { out.chMid = parseCh(m[1]); out.chTol = 100; }
+  else if ((m = take(/\b(?:near|at|around)?\s*(\d+(?:\.\d+)?)\s*km\b/))) { out.chMid = Number(m[1]) * 1000; out.chTol = 500; }
+  const periods = [[/\btoday\b/, 'today'], [/\bthis week\b/, 'week'], [/\bthis month\b/, 'month'], [/\blast (?:3|three) months\b/, '3months'], [/\bthis year\b/, 'year']];
+  for (const [re, k] of periods) if (take(re)) out.period = k;
+  if (take(/\blast month\b/)) {
+    const n = new Date(); const a = new Date(n.getFullYear(), n.getMonth() - 1, 1); const b = new Date(n.getFullYear(), n.getMonth(), 0);
+    out.dateFrom = localDateKey(a); out.dateTo = localDateKey(b);
+  }
+  const months = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
+  months.forEach((name, i) => {
+    if (take(new RegExp('\\b(' + name + '|' + name.slice(0, 3) + ')\\b'))) {
+      const n = new Date(); let y = n.getFullYear(); if (i > n.getMonth()) y--;
+      out.dateFrom = localDateKey(new Date(y, i, 1)); out.dateTo = localDateKey(new Date(y, i + 1, 0));
+    }
+  });
+  for (const side of getOptions('side')) if (take(new RegExp('\\b' + side.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b'))) out.side = side;
+  for (const act of getOptions('activity')) {
+    const word = act.toLowerCase().split(/[\s/&]+/)[0];
+    if (word.length > 3 && take(new RegExp('\\b' + word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\w*'))) { out.activity = word; break; }
+  }
+  take(/\b(photos?|pics?|images?|of|in|the|show|me|all|near|at|around)\b/g);
+  out.text = s.replace(/\s+/g, ' ').trim();
+  return out;
+}
+
+async function runSmartSearch() {
+  const q = document.getElementById('gallery-search-input').value.trim();
+  if (!q || !AI.available()) { onGallerySearch(); return; }
+  try {
+    showLoading('Understanding your search…');
+    const r = await AI.call('search', {
+      query: q, today: localDateKey(new Date()),
+      activities: getOptions('activity'), sides: getOptions('side')
     });
-  }
-
-  // Activity filter
-  if (currentTimePeriod === 'activity' && currentGalleryActivity !== 'all') {
-    filtered = filtered.filter(p => p.activity === currentGalleryActivity);
-  }
-
-  // Search
-  if (gallerySearchText) {
-    const q = gallerySearchText.toLowerCase();
-    filtered = filtered.filter(p =>
-      (p.activity || '').toLowerCase().includes(q) ||
-      (p.remarks || '').toLowerCase().includes(q) ||
-      (p.chainage || '').toLowerCase().includes(q) ||
-      (p.side || '').toLowerCase().includes(q) ||
-      (p.displayDate || '').includes(q)
-    );
-  }
-
-  return filtered;
+    galleryFilter.smart = Object.assign(parseSearch(''), r.filter || {}, { text: (r.filter && r.filter.text) || '' });
+    renderGallery();
+  } catch (e) {
+    showToast('AI search unavailable, using simple search', 'danger');
+    onGallerySearch();
+  } finally { hideLoading(); }
 }
 
-function getGroupKey(photo) {
-  if (currentTimePeriod === 'today') return photo.displayDate;
-  if (currentTimePeriod === 'week') return photo.weekNum;
-  if (currentTimePeriod === 'month') return photo.displayDate;
-  if (currentTimePeriod === 'quarter') return photo.monthLabel;
-  if (currentTimePeriod === 'year') return photo.monthLabel;
-  if (currentTimePeriod === 'activity') return photo.activity;
-  // all: group by month
-  return photo.monthLabel;
-}
-
+// ============================================================
+// GRID
+// ============================================================
 function renderGallery() {
+  if (!currentProject) return;
+  renderGalleryFilters();
+  updateLastThumb();
   const grid = document.getElementById('gallery-grid');
   const filtered = getFilteredPhotos();
+  const total = projectPhotos().length;
 
-  if (filtered.length === 0) {
-    grid.innerHTML = `
-      <div class="gallery-empty">
-        <div class="gallery-empty-icon">📷</div>
-        <div class="gallery-empty-text">No photos yet</div>
-        <div class="gallery-empty-sub">Switch to Camera tab and capture your first photo</div>
-      </div>`;
+  if (!filtered.length) {
+    grid.innerHTML = `<div class="empty">
+      <div class="empty-ic">${ic('image', 40)}</div>
+      <div class="empty-title">${total ? 'No photos match' : 'No photos yet'}</div>
+      <div class="empty-sub">${total ? 'Try another filter or period.' : 'Photos you take in this project appear here.'}</div></div>`;
     return;
   }
 
-  // Group photos
   const groups = {};
-  filtered.forEach(p => {
-    const key = getGroupKey(p);
-    if (!groups[key]) groups[key] = [];
-    groups[key].push(p);
-  });
-
-  let html = '';
-  Object.entries(groups).forEach(([groupKey, groupPhotos]) => {
-    html += `<div class="gallery-group">
-      <div class="gallery-group-header">${groupKey} <span style="color:var(--text3);font-weight:400">(${groupPhotos.length})</span></div>
-      <div class="photo-grid">`;
-    groupPhotos.forEach(p => {
-      const sel = selectedPhotos.has(p.id);
-      html += `<div class="photo-thumb${sel?' selected':''}" data-id="${p.id}"
-        onclick="onThumbClick('${p.id}')" oncontextmenu="onThumbLongPress(event,'${p.id}')">
-        <img src="${p.imageData}" loading="lazy" alt="">
-        <div class="select-badge">✓</div>
-        ${p.chainage ? `<div class="meta-badge">Ch ${p.chainage}</div>` : ''}
-      </div>`;
-    });
-    html += `</div></div>`;
-  });
-
-  grid.innerHTML = html;
+  filtered.forEach(p => { (groups[p.date] = groups[p.date] || []).push(p); });
+  grid.innerHTML = Object.entries(groups).map(([date, list]) => `
+    <div class="gallery-group">
+      <div class="gallery-group-header">${fmtDate(date)} <span>${list.length}</span></div>
+      <div class="photo-grid">${list.map(thumbHTML).join('')}</div>
+    </div>`).join('');
 }
+
+function thumbHTML(p) {
+  const sel = selectedPhotos.has(p.id);
+  const ch = chainageText(p, 'short');
+  return `<div class="photo-thumb${sel ? ' selected' : ''}" data-id="${p.id}"
+    onclick="onThumbClick('${p.id}')" oncontextmenu="event.preventDefault();toggleSelect('${p.id}')"
+    ontouchstart="thumbPressStart('${p.id}')" ontouchend="thumbPressEnd()" ontouchmove="thumbPressEnd()">
+    <img src="${p.imageData || ''}" loading="lazy" alt="">
+    <div class="select-badge">${ic('check', 14)}</div>
+    ${p.photoType === 'Hindrance' ? `<div class="type-badge">${ic('alert', 12)}</div>` : ''}
+    ${ch ? `<div class="meta-badge">${esc(ch)}</div>` : ''}
+  </div>`;
+}
+
+let pressTimer = null, pressFired = false;
+function thumbPressStart(id) {
+  pressFired = false;
+  clearTimeout(pressTimer);
+  pressTimer = setTimeout(() => { pressFired = true; toggleSelect(id); if (navigator.vibrate) navigator.vibrate(20); }, 450);
+}
+function thumbPressEnd() { clearTimeout(pressTimer); }
 
 function onThumbClick(id) {
-  if (selectedPhotos.size > 0) {
-    toggleSelect(id);
-  } else {
-    openPhotoModal(id);
-  }
-}
-
-function onThumbLongPress(e, id) {
-  e.preventDefault();
-  toggleSelect(id);
+  if (pressFired) { pressFired = false; return; }
+  if (selectedPhotos.size > 0) toggleSelect(id); else openPhotoModal(id);
 }
 
 function toggleSelect(id) {
-  if (selectedPhotos.has(id)) selectedPhotos.delete(id);
-  else selectedPhotos.add(id);
+  if (selectedPhotos.has(id)) selectedPhotos.delete(id); else selectedPhotos.add(id);
   updateSelectionUI();
   renderGallery();
 }
@@ -125,163 +225,132 @@ function clearSelection() {
 }
 
 function updateSelectionUI() {
-  const bar = document.getElementById('gallery-action-bar');
-  const lbl = document.getElementById('sel-count-lbl');
-  bar.classList.toggle('visible', selectedPhotos.size > 0);
-  lbl.textContent = `${selectedPhotos.size} selected`;
-}
-
-function filterGallery() {
-  gallerySearchText = document.getElementById('gallery-search-input').value;
-  renderGallery();
-}
-
-function clearSearch() {
-  document.getElementById('gallery-search-input').value = '';
-  gallerySearchText = '';
-  renderGallery();
-}
-
-function setTimePeriod(period, el) {
-  currentTimePeriod = period;
-  document.querySelectorAll('.time-tab').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-
-  // Show/hide activity filter row
-  const actRow = document.getElementById('gallery-activity-filter');
-  if (period === 'activity') {
-    actRow.style.display = 'flex';
-    buildGalleryActivityFilter();
-  } else {
-    actRow.style.display = 'none';
-  }
-  currentGalleryActivity = 'all';
-  renderGallery();
-}
-
-function buildGalleryActivityFilter() {
-  const row = document.getElementById('gallery-activity-filter');
-  row.innerHTML = '';
-  const all = document.createElement('button');
-  all.className = 'act-chip active';
-  all.textContent = 'All Activities';
-  all.onclick = () => { currentGalleryActivity = 'all'; setActiveChip(row, all); renderGallery(); };
-  row.appendChild(all);
-
-  ACTIVITIES.forEach(a => {
-    const c = document.createElement('button');
-    c.className = 'act-chip';
-    c.textContent = a;
-    c.onclick = () => { currentGalleryActivity = a; setActiveChip(row, c); renderGallery(); };
-    row.appendChild(c);
-  });
-}
-
-function setActiveChip(row, active) {
-  row.querySelectorAll('.act-chip').forEach(c => c.classList.remove('active'));
-  active.classList.add('active');
+  document.getElementById('gallery-action-bar').classList.toggle('visible', selectedPhotos.size > 0);
+  document.getElementById('sel-count-lbl').textContent = `${selectedPhotos.size} selected`;
 }
 
 // ============================================================
-// PHOTO MODAL
+// PHOTO VIEWER
 // ============================================================
 function openPhotoModal(id) {
-  const photo = photos.find(p => p.id === id);
-  if (!photo) return;
-  currentModalPhoto = photo;
-  document.getElementById('modal-img').src = photo.imageData;
-  document.getElementById('modal-title').textContent =
-    `${photo.activity}${photo.chainage ? ' — Ch ' + photo.chainage : ''} — ${photo.displayDate}`;
-
-  const metaGrid = document.getElementById('modal-meta-grid');
-  const loc = photo.location;
-  metaGrid.innerHTML = `
-    <div class="meta-item"><div class="meta-item-label">Date</div><div class="meta-item-value">${photo.displayDate}</div></div>
-    <div class="meta-item"><div class="meta-item-label">Time</div><div class="meta-item-value">${photo.displayTime}</div></div>
-    <div class="meta-item"><div class="meta-item-label">Activity</div><div class="meta-item-value">${photo.activity}</div></div>
-    <div class="meta-item"><div class="meta-item-label">Chainage</div><div class="meta-item-value">${photo.chainage || '-'}</div></div>
-    <div class="meta-item"><div class="meta-item-label">Side</div><div class="meta-item-value">${photo.side || '-'}</div></div>
-    <div class="meta-item"><div class="meta-item-label">Project</div><div class="meta-item-value">${photo.projectName}</div></div>
-    <div class="meta-item"><div class="meta-item-label">Metadata on Photo</div><div class="meta-item-value">${photo.hasMetadata ? '✅ Yes' : '❌ No'}</div></div>
-    ${loc ? `<div class="meta-item full"><div class="meta-item-label">GPS Location</div><div class="meta-item-value">${loc.lat}°N, ${loc.lng}°E (±${loc.accuracy}m)</div></div>` : ''}
-    ${photo.remarks ? `<div class="meta-item full"><div class="meta-item-label">Remarks</div><div class="meta-item-value">${photo.remarks}</div></div>` : ''}
-  `;
+  const p = photos.find(x => x.id === id);
+  if (!p) return;
+  currentModalPhoto = p;
+  document.getElementById('modal-img').src = p.imageData || '';
+  document.getElementById('modal-title').textContent = [p.activity, chainageText(p, 'short')].filter(Boolean).join(' · ');
+  const loc = p.location;
+  const item = (label, value, full) => value ? `<div class="meta-item${full ? ' full' : ''}"><div class="meta-item-label">${label}</div><div class="meta-item-value">${esc(value)}</div></div>` : '';
+  document.getElementById('modal-meta-grid').innerHTML =
+    item('Date', `${p.displayDate}, ${p.displayTime}`) +
+    item('Chainage', chainageText(p) || '—') +
+    item('Activity', p.activity) +
+    item('Side', p.side) +
+    item('Type', p.photoType !== 'General' ? p.photoType : '') +
+    item('Engineer', p.engineer && p.engineer.name ? [p.engineer.name, p.engineer.designation].filter(Boolean).join(', ') : '') +
+    (p.fields || []).map(f => item(f.label, f.value, true)).join('') +
+    item('GPS', loc ? `${loc.lat}, ${loc.lng} (±${loc.accuracy} m)` : '', true);
+  document.getElementById('modal-desc').value = p.description || '';
+  document.getElementById('ai-caption-btn').style.display = AI.available() ? '' : 'none';
   document.getElementById('photo-modal').classList.add('visible');
 }
 
-function closePhotoModal() {
+async function closePhotoModal() {
+  const p = currentModalPhoto;
+  if (p) {
+    const desc = document.getElementById('modal-desc').value.trim();
+    if (desc !== (p.description || '')) {
+      p.description = desc;
+      p.imageData = writeExif(p.imageData, p);   // keep the file's own metadata in step
+      p.updatedAt = Date.now(); p.synced = false;
+      await DB.save(p);
+      Sync.schedule();
+      showToast('Description saved', 'success');
+    }
+  }
   document.getElementById('photo-modal').classList.remove('visible');
   currentModalPhoto = null;
 }
 
+async function aiCaption() {
+  const p = currentModalPhoto;
+  if (!p) return;
+  try {
+    showLoading('Describing the photo…', 'You can edit the text before it is saved');
+    const r = await AI.call('caption', {
+      image: await downscaleDataUrl(p.imageData, 1024),
+      activity: p.activity, chainage: chainageText(p), side: p.side, photoType: p.photoType,
+      existing: document.getElementById('modal-desc').value
+    });
+    const box = document.getElementById('modal-desc');
+    box.value = box.value ? box.value + '\n' + r.text : r.text;
+  } catch (e) {
+    showToast('Could not reach the AI service', 'danger');
+  } finally { hideLoading(); }
+}
+
 async function deletePhotoFromModal() {
   if (!currentModalPhoto) return;
-  await DB.del(currentModalPhoto.id);
-  photos = photos.filter(p => p.id !== currentModalPhoto.id);
-  closePhotoModal();
-  renderGallery();
-  updateExportCount();
-  showToast('Photo deleted', 'danger');
+  const id = currentModalPhoto.id;
+  document.getElementById('photo-modal').classList.remove('visible');
+  currentModalPhoto = null;
+  await deletePhotos([id]);
+}
+
+async function deletePhotos(ids, quiet) {
+  for (const id of ids) {
+    await DB.delPhoto(id);
+    Sync.markDeleted('photos', id);
+  }
+  photos = photos.filter(p => !ids.includes(p.id));
+  ids.forEach(id => selectedPhotos.delete(id));
+  updateSelectionUI();
+  if (currentTab === 'gallery') renderGallery();
+  updateLastThumb();
+  showToast(quiet ? 'Photo removed — take it again' : `${ids.length} photo${ids.length === 1 ? '' : 's'} deleted`, 'danger');
 }
 
 async function deleteSelected() {
-  if (selectedPhotos.size === 0) return;
-  for (const id of selectedPhotos) {
-    await DB.del(id);
-    photos = photos.filter(p => p.id !== id);
-  }
-  showToast(`${selectedPhotos.size} photos deleted`, 'danger');
-  selectedPhotos.clear();
-  updateSelectionUI();
-  renderGallery();
-  updateExportCount();
+  if (!selectedPhotos.size) return;
+  const ok = await askText(`Delete ${selectedPhotos.size} photo(s)?`, 'Type DELETE to confirm.');
+  if (ok && ok.toUpperCase() === 'DELETE') deletePhotos([...selectedPhotos]);
 }
 
 // ============================================================
-// DOWNLOAD / SHARE
+// SAVE / SHARE PHOTOS
 // ============================================================
-async function downloadPhoto(photo) {
-  if (!photo) return;
-  const ok = await saveFile(photo.imageData, photoFileName(photo), 'image/jpeg');
+async function downloadPhoto(p) {
+  if (!p) return;
+  const ok = await saveFile(p.imageData, photoFileName(p), 'image/jpeg');
   savedMessage(ok, 'Photo', 'image/jpeg');
 }
 
-async function sharePhotoList(list) {
-  if (!list.length) return;
-  // Android app: hand the files to the native share sheet
-  if (hasAndroidBridge() && typeof window.AndroidBridge.shareFiles === 'function') {
-    const payload = list.map(p => ({ name: photoFileName(p), mime: 'image/jpeg', data: p.imageData.split(',')[1] }));
-    const text = list.length === 1
-      ? [list[0].projectName, list[0].activity, siteLabel(list[0].chainage, list[0].side), list[0].remarks].filter(Boolean).join(' | ')
-      : projectName;
-    window.AndroidBridge.shareFiles(JSON.stringify(payload), text);
-    return;
+function shareText(list) {
+  if (list.length === 1) {
+    const p = list[0];
+    return [p.projectName, p.activity, chainageText(p) ? 'Ch ' + chainageText(p) : '', p.side, fieldsText(p, ', '), p.description].filter(Boolean).join(' | ');
   }
-  // Browser: Web Share API, otherwise save the files instead
-  try {
-    const files = await Promise.all(list.map(async p => {
-      const blob = await (await fetch(p.imageData)).blob();
-      return new File([blob], photoFileName(p), {type:'image/jpeg'});
-    }));
-    if (navigator.share && navigator.canShare?.({files})) {
-      await navigator.share({files, title: projectName});
-      return;
-    }
-  } catch(e) { /* fall through to saving */ }
-  for (const p of list) await downloadPhoto(p);
+  return `${currentProject.name}: ${list.length} site photos`;
 }
 
-function sharePhoto(photo) {
-  if (photo) sharePhotoList([photo]);
+function sharePhotoList(list, app = '') {
+  if (!list.length) return;
+  shareFiles(list.map(p => ({ name: photoFileName(p), mime: 'image/jpeg', data: p.imageData })), shareText(list), app);
 }
 
-function shareSelected() {
-  sharePhotoList(photos.filter(p => selectedPhotos.has(p.id)));
+function sharePhoto(p, app = '') { if (p) sharePhotoList([p], app); }
+function shareSelected() { sharePhotoList(photos.filter(p => selectedPhotos.has(p.id))); }
+
+function downscaleDataUrl(dataUrl, max) {
+  return new Promise(res => {
+    const img = new Image();
+    img.onload = () => {
+      const k = Math.min(1, max / Math.max(img.width, img.height));
+      const c = document.createElement('canvas');
+      c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      res(c.toDataURL('image/jpeg', 0.8));
+    };
+    img.onerror = () => res(dataUrl);
+    img.src = dataUrl;
+  });
 }
-
-function exportSelectedToGallery() {
-  switchTab('export');
-}
-
-function openGalleryFromCamera() { switchTab('gallery'); }
-

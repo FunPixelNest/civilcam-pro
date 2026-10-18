@@ -5,7 +5,7 @@
 5    android:versionName="1.0" >
 6
 7    <uses-sdk
-8        android:minSdkVersion="21"
+8        android:minSdkVersion="23"
 9        android:targetSdkVersion="34" />
 10
 11    <!-- Permissions -->
@@ -34,165 +34,377 @@
 21        android:maxSdkVersion="32" />
 21-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:12:9-35
 22
-23    <uses-feature
-23-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:14:5-85
-24        android:name="android.hardware.camera"
-24-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:14:19-57
-25        android:required="false" />
-25-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:14:58-82
-26    <uses-feature
-26-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:15:5-91
-27        android:name="android.hardware.location.gps"
-27-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:15:19-63
-28        android:required="false" />
-28-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:15:64-88
-29
-30    <permission
-30-->[androidx.core:core:1.12.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\97e765d7646eda9d89caa6262cf470cb\transformed\core-1.12.0\AndroidManifest.xml:22:5-24:47
-31        android:name="com.funpixelnest.civilcampro.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
-31-->[androidx.core:core:1.12.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\97e765d7646eda9d89caa6262cf470cb\transformed\core-1.12.0\AndroidManifest.xml:23:9-81
-32        android:protectionLevel="signature" />
-32-->[androidx.core:core:1.12.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\97e765d7646eda9d89caa6262cf470cb\transformed\core-1.12.0\AndroidManifest.xml:24:9-44
-33
-34    <uses-permission android:name="com.funpixelnest.civilcampro.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
-34-->[androidx.core:core:1.12.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\97e765d7646eda9d89caa6262cf470cb\transformed\core-1.12.0\AndroidManifest.xml:26:5-97
-34-->[androidx.core:core:1.12.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\97e765d7646eda9d89caa6262cf470cb\transformed\core-1.12.0\AndroidManifest.xml:26:22-94
+23    <!-- Lets "Send to WhatsApp" check whether WhatsApp / WhatsApp Business is installed -->
+24    <queries>
+24-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:15:5-18:15
+25        <package android:name="com.whatsapp" />
+25-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:16:9-48
+25-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:16:18-45
+26        <package android:name="com.whatsapp.w4b" />
+26-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:17:9-52
+26-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:17:18-49
+27    </queries>
+28
+29    <uses-feature
+29-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:20:5-85
+30        android:name="android.hardware.camera"
+30-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:20:19-57
+31        android:required="false" />
+31-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:20:58-82
+32    <uses-feature
+32-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:21:5-91
+33        android:name="android.hardware.location.gps"
+33-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:21:19-63
+34        android:required="false" />
+34-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:21:64-88
 35
-36    <application
-36-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:17:5-54:19
-37        android:allowBackup="true"
-37-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:18:9-35
-38        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
-38-->[androidx.core:core:1.12.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\97e765d7646eda9d89caa6262cf470cb\transformed\core-1.12.0\AndroidManifest.xml:28:18-86
-39        android:debuggable="true"
-40        android:extractNativeLibs="true"
-41        android:hardwareAccelerated="true"
-41-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:25:9-43
-42        android:icon="@mipmap/ic_launcher"
-42-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:19:9-43
-43        android:label="@string/app_name"
-43-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:20:9-41
-44        android:roundIcon="@mipmap/ic_launcher_round"
-44-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:21:9-54
-45        android:supportsRtl="true"
-45-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:22:9-35
-46        android:testOnly="true"
-47        android:theme="@style/Theme.CivilCamPro"
-47-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:23:9-49
-48        android:usesCleartextTraffic="true" >
-48-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:24:9-44
-49        <activity
-49-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:27:9-35:20
-50            android:name="com.funpixelnest.civilcampro.SplashActivity"
-50-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:28:13-43
-51            android:exported="true"
-51-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:29:13-36
-52            android:theme="@style/Theme.CivilCamPro.Splash" >
-52-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:30:13-60
-53            <intent-filter>
-53-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:31:13-34:29
-54                <action android:name="android.intent.action.MAIN" />
-54-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:32:17-69
-54-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:32:25-66
-55
-56                <category android:name="android.intent.category.LAUNCHER" />
-56-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:33:17-77
-56-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:33:27-74
-57            </intent-filter>
-58        </activity>
-59        <activity
-59-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:37:9-41:58
-60            android:name="com.funpixelnest.civilcampro.MainActivity"
-60-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:38:13-41
-61            android:exported="false"
-61-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:39:13-37
-62            android:screenOrientation="portrait"
-62-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:40:13-49
-63            android:windowSoftInputMode="adjustResize" />
-63-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:41:13-55
+36    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+36-->[com.google.firebase:firebase-auth:23.1.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\6f77b926edb755d2dd1f6117f2e863de\transformed\firebase-auth-23.1.0\AndroidManifest.xml:26:5-79
+36-->[com.google.firebase:firebase-auth:23.1.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\6f77b926edb755d2dd1f6117f2e863de\transformed\firebase-auth-23.1.0\AndroidManifest.xml:26:22-76
+37    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+37-->[com.google.android.recaptcha:recaptcha:18.5.1] C:\Users\Amith Personal\.gradle\caches\transforms-3\d26d599e5e2c429585de937f8bad62c4\transformed\recaptcha-18.5.1\AndroidManifest.xml:9:5-98
+37-->[com.google.android.recaptcha:recaptcha:18.5.1] C:\Users\Amith Personal\.gradle\caches\transforms-3\d26d599e5e2c429585de937f8bad62c4\transformed\recaptcha-18.5.1\AndroidManifest.xml:9:22-95
+38
+39    <permission
+39-->[androidx.core:core:1.12.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\5a74e8ca2f8664cae6c54c6b3cf5f92e\transformed\core-1.12.0\AndroidManifest.xml:22:5-24:47
+40        android:name="com.funpixelnest.civilcampro.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+40-->[androidx.core:core:1.12.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\5a74e8ca2f8664cae6c54c6b3cf5f92e\transformed\core-1.12.0\AndroidManifest.xml:23:9-81
+41        android:protectionLevel="signature" />
+41-->[androidx.core:core:1.12.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\5a74e8ca2f8664cae6c54c6b3cf5f92e\transformed\core-1.12.0\AndroidManifest.xml:24:9-44
+42
+43    <uses-permission android:name="com.funpixelnest.civilcampro.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+43-->[androidx.core:core:1.12.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\5a74e8ca2f8664cae6c54c6b3cf5f92e\transformed\core-1.12.0\AndroidManifest.xml:26:5-97
+43-->[androidx.core:core:1.12.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\5a74e8ca2f8664cae6c54c6b3cf5f92e\transformed\core-1.12.0\AndroidManifest.xml:26:22-94
+44
+45    <application
+45-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:23:5-60:19
+46        android:allowBackup="true"
+46-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:24:9-35
+47        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+47-->[androidx.core:core:1.12.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\5a74e8ca2f8664cae6c54c6b3cf5f92e\transformed\core-1.12.0\AndroidManifest.xml:28:18-86
+48        android:debuggable="true"
+49        android:extractNativeLibs="false"
+50        android:hardwareAccelerated="true"
+50-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:31:9-43
+51        android:icon="@mipmap/ic_launcher"
+51-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:25:9-43
+52        android:label="@string/app_name"
+52-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:26:9-41
+53        android:roundIcon="@mipmap/ic_launcher_round"
+53-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:27:9-54
+54        android:supportsRtl="true"
+54-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:28:9-35
+55        android:testOnly="true"
+56        android:theme="@style/Theme.CivilCamPro"
+56-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:29:9-49
+57        android:usesCleartextTraffic="true" >
+57-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:30:9-44
+58        <activity
+58-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:33:9-41:20
+59            android:name="com.funpixelnest.civilcampro.SplashActivity"
+59-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:34:13-43
+60            android:exported="true"
+60-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:35:13-36
+61            android:theme="@style/Theme.CivilCamPro.Splash" >
+61-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:36:13-60
+62            <intent-filter>
+62-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:37:13-40:29
+63                <action android:name="android.intent.action.MAIN" />
+63-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:38:17-69
+63-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:38:25-66
 64
-65        <!-- Lets the share sheet read photos the app hands over -->
-66        <provider
-67            android:name="androidx.core.content.FileProvider"
-67-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:45:13-62
-68            android:authorities="com.funpixelnest.civilcampro.fileprovider"
-68-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:46:13-64
-69            android:exported="false"
-69-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:47:13-37
-70            android:grantUriPermissions="true" >
-70-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:48:13-47
-71            <meta-data
-71-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:49:13-51:54
-72                android:name="android.support.FILE_PROVIDER_PATHS"
-72-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:50:17-67
-73                android:resource="@xml/file_paths" />
-73-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:51:17-51
-74        </provider>
+65                <category android:name="android.intent.category.LAUNCHER" />
+65-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:39:17-77
+65-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:39:27-74
+66            </intent-filter>
+67        </activity>
+68        <activity
+68-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:43:9-47:58
+69            android:name="com.funpixelnest.civilcampro.MainActivity"
+69-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:44:13-41
+70            android:exported="false"
+70-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:45:13-37
+71            android:screenOrientation="portrait"
+71-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:46:13-49
+72            android:windowSoftInputMode="adjustResize" />
+72-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:47:13-55
+73
+74        <!-- Lets the share sheet read photos the app hands over -->
 75        <provider
-75-->[androidx.emoji2:emoji2:1.2.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\ba52cbd3723cf662cdfc624d34e7809f\transformed\emoji2-1.2.0\AndroidManifest.xml:24:9-32:20
-76            android:name="androidx.startup.InitializationProvider"
-76-->[androidx.emoji2:emoji2:1.2.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\ba52cbd3723cf662cdfc624d34e7809f\transformed\emoji2-1.2.0\AndroidManifest.xml:25:13-67
-77            android:authorities="com.funpixelnest.civilcampro.androidx-startup"
-77-->[androidx.emoji2:emoji2:1.2.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\ba52cbd3723cf662cdfc624d34e7809f\transformed\emoji2-1.2.0\AndroidManifest.xml:26:13-68
-78            android:exported="false" >
-78-->[androidx.emoji2:emoji2:1.2.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\ba52cbd3723cf662cdfc624d34e7809f\transformed\emoji2-1.2.0\AndroidManifest.xml:27:13-37
-79            <meta-data
-79-->[androidx.emoji2:emoji2:1.2.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\ba52cbd3723cf662cdfc624d34e7809f\transformed\emoji2-1.2.0\AndroidManifest.xml:29:13-31:52
-80                android:name="androidx.emoji2.text.EmojiCompatInitializer"
-80-->[androidx.emoji2:emoji2:1.2.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\ba52cbd3723cf662cdfc624d34e7809f\transformed\emoji2-1.2.0\AndroidManifest.xml:30:17-75
-81                android:value="androidx.startup" />
-81-->[androidx.emoji2:emoji2:1.2.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\ba52cbd3723cf662cdfc624d34e7809f\transformed\emoji2-1.2.0\AndroidManifest.xml:31:17-49
-82            <meta-data
-82-->[androidx.lifecycle:lifecycle-process:2.6.1] C:\Users\Amith Personal\.gradle\caches\transforms-3\8af54e0bac94692eca074d1ccbe92802\transformed\lifecycle-process-2.6.1\AndroidManifest.xml:29:13-31:52
-83                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
-83-->[androidx.lifecycle:lifecycle-process:2.6.1] C:\Users\Amith Personal\.gradle\caches\transforms-3\8af54e0bac94692eca074d1ccbe92802\transformed\lifecycle-process-2.6.1\AndroidManifest.xml:30:17-78
-84                android:value="androidx.startup" />
-84-->[androidx.lifecycle:lifecycle-process:2.6.1] C:\Users\Amith Personal\.gradle\caches\transforms-3\8af54e0bac94692eca074d1ccbe92802\transformed\lifecycle-process-2.6.1\AndroidManifest.xml:31:17-49
-85            <meta-data
-85-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\ca010a0ffcbed2c7c8a10ed728d7775b\transformed\profileinstaller-1.3.0\AndroidManifest.xml:29:13-31:52
-86                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
-86-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\ca010a0ffcbed2c7c8a10ed728d7775b\transformed\profileinstaller-1.3.0\AndroidManifest.xml:30:17-85
-87                android:value="androidx.startup" />
-87-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\ca010a0ffcbed2c7c8a10ed728d7775b\transformed\profileinstaller-1.3.0\AndroidManifest.xml:31:17-49
-88        </provider>
-89
-90        <receiver
-90-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\ca010a0ffcbed2c7c8a10ed728d7775b\transformed\profileinstaller-1.3.0\AndroidManifest.xml:34:9-52:20
-91            android:name="androidx.profileinstaller.ProfileInstallReceiver"
-91-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\ca010a0ffcbed2c7c8a10ed728d7775b\transformed\profileinstaller-1.3.0\AndroidManifest.xml:35:13-76
-92            android:directBootAware="false"
-92-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\ca010a0ffcbed2c7c8a10ed728d7775b\transformed\profileinstaller-1.3.0\AndroidManifest.xml:36:13-44
-93            android:enabled="true"
-93-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\ca010a0ffcbed2c7c8a10ed728d7775b\transformed\profileinstaller-1.3.0\AndroidManifest.xml:37:13-35
-94            android:exported="true"
-94-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\ca010a0ffcbed2c7c8a10ed728d7775b\transformed\profileinstaller-1.3.0\AndroidManifest.xml:38:13-36
-95            android:permission="android.permission.DUMP" >
-95-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\ca010a0ffcbed2c7c8a10ed728d7775b\transformed\profileinstaller-1.3.0\AndroidManifest.xml:39:13-57
-96            <intent-filter>
-96-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\ca010a0ffcbed2c7c8a10ed728d7775b\transformed\profileinstaller-1.3.0\AndroidManifest.xml:40:13-42:29
-97                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
-97-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\ca010a0ffcbed2c7c8a10ed728d7775b\transformed\profileinstaller-1.3.0\AndroidManifest.xml:41:17-91
-97-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\ca010a0ffcbed2c7c8a10ed728d7775b\transformed\profileinstaller-1.3.0\AndroidManifest.xml:41:25-88
-98            </intent-filter>
-99            <intent-filter>
-99-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\ca010a0ffcbed2c7c8a10ed728d7775b\transformed\profileinstaller-1.3.0\AndroidManifest.xml:43:13-45:29
-100                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
-100-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\ca010a0ffcbed2c7c8a10ed728d7775b\transformed\profileinstaller-1.3.0\AndroidManifest.xml:44:17-85
-100-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\ca010a0ffcbed2c7c8a10ed728d7775b\transformed\profileinstaller-1.3.0\AndroidManifest.xml:44:25-82
+76            android:name="androidx.core.content.FileProvider"
+76-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:51:13-62
+77            android:authorities="com.funpixelnest.civilcampro.fileprovider"
+77-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:52:13-64
+78            android:exported="false"
+78-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:53:13-37
+79            android:grantUriPermissions="true" >
+79-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:54:13-47
+80            <meta-data
+80-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:55:13-57:54
+81                android:name="android.support.FILE_PROVIDER_PATHS"
+81-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:56:17-67
+82                android:resource="@xml/file_paths" />
+82-->C:\Users\Amith Personal\StudioProjects\civilcam-pro\app\src\main\AndroidManifest.xml:57:17-51
+83        </provider>
+84
+85        <activity
+85-->[com.google.firebase:firebase-auth:23.1.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\6f77b926edb755d2dd1f6117f2e863de\transformed\firebase-auth-23.1.0\AndroidManifest.xml:29:9-46:20
+86            android:name="com.google.firebase.auth.internal.GenericIdpActivity"
+86-->[com.google.firebase:firebase-auth:23.1.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\6f77b926edb755d2dd1f6117f2e863de\transformed\firebase-auth-23.1.0\AndroidManifest.xml:30:13-80
+87            android:excludeFromRecents="true"
+87-->[com.google.firebase:firebase-auth:23.1.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\6f77b926edb755d2dd1f6117f2e863de\transformed\firebase-auth-23.1.0\AndroidManifest.xml:31:13-46
+88            android:exported="true"
+88-->[com.google.firebase:firebase-auth:23.1.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\6f77b926edb755d2dd1f6117f2e863de\transformed\firebase-auth-23.1.0\AndroidManifest.xml:32:13-36
+89            android:launchMode="singleTask"
+89-->[com.google.firebase:firebase-auth:23.1.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\6f77b926edb755d2dd1f6117f2e863de\transformed\firebase-auth-23.1.0\AndroidManifest.xml:33:13-44
+90            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+90-->[com.google.firebase:firebase-auth:23.1.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\6f77b926edb755d2dd1f6117f2e863de\transformed\firebase-auth-23.1.0\AndroidManifest.xml:34:13-72
+91            <intent-filter>
+91-->[com.google.firebase:firebase-auth:23.1.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\6f77b926edb755d2dd1f6117f2e863de\transformed\firebase-auth-23.1.0\AndroidManifest.xml:35:13-45:29
+92                <action android:name="android.intent.action.VIEW" />
+92-->[com.google.firebase:firebase-auth:23.1.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\6f77b926edb755d2dd1f6117f2e863de\transformed\firebase-auth-23.1.0\AndroidManifest.xml:36:17-69
+92-->[com.google.firebase:firebase-auth:23.1.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\6f77b926edb755d2dd1f6117f2e863de\transformed\firebase-auth-23.1.0\AndroidManifest.xml:36:25-66
+93
+94                <category android:name="android.intent.category.DEFAULT" />
+94-->[com.google.firebase:firebase-auth:23.1.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\6f77b926edb755d2dd1f6117f2e863de\transformed\firebase-auth-23.1.0\AndroidManifest.xml:38:17-76
+94-->[com.google.firebase:firebase-auth:23.1.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\6f77b926edb755d2dd1f6117f2e863de\transformed\firebase-auth-23.1.0\AndroidManifest.xml:38:27-73
+95                <category android:name="android.intent.category.BROWSABLE" />
+95-->[com.google.firebase:firebase-auth:23.1.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\6f77b926edb755d2dd1f6117f2e863de\transformed\firebase-auth-23.1.0\AndroidManifest.xml:39:17-78
+95-->[com.google.firebase:firebase-auth:23.1.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\6f77b926edb755d2dd1f6117f2e863de\transformed\firebase-auth-23.1.0\AndroidManifest.xml:39:27-75
+96
+97                <data
+97-->[com.google.firebase:firebase-auth:23.1.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\6f77b926edb755d2dd1f6117f2e863de\transformed\firebase-auth-23.1.0\AndroidManifest.xml:41:17-44:51
+98                    android:host="firebase.auth"
+98-->[com.google.firebase:firebase-auth:23.1.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\6f77b926edb755d2dd1f6117f2e863de\transformed\firebase-auth-23.1.0\AndroidManifest.xml:42:21-49
+99                    android:path="/"
+99-->[com.google.firebase:firebase-auth:23.1.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\6f77b926edb755d2dd1f6117f2e863de\transformed\firebase-auth-23.1.0\AndroidManifest.xml:43:21-37
+100                    android:scheme="genericidp" />
+100-->[com.google.firebase:firebase-auth:23.1.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\6f77b926edb755d2dd1f6117f2e863de\transformed\firebase-auth-23.1.0\AndroidManifest.xml:44:21-48
 101            </intent-filter>
-102            <intent-filter>
-102-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\ca010a0ffcbed2c7c8a10ed728d7775b\transformed\profileinstaller-1.3.0\AndroidManifest.xml:46:13-48:29
-103                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
-103-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\ca010a0ffcbed2c7c8a10ed728d7775b\transformed\profileinstaller-1.3.0\AndroidManifest.xml:47:17-88
-103-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\ca010a0ffcbed2c7c8a10ed728d7775b\transformed\profileinstaller-1.3.0\AndroidManifest.xml:47:25-85
-104            </intent-filter>
-105            <intent-filter>
-105-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\ca010a0ffcbed2c7c8a10ed728d7775b\transformed\profileinstaller-1.3.0\AndroidManifest.xml:49:13-51:29
-106                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
-106-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\ca010a0ffcbed2c7c8a10ed728d7775b\transformed\profileinstaller-1.3.0\AndroidManifest.xml:50:17-95
-106-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\ca010a0ffcbed2c7c8a10ed728d7775b\transformed\profileinstaller-1.3.0\AndroidManifest.xml:50:25-92
-107            </intent-filter>
-108        </receiver>
-109    </application>
-110
-111</manifest>
+102        </activity>
+103        <activity
+103-->[com.google.firebase:firebase-auth:23.1.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\6f77b926edb755d2dd1f6117f2e863de\transformed\firebase-auth-23.1.0\AndroidManifest.xml:47:9-64:20
+104            android:name="com.google.firebase.auth.internal.RecaptchaActivity"
+104-->[com.google.firebase:firebase-auth:23.1.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\6f77b926edb755d2dd1f6117f2e863de\transformed\firebase-auth-23.1.0\AndroidManifest.xml:48:13-79
+105            android:excludeFromRecents="true"
+105-->[com.google.firebase:firebase-auth:23.1.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\6f77b926edb755d2dd1f6117f2e863de\transformed\firebase-auth-23.1.0\AndroidManifest.xml:49:13-46
+106            android:exported="true"
+106-->[com.google.firebase:firebase-auth:23.1.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\6f77b926edb755d2dd1f6117f2e863de\transformed\firebase-auth-23.1.0\AndroidManifest.xml:50:13-36
+107            android:launchMode="singleTask"
+107-->[com.google.firebase:firebase-auth:23.1.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\6f77b926edb755d2dd1f6117f2e863de\transformed\firebase-auth-23.1.0\AndroidManifest.xml:51:13-44
+108            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+108-->[com.google.firebase:firebase-auth:23.1.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\6f77b926edb755d2dd1f6117f2e863de\transformed\firebase-auth-23.1.0\AndroidManifest.xml:52:13-72
+109            <intent-filter>
+109-->[com.google.firebase:firebase-auth:23.1.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\6f77b926edb755d2dd1f6117f2e863de\transformed\firebase-auth-23.1.0\AndroidManifest.xml:53:13-63:29
+110                <action android:name="android.intent.action.VIEW" />
+110-->[com.google.firebase:firebase-auth:23.1.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\6f77b926edb755d2dd1f6117f2e863de\transformed\firebase-auth-23.1.0\AndroidManifest.xml:36:17-69
+110-->[com.google.firebase:firebase-auth:23.1.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\6f77b926edb755d2dd1f6117f2e863de\transformed\firebase-auth-23.1.0\AndroidManifest.xml:36:25-66
+111
+112                <category android:name="android.intent.category.DEFAULT" />
+112-->[com.google.firebase:firebase-auth:23.1.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\6f77b926edb755d2dd1f6117f2e863de\transformed\firebase-auth-23.1.0\AndroidManifest.xml:38:17-76
+112-->[com.google.firebase:firebase-auth:23.1.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\6f77b926edb755d2dd1f6117f2e863de\transformed\firebase-auth-23.1.0\AndroidManifest.xml:38:27-73
+113                <category android:name="android.intent.category.BROWSABLE" />
+113-->[com.google.firebase:firebase-auth:23.1.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\6f77b926edb755d2dd1f6117f2e863de\transformed\firebase-auth-23.1.0\AndroidManifest.xml:39:17-78
+113-->[com.google.firebase:firebase-auth:23.1.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\6f77b926edb755d2dd1f6117f2e863de\transformed\firebase-auth-23.1.0\AndroidManifest.xml:39:27-75
+114
+115                <data
+115-->[com.google.firebase:firebase-auth:23.1.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\6f77b926edb755d2dd1f6117f2e863de\transformed\firebase-auth-23.1.0\AndroidManifest.xml:41:17-44:51
+116                    android:host="firebase.auth"
+116-->[com.google.firebase:firebase-auth:23.1.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\6f77b926edb755d2dd1f6117f2e863de\transformed\firebase-auth-23.1.0\AndroidManifest.xml:42:21-49
+117                    android:path="/"
+117-->[com.google.firebase:firebase-auth:23.1.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\6f77b926edb755d2dd1f6117f2e863de\transformed\firebase-auth-23.1.0\AndroidManifest.xml:43:21-37
+118                    android:scheme="recaptcha" />
+118-->[com.google.firebase:firebase-auth:23.1.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\6f77b926edb755d2dd1f6117f2e863de\transformed\firebase-auth-23.1.0\AndroidManifest.xml:44:21-48
+119            </intent-filter>
+120        </activity>
+121
+122        <service
+122-->[com.google.firebase:firebase-auth:23.1.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\6f77b926edb755d2dd1f6117f2e863de\transformed\firebase-auth-23.1.0\AndroidManifest.xml:66:9-72:19
+123            android:name="com.google.firebase.components.ComponentDiscoveryService"
+123-->[com.google.firebase:firebase-auth:23.1.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\6f77b926edb755d2dd1f6117f2e863de\transformed\firebase-auth-23.1.0\AndroidManifest.xml:67:13-84
+124            android:directBootAware="true"
+124-->[com.google.firebase:firebase-common:21.0.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\abc5d91ec7c498278229f4cf66bec1e4\transformed\firebase-common-21.0.0\AndroidManifest.xml:32:13-43
+125            android:exported="false" >
+125-->[com.google.firebase:firebase-auth:23.1.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\6f77b926edb755d2dd1f6117f2e863de\transformed\firebase-auth-23.1.0\AndroidManifest.xml:68:13-37
+126            <meta-data
+126-->[com.google.firebase:firebase-auth:23.1.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\6f77b926edb755d2dd1f6117f2e863de\transformed\firebase-auth-23.1.0\AndroidManifest.xml:69:13-71:85
+127                android:name="com.google.firebase.components:com.google.firebase.auth.FirebaseAuthRegistrar"
+127-->[com.google.firebase:firebase-auth:23.1.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\6f77b926edb755d2dd1f6117f2e863de\transformed\firebase-auth-23.1.0\AndroidManifest.xml:70:17-109
+128                android:value="com.google.firebase.components.ComponentRegistrar" />
+128-->[com.google.firebase:firebase-auth:23.1.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\6f77b926edb755d2dd1f6117f2e863de\transformed\firebase-auth-23.1.0\AndroidManifest.xml:71:17-82
+129            <meta-data
+129-->[com.google.firebase:firebase-common-ktx:21.0.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\b8c559245457c60a6ecc986318c48ebc\transformed\firebase-common-ktx-21.0.0\AndroidManifest.xml:12:13-14:85
+130                android:name="com.google.firebase.components:com.google.firebase.ktx.FirebaseCommonLegacyRegistrar"
+130-->[com.google.firebase:firebase-common-ktx:21.0.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\b8c559245457c60a6ecc986318c48ebc\transformed\firebase-common-ktx-21.0.0\AndroidManifest.xml:13:17-116
+131                android:value="com.google.firebase.components.ComponentRegistrar" />
+131-->[com.google.firebase:firebase-common-ktx:21.0.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\b8c559245457c60a6ecc986318c48ebc\transformed\firebase-common-ktx-21.0.0\AndroidManifest.xml:14:17-82
+132            <meta-data
+132-->[com.google.firebase:firebase-common:21.0.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\abc5d91ec7c498278229f4cf66bec1e4\transformed\firebase-common-21.0.0\AndroidManifest.xml:35:13-37:85
+133                android:name="com.google.firebase.components:com.google.firebase.FirebaseCommonKtxRegistrar"
+133-->[com.google.firebase:firebase-common:21.0.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\abc5d91ec7c498278229f4cf66bec1e4\transformed\firebase-common-21.0.0\AndroidManifest.xml:36:17-109
+134                android:value="com.google.firebase.components.ComponentRegistrar" />
+134-->[com.google.firebase:firebase-common:21.0.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\abc5d91ec7c498278229f4cf66bec1e4\transformed\firebase-common-21.0.0\AndroidManifest.xml:37:17-82
+135        </service>
+136        <service
+136-->[androidx.credentials:credentials-play-services-auth:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\7535767faff77497e089eca649fc3d20\transformed\credentials-play-services-auth-1.3.0\AndroidManifest.xml:24:9-32:19
+137            android:name="androidx.credentials.playservices.CredentialProviderMetadataHolder"
+137-->[androidx.credentials:credentials-play-services-auth:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\7535767faff77497e089eca649fc3d20\transformed\credentials-play-services-auth-1.3.0\AndroidManifest.xml:25:13-94
+138            android:enabled="true"
+138-->[androidx.credentials:credentials-play-services-auth:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\7535767faff77497e089eca649fc3d20\transformed\credentials-play-services-auth-1.3.0\AndroidManifest.xml:26:13-35
+139            android:exported="false" >
+139-->[androidx.credentials:credentials-play-services-auth:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\7535767faff77497e089eca649fc3d20\transformed\credentials-play-services-auth-1.3.0\AndroidManifest.xml:27:13-37
+140            <meta-data
+140-->[androidx.credentials:credentials-play-services-auth:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\7535767faff77497e089eca649fc3d20\transformed\credentials-play-services-auth-1.3.0\AndroidManifest.xml:29:13-31:104
+141                android:name="androidx.credentials.CREDENTIAL_PROVIDER_KEY"
+141-->[androidx.credentials:credentials-play-services-auth:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\7535767faff77497e089eca649fc3d20\transformed\credentials-play-services-auth-1.3.0\AndroidManifest.xml:30:17-76
+142                android:value="androidx.credentials.playservices.CredentialProviderPlayServicesImpl" />
+142-->[androidx.credentials:credentials-play-services-auth:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\7535767faff77497e089eca649fc3d20\transformed\credentials-play-services-auth-1.3.0\AndroidManifest.xml:31:17-101
+143        </service>
+144
+145        <activity
+145-->[androidx.credentials:credentials-play-services-auth:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\7535767faff77497e089eca649fc3d20\transformed\credentials-play-services-auth-1.3.0\AndroidManifest.xml:34:9-41:20
+146            android:name="androidx.credentials.playservices.HiddenActivity"
+146-->[androidx.credentials:credentials-play-services-auth:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\7535767faff77497e089eca649fc3d20\transformed\credentials-play-services-auth-1.3.0\AndroidManifest.xml:35:13-76
+147            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
+147-->[androidx.credentials:credentials-play-services-auth:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\7535767faff77497e089eca649fc3d20\transformed\credentials-play-services-auth-1.3.0\AndroidManifest.xml:36:13-87
+148            android:enabled="true"
+148-->[androidx.credentials:credentials-play-services-auth:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\7535767faff77497e089eca649fc3d20\transformed\credentials-play-services-auth-1.3.0\AndroidManifest.xml:37:13-35
+149            android:exported="false"
+149-->[androidx.credentials:credentials-play-services-auth:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\7535767faff77497e089eca649fc3d20\transformed\credentials-play-services-auth-1.3.0\AndroidManifest.xml:38:13-37
+150            android:fitsSystemWindows="true"
+150-->[androidx.credentials:credentials-play-services-auth:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\7535767faff77497e089eca649fc3d20\transformed\credentials-play-services-auth-1.3.0\AndroidManifest.xml:39:13-45
+151            android:theme="@style/Theme.Hidden" >
+151-->[androidx.credentials:credentials-play-services-auth:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\7535767faff77497e089eca649fc3d20\transformed\credentials-play-services-auth-1.3.0\AndroidManifest.xml:40:13-48
+152        </activity>
+153        <activity
+153-->[com.google.android.gms:play-services-auth:21.1.1] C:\Users\Amith Personal\.gradle\caches\transforms-3\836d13454576b92defb36da219fe1dfb\transformed\play-services-auth-21.1.1\AndroidManifest.xml:23:9-27:75
+154            android:name="com.google.android.gms.auth.api.signin.internal.SignInHubActivity"
+154-->[com.google.android.gms:play-services-auth:21.1.1] C:\Users\Amith Personal\.gradle\caches\transforms-3\836d13454576b92defb36da219fe1dfb\transformed\play-services-auth-21.1.1\AndroidManifest.xml:24:13-93
+155            android:excludeFromRecents="true"
+155-->[com.google.android.gms:play-services-auth:21.1.1] C:\Users\Amith Personal\.gradle\caches\transforms-3\836d13454576b92defb36da219fe1dfb\transformed\play-services-auth-21.1.1\AndroidManifest.xml:25:13-46
+156            android:exported="false"
+156-->[com.google.android.gms:play-services-auth:21.1.1] C:\Users\Amith Personal\.gradle\caches\transforms-3\836d13454576b92defb36da219fe1dfb\transformed\play-services-auth-21.1.1\AndroidManifest.xml:26:13-37
+157            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+157-->[com.google.android.gms:play-services-auth:21.1.1] C:\Users\Amith Personal\.gradle\caches\transforms-3\836d13454576b92defb36da219fe1dfb\transformed\play-services-auth-21.1.1\AndroidManifest.xml:27:13-72
+158        <!--
+159            Service handling Google Sign-In user revocation. For apps that do not integrate with
+160            Google Sign-In, this service will never be started.
+161        -->
+162        <service
+162-->[com.google.android.gms:play-services-auth:21.1.1] C:\Users\Amith Personal\.gradle\caches\transforms-3\836d13454576b92defb36da219fe1dfb\transformed\play-services-auth-21.1.1\AndroidManifest.xml:33:9-37:51
+163            android:name="com.google.android.gms.auth.api.signin.RevocationBoundService"
+163-->[com.google.android.gms:play-services-auth:21.1.1] C:\Users\Amith Personal\.gradle\caches\transforms-3\836d13454576b92defb36da219fe1dfb\transformed\play-services-auth-21.1.1\AndroidManifest.xml:34:13-89
+164            android:exported="true"
+164-->[com.google.android.gms:play-services-auth:21.1.1] C:\Users\Amith Personal\.gradle\caches\transforms-3\836d13454576b92defb36da219fe1dfb\transformed\play-services-auth-21.1.1\AndroidManifest.xml:35:13-36
+165            android:permission="com.google.android.gms.auth.api.signin.permission.REVOCATION_NOTIFICATION"
+165-->[com.google.android.gms:play-services-auth:21.1.1] C:\Users\Amith Personal\.gradle\caches\transforms-3\836d13454576b92defb36da219fe1dfb\transformed\play-services-auth-21.1.1\AndroidManifest.xml:36:13-107
+166            android:visibleToInstantApps="true" />
+166-->[com.google.android.gms:play-services-auth:21.1.1] C:\Users\Amith Personal\.gradle\caches\transforms-3\836d13454576b92defb36da219fe1dfb\transformed\play-services-auth-21.1.1\AndroidManifest.xml:37:13-48
+167
+168        <provider
+168-->[com.google.firebase:firebase-common:21.0.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\abc5d91ec7c498278229f4cf66bec1e4\transformed\firebase-common-21.0.0\AndroidManifest.xml:23:9-28:39
+169            android:name="com.google.firebase.provider.FirebaseInitProvider"
+169-->[com.google.firebase:firebase-common:21.0.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\abc5d91ec7c498278229f4cf66bec1e4\transformed\firebase-common-21.0.0\AndroidManifest.xml:24:13-77
+170            android:authorities="com.funpixelnest.civilcampro.firebaseinitprovider"
+170-->[com.google.firebase:firebase-common:21.0.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\abc5d91ec7c498278229f4cf66bec1e4\transformed\firebase-common-21.0.0\AndroidManifest.xml:25:13-72
+171            android:directBootAware="true"
+171-->[com.google.firebase:firebase-common:21.0.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\abc5d91ec7c498278229f4cf66bec1e4\transformed\firebase-common-21.0.0\AndroidManifest.xml:26:13-43
+172            android:exported="false"
+172-->[com.google.firebase:firebase-common:21.0.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\abc5d91ec7c498278229f4cf66bec1e4\transformed\firebase-common-21.0.0\AndroidManifest.xml:27:13-37
+173            android:initOrder="100" />
+173-->[com.google.firebase:firebase-common:21.0.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\abc5d91ec7c498278229f4cf66bec1e4\transformed\firebase-common-21.0.0\AndroidManifest.xml:28:13-36
+174
+175        <activity
+175-->[com.google.android.gms:play-services-base:18.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\ded5809662d9914887a1b1d6c51086d3\transformed\play-services-base-18.3.0\AndroidManifest.xml:20:9-22:45
+176            android:name="com.google.android.gms.common.api.GoogleApiActivity"
+176-->[com.google.android.gms:play-services-base:18.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\ded5809662d9914887a1b1d6c51086d3\transformed\play-services-base-18.3.0\AndroidManifest.xml:20:19-85
+177            android:exported="false"
+177-->[com.google.android.gms:play-services-base:18.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\ded5809662d9914887a1b1d6c51086d3\transformed\play-services-base-18.3.0\AndroidManifest.xml:22:19-43
+178            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+178-->[com.google.android.gms:play-services-base:18.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\ded5809662d9914887a1b1d6c51086d3\transformed\play-services-base-18.3.0\AndroidManifest.xml:21:19-78
+179
+180        <meta-data
+180-->[com.google.android.gms:play-services-basement:18.4.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\6c109bd3c9f228881040030a27384774\transformed\play-services-basement-18.4.0\AndroidManifest.xml:6:9-122
+181            android:name="com.google.android.gms.version"
+181-->[com.google.android.gms:play-services-basement:18.4.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\6c109bd3c9f228881040030a27384774\transformed\play-services-basement-18.4.0\AndroidManifest.xml:6:20-65
+182            android:value="@integer/google_play_services_version" />
+182-->[com.google.android.gms:play-services-basement:18.4.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\6c109bd3c9f228881040030a27384774\transformed\play-services-basement-18.4.0\AndroidManifest.xml:6:66-119
+183
+184        <provider
+184-->[androidx.emoji2:emoji2:1.2.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\85a45fd187f1c2b8e612b22eff08aeb9\transformed\emoji2-1.2.0\AndroidManifest.xml:24:9-32:20
+185            android:name="androidx.startup.InitializationProvider"
+185-->[androidx.emoji2:emoji2:1.2.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\85a45fd187f1c2b8e612b22eff08aeb9\transformed\emoji2-1.2.0\AndroidManifest.xml:25:13-67
+186            android:authorities="com.funpixelnest.civilcampro.androidx-startup"
+186-->[androidx.emoji2:emoji2:1.2.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\85a45fd187f1c2b8e612b22eff08aeb9\transformed\emoji2-1.2.0\AndroidManifest.xml:26:13-68
+187            android:exported="false" >
+187-->[androidx.emoji2:emoji2:1.2.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\85a45fd187f1c2b8e612b22eff08aeb9\transformed\emoji2-1.2.0\AndroidManifest.xml:27:13-37
+188            <meta-data
+188-->[androidx.emoji2:emoji2:1.2.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\85a45fd187f1c2b8e612b22eff08aeb9\transformed\emoji2-1.2.0\AndroidManifest.xml:29:13-31:52
+189                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+189-->[androidx.emoji2:emoji2:1.2.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\85a45fd187f1c2b8e612b22eff08aeb9\transformed\emoji2-1.2.0\AndroidManifest.xml:30:17-75
+190                android:value="androidx.startup" />
+190-->[androidx.emoji2:emoji2:1.2.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\85a45fd187f1c2b8e612b22eff08aeb9\transformed\emoji2-1.2.0\AndroidManifest.xml:31:17-49
+191            <meta-data
+191-->[androidx.lifecycle:lifecycle-process:2.6.1] C:\Users\Amith Personal\.gradle\caches\transforms-3\2c7fb3864f2ea8e079decfd3f1c3ec07\transformed\lifecycle-process-2.6.1\AndroidManifest.xml:29:13-31:52
+192                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+192-->[androidx.lifecycle:lifecycle-process:2.6.1] C:\Users\Amith Personal\.gradle\caches\transforms-3\2c7fb3864f2ea8e079decfd3f1c3ec07\transformed\lifecycle-process-2.6.1\AndroidManifest.xml:30:17-78
+193                android:value="androidx.startup" />
+193-->[androidx.lifecycle:lifecycle-process:2.6.1] C:\Users\Amith Personal\.gradle\caches\transforms-3\2c7fb3864f2ea8e079decfd3f1c3ec07\transformed\lifecycle-process-2.6.1\AndroidManifest.xml:31:17-49
+194            <meta-data
+194-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\b524a6649bdd75105d9874971f702185\transformed\profileinstaller-1.3.0\AndroidManifest.xml:29:13-31:52
+195                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+195-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\b524a6649bdd75105d9874971f702185\transformed\profileinstaller-1.3.0\AndroidManifest.xml:30:17-85
+196                android:value="androidx.startup" />
+196-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\b524a6649bdd75105d9874971f702185\transformed\profileinstaller-1.3.0\AndroidManifest.xml:31:17-49
+197        </provider>
+198
+199        <receiver
+199-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\b524a6649bdd75105d9874971f702185\transformed\profileinstaller-1.3.0\AndroidManifest.xml:34:9-52:20
+200            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+200-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\b524a6649bdd75105d9874971f702185\transformed\profileinstaller-1.3.0\AndroidManifest.xml:35:13-76
+201            android:directBootAware="false"
+201-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\b524a6649bdd75105d9874971f702185\transformed\profileinstaller-1.3.0\AndroidManifest.xml:36:13-44
+202            android:enabled="true"
+202-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\b524a6649bdd75105d9874971f702185\transformed\profileinstaller-1.3.0\AndroidManifest.xml:37:13-35
+203            android:exported="true"
+203-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\b524a6649bdd75105d9874971f702185\transformed\profileinstaller-1.3.0\AndroidManifest.xml:38:13-36
+204            android:permission="android.permission.DUMP" >
+204-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\b524a6649bdd75105d9874971f702185\transformed\profileinstaller-1.3.0\AndroidManifest.xml:39:13-57
+205            <intent-filter>
+205-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\b524a6649bdd75105d9874971f702185\transformed\profileinstaller-1.3.0\AndroidManifest.xml:40:13-42:29
+206                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+206-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\b524a6649bdd75105d9874971f702185\transformed\profileinstaller-1.3.0\AndroidManifest.xml:41:17-91
+206-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\b524a6649bdd75105d9874971f702185\transformed\profileinstaller-1.3.0\AndroidManifest.xml:41:25-88
+207            </intent-filter>
+208            <intent-filter>
+208-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\b524a6649bdd75105d9874971f702185\transformed\profileinstaller-1.3.0\AndroidManifest.xml:43:13-45:29
+209                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+209-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\b524a6649bdd75105d9874971f702185\transformed\profileinstaller-1.3.0\AndroidManifest.xml:44:17-85
+209-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\b524a6649bdd75105d9874971f702185\transformed\profileinstaller-1.3.0\AndroidManifest.xml:44:25-82
+210            </intent-filter>
+211            <intent-filter>
+211-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\b524a6649bdd75105d9874971f702185\transformed\profileinstaller-1.3.0\AndroidManifest.xml:46:13-48:29
+212                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+212-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\b524a6649bdd75105d9874971f702185\transformed\profileinstaller-1.3.0\AndroidManifest.xml:47:17-88
+212-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\b524a6649bdd75105d9874971f702185\transformed\profileinstaller-1.3.0\AndroidManifest.xml:47:25-85
+213            </intent-filter>
+214            <intent-filter>
+214-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\b524a6649bdd75105d9874971f702185\transformed\profileinstaller-1.3.0\AndroidManifest.xml:49:13-51:29
+215                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+215-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\b524a6649bdd75105d9874971f702185\transformed\profileinstaller-1.3.0\AndroidManifest.xml:50:17-95
+215-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Amith Personal\.gradle\caches\transforms-3\b524a6649bdd75105d9874971f702185\transformed\profileinstaller-1.3.0\AndroidManifest.xml:50:25-92
+216            </intent-filter>
+217        </receiver> <!-- The activities will be merged into the manifest of the hosting app. -->
+218        <activity
+218-->[com.google.android.play:core-common:2.0.3] C:\Users\Amith Personal\.gradle\caches\transforms-3\19042520fe2f33e8b6295f00e78d3b16\transformed\core-common-2.0.3\AndroidManifest.xml:14:9-18:65
+219            android:name="com.google.android.play.core.common.PlayCoreDialogWrapperActivity"
+219-->[com.google.android.play:core-common:2.0.3] C:\Users\Amith Personal\.gradle\caches\transforms-3\19042520fe2f33e8b6295f00e78d3b16\transformed\core-common-2.0.3\AndroidManifest.xml:15:13-93
+220            android:exported="false"
+220-->[com.google.android.play:core-common:2.0.3] C:\Users\Amith Personal\.gradle\caches\transforms-3\19042520fe2f33e8b6295f00e78d3b16\transformed\core-common-2.0.3\AndroidManifest.xml:16:13-37
+221            android:stateNotNeeded="true"
+221-->[com.google.android.play:core-common:2.0.3] C:\Users\Amith Personal\.gradle\caches\transforms-3\19042520fe2f33e8b6295f00e78d3b16\transformed\core-common-2.0.3\AndroidManifest.xml:17:13-42
+222            android:theme="@style/Theme.PlayCore.Transparent" />
+222-->[com.google.android.play:core-common:2.0.3] C:\Users\Amith Personal\.gradle\caches\transforms-3\19042520fe2f33e8b6295f00e78d3b16\transformed\core-common-2.0.3\AndroidManifest.xml:18:13-62
+223    </application>
+224
+225</manifest>
