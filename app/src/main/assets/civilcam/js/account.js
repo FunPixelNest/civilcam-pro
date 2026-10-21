@@ -333,7 +333,7 @@ const Sync = (() => {
       if (profile.email) {
         if (await pullTeams(token)) changed = true;
       }
-      if (changed) {
+      if (changed || toSend.length) {
         photos.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
         refreshAfterSync();
       }
@@ -350,6 +350,8 @@ const Sync = (() => {
       running = false;
       progress = null;
       updateDot();
+      // Photos uploaded in this run lose their "not backed up" badge straight away
+      try { if (currentProject && currentTab === 'gallery') renderGallery(); } catch (e) {}
     }
   }
 

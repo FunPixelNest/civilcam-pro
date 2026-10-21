@@ -321,6 +321,7 @@ function openAccountSheet() {
   document.getElementById('ac-company').value = profile.company || '';
   document.getElementById('ac-sync').style.display = signedIn ? '' : 'none';
   document.getElementById('ac-signout').style.display = signedIn ? '' : 'none';
+  const del = document.getElementById('ac-delete'); if (del) del.style.display = signedIn ? '' : 'none';
   document.getElementById('ac-signin').style.display = !signedIn && Account.available() ? '' : 'none';
   refreshDriveRow();
   openSheet('account-sheet');

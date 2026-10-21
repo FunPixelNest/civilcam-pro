@@ -50,6 +50,9 @@ class WebAppBridge(
     @JavascriptInterface
     fun signOut() = auth.signOut()
 
+    @JavascriptInterface
+    fun deleteAccount() = auth.deleteAccount()
+
     // ----- Google Drive backup (see AuthHelper.getDriveToken) -----
     @JavascriptInterface
     fun getDriveToken(requestId: String, interactive: Boolean) = auth.getDriveToken(requestId, interactive)

@@ -17,8 +17,8 @@ android {
         applicationId "com.funpixelnest.civilcampro"
         minSdk 24       // Android 7.0+, needed by the Google Mobile Ads SDK
         targetSdk 36    // Android 16: required by Google Play for new apps and updates
-        versionCode 2
-        versionName "1.1"
+        versionCode 3
+        versionName "1.2"
     }
 
     buildTypes {

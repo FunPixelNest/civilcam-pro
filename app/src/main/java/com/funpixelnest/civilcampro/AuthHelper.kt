@@ -213,6 +213,30 @@ class AuthHelper(private val activity: AppCompatActivity, private val webView: W
         }
     }
 
+    /**
+     * Deletes the Firebase account (the page deletes the cloud data first).
+     * Google asks for a recent sign-in for this; then the page is told "relogin".
+     */
+    fun deleteAccount() {
+        activity.runOnUiThread {
+            val user = auth?.currentUser
+            if (user == null) {
+                callPage("window.onNativeAccountDeleted && window.onNativeAccountDeleted(false, 'Not signed in')")
+                return@runOnUiThread
+            }
+            user.delete()
+                .addOnSuccessListener {
+                    signOut()
+                    drivePrefs.edit().clear().apply()
+                    callPage("window.onNativeAccountDeleted && window.onNativeAccountDeleted(true, null)")
+                }
+                .addOnFailureListener { e ->
+                    val msg = if (e is com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException) "relogin" else (e.message ?: "Could not delete the account")
+                    callPage("window.onNativeAccountDeleted && window.onNativeAccountDeleted(false, ${JSONObject.quote(msg)})")
+                }
+        }
+    }
+
     // ----- replies to the page -----
     private fun report(user: FirebaseUser?, label: String) {
         if (user == null) return reportError("No account returned")
