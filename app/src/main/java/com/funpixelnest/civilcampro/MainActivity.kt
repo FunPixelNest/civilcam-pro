@@ -8,15 +8,22 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.webkit.*
+import android.widget.FrameLayout
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var webView: WebView
     private lateinit var auth: AuthHelper
+    lateinit var billing: BillingHelper
+    lateinit var ads: AdsManager
+    lateinit var importer: PhotoImporter
 
     private val requiredPermissions: Array<String>
         get() {
@@ -48,8 +55,35 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        applySystemBarInsets()
         setupWebView()
+        setupBack()
         checkAndRequestPermissions()
+        billing.start()
+        ads.start()
+    }
+
+    // Android 15+ draws apps edge to edge: keep the page clear of the status bar, the
+    // navigation bar and the keyboard.
+    private fun applySystemBarInsets() {
+        val root = findViewById<View>(R.id.root)
+        ViewCompat.setOnApplyWindowInsetsListener(root) { v, insets ->
+            val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout())
+            val ime = insets.getInsets(WindowInsetsCompat.Type.ime())
+            v.setPadding(bars.left, bars.top, bars.right, maxOf(bars.bottom, ime.bottom))
+            WindowInsetsCompat.CONSUMED
+        }
+    }
+
+    // The page closes its own sheets / goes up a screen first; only then does Back leave the app
+    private fun setupBack() {
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                webView.evaluateJavascript("(window.onAndroidBack && window.onAndroidBack()) ? 'y' : 'n'") { result ->
+                    if (result?.contains("y") != true) finish()
+                }
+            }
+        })
     }
 
     private fun setupWebView() {
@@ -75,7 +109,11 @@ class MainActivity : AppCompatActivity() {
 
         // Native bridge used by the page for saving and sharing files
         auth = AuthHelper(this, webView)
-        webView.addJavascriptInterface(WebAppBridge(this, auth), "AndroidBridge")
+        billing = BillingHelper(this, webView)
+        ads = AdsManager(this, findViewById<FrameLayout>(R.id.adContainer), webView) { billing.isPro }
+        importer = PhotoImporter(this, webView)
+        billing.onProChanged = { pro -> ads.onProChanged(pro) }
+        webView.addJavascriptInterface(WebAppBridge(this, auth, billing, ads, importer), "AndroidBridge")
 
         webView.webChromeClient = object : WebChromeClient() {
             override fun onPermissionRequest(request: PermissionRequest) {
@@ -128,12 +166,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // The page closes its own sheets / goes up a screen first; only then does Back leave the app
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
-        webView.evaluateJavascript("(window.onAndroidBack && window.onAndroidBack()) ? 'y' : 'n'") { result ->
-            if (result?.contains("y") != true) finish()
-        }
+    override fun onStart() {
+        super.onStart()
+        ads.onAppForeground()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        ads.onAppBackground()
     }
 
     override fun onPause() {
@@ -144,9 +184,12 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         webView.onResume()
+        billing.refreshPurchases()
     }
 
     override fun onDestroy() {
+        ads.destroy()
+        billing.end()
         webView.destroy()
         super.onDestroy()
     }

@@ -4,6 +4,8 @@
 /.idea
 .DS_Store
 /build
+# Android Studio build output (APK, intermediates) for the app module
+app/build/
 /captures
 .externalNativeBuild
 .cxx

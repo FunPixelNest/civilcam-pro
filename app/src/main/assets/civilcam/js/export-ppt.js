@@ -41,6 +41,7 @@ async function buildPPT(slidesPages, imgs, meta, opts) {
     s.addText(meta.title, { x: M, y: 0.52, w: SW - 2 * M, h: 0.26, fontSize: 10.5, color: '3C4858', align: 'center', valign: 'middle', fontFace: 'Calibri' });
     s.addShape(pptx.ShapeType.line, { x: M, y: 0.84, w: SW - 2 * M, h: 0, line: { color: RC.navy, width: 2 } });
     s.addText(meta.preparedBy ? 'Prepared by: ' + meta.preparedBy : '', { x: M, y: SH - 0.34, w: 5, h: 0.24, fontSize: 8.5, color: RC.muted, fontFace: 'Calibri' });
+    if (meta.brand) s.addText(meta.brand, { x: SW / 2 - 2.5, y: SH - 0.34, w: 5, h: 0.24, fontSize: 7.5, color: RC.muted, align: 'center', fontFace: 'Calibri' });
     s.addText(`Slide ${si + 1} of ${total}`, { x: SW - M - 3, y: SH - 0.34, w: 3, h: 0.24, fontSize: 8.5, color: RC.muted, align: 'right', fontFace: 'Calibri' });
 
     let top = 1.0;

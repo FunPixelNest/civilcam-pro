@@ -5,7 +5,9 @@ const FORMATS = {
   pdf: { name: 'PDF', ext: 'pdf', mime: 'application/pdf', note: 'For submission' },
   word: { name: 'Word', ext: 'docx', mime: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', note: 'Editable' },
   excel: { name: 'Excel', ext: 'xlsx', mime: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', note: 'Photo register' },
-  ppt: { name: 'PowerPoint', ext: 'pptx', mime: 'application/vnd.openxmlformats-officedocument.presentationml.presentation', note: 'For meetings' }
+  ppt: { name: 'PowerPoint', ext: 'pptx', mime: 'application/vnd.openxmlformats-officedocument.presentationml.presentation', note: 'For meetings' },
+  html: { name: 'Client view', ext: 'html', mime: 'text/html', note: 'Any browser, no app' },
+  kml: { name: 'Google Earth', ext: 'kml', mime: 'application/vnd.google-earth.kml+xml', note: 'Photo spots on a map' }
 };
 
 const exportState = {
@@ -60,14 +62,16 @@ function renderExportScreen() {
   if (!prepEl.value) prepEl.value = [profile.name, profile.designation].filter(Boolean).join(', ');
 
   // Layouts
-  const excel = exportState.format === 'excel';
+  const excel = exportState.format === 'excel', web = exportState.format === 'html' || exportState.format === 'kml';
   document.getElementById('layout-grid').innerHTML = Object.entries(LAYOUTS).map(([k, L]) => `
-    <button class="layout-card ${exportState.layout === k ? 'active' : ''} ${excel ? 'dim' : ''}" onclick="exportState.layout='${k}';saveJSON('exportLayout','${k}');renderExportScreen()">
+    <button class="layout-card ${exportState.layout === k ? 'active' : ''} ${excel || web ? 'dim' : ''}" onclick="exportState.layout='${k}';saveJSON('exportLayout','${k}');renderExportScreen()">
       <div class="lc-preview lc-${k}">${layoutPreviewHTML(k)}</div>
       <div class="lc-name">${L.name}</div>
       <div class="lc-desc">${L.desc}</div>
     </button>`).join('') +
-    (excel ? `<div class="note full">Excel always uses the photo register: S.No, a large photo cell, and the description as one sentence.</div>` : '');
+    (excel ? `<div class="note full">Excel always uses the photo register: S.No, a large photo cell, and the description as one sentence.</div>` : '') +
+    (exportState.format === 'kml' ? `<div class="note full">Google Earth file: one pin per photo that has GPS, grouped by date, with its details. Opens in Google Earth and can be added to Google My Maps. Photos without GPS are left out.</div>` : '') +
+    (exportState.format === 'html' ? `<div class="note full">The client view has its own layout: search, activity filters, a chainage strip to drag, and a full-screen photo viewer. Send the file on WhatsApp or e-mail; it opens in any browser.</div>` : '');
 
   // Caption options
   document.getElementById('caption-toggles').innerHTML =
@@ -86,7 +90,8 @@ function renderExportScreen() {
 
   const btn = document.getElementById('export-generate-btn');
   btn.disabled = list.length === 0;
-  btn.innerHTML = ic('file') + `Create ${FORMATS[exportState.format].name} report`;
+  btn.innerHTML = ic('file') + (exportState.format === 'html' ? 'Create client view' : exportState.format === 'kml' ? 'Create Google Earth file' : `Create ${FORMATS[exportState.format].name} report`);
+  if (typeof renderBrandSection === 'function') renderBrandSection();
 }
 
 function layoutPreviewHTML(k) {
@@ -102,27 +107,32 @@ function layoutPreviewHTML(k) {
 // CREATE
 // ============================================================
 async function generateExport(format = exportState.format) {
-  const list = exportPhotos();
+  let list = exportPhotos();
   if (!list.length) { showToast('No photos to put in the report', 'danger'); return; }
+  // Colleagues' photos are previews on this phone: fetch the full ones for the report
+  if (format !== 'kml') list = await fullImages(list, 'Getting full photos for the report…');
   const F = FORMATS[format];
   const layout = exportState.layout;
   const meta = {
     fullName: currentProject.fullName || currentProject.name,
     title: document.getElementById('report-heading').value.trim() || defaultReportTitle(list),
     preparedBy: document.getElementById('report-prepared-by').value.trim(),
-    layout
+    layout,
+    brand: reportBrandLine()
   };
   const opts = Object.assign({}, exportState.caption);
   showLoading(`Creating ${F.name} report…`, `Preparing ${list.length} photos`);
   try {
     await new Promise(r => setTimeout(r, 50));
-    const maxPx = format === 'excel' ? 800 : { A: 1600, B: 1400, C: 1100, D: 900, E: 1100 }[layout];
-    const imgs = await loadReportImages(list, maxPx, (n, t) => setLoadingSub(`Preparing photo ${n} of ${t}`));
+    const maxPx = format === 'excel' ? 800 : format === 'html' ? 1200 : { A: 1600, B: 1400, C: 1100, D: 900, E: 1100 }[layout];
+    const imgs = format === 'kml' ? new Map() : await loadReportImages(list, maxPx, (n, t) => setLoadingSub(`Preparing photo ${n} of ${t}`));
     setLoadingSub('Laying out pages');
     let blob;
     if (format === 'pdf') blob = await buildPDF(paginate(list, layout, currentProject), imgs, meta, opts);
     else if (format === 'word') blob = await buildWord(paginate(list, layout, currentProject), imgs, meta, opts);
     else if (format === 'ppt') blob = await buildPPT(paginateSlides(list, layout, currentProject), imgs, meta, opts);
+    else if (format === 'html') blob = buildClientView(list, imgs, meta, opts);
+    else if (format === 'kml') blob = buildKML(list, meta);
     else {
       const sorted = layout === 'E'
         ? list.slice().sort((a, b) => (photoChMid(a) ?? 1e12) - (photoChMid(b) ?? 1e12) || new Date(a.timestamp) - new Date(b.timestamp))
@@ -133,8 +143,11 @@ async function generateExport(format = exportState.format) {
     setLoadingSub('Saving');
     const uri = await saveFile(blob, name, F.mime);
     exportState.last = { blob, name, mime: F.mime, uri, format, count: list.length };
+    exportState.noBrandOnce = false;
     hideLoading();
+    await adBreak('report');           // free version: an ad between finishing the report and showing it
     showResultSheet();
+    renderExportScreen();
   } catch (e) {
     console.error('Export failed', e);
     hideLoading();
@@ -173,4 +186,45 @@ async function saveResultAgain() {
   if (!r) return;
   const uri = await saveFile(r.blob, r.name, r.mime);
   savedMessage(uri, FORMATS[r.format].name + ' report', r.mime);
+}
+
+
+// ============================================================
+// GOOGLE EARTH / GOOGLE MAPS (KML): one pin per photo that has GPS, grouped by date.
+// Opens in Google Earth, and can be imported into Google My Maps.
+// ============================================================
+function buildKML(list, meta) {
+  const x = v => String(v == null ? '' : v).replace(/[<>&'"]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', "'": '&apos;', '"': '&quot;' }[c]));
+  const withGps = list.filter(p => p.location && p.location.lat != null).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+  if (!withGps.length) throw new Error('None of these photos has a GPS position');
+  const byDay = {};
+  withGps.forEach(p => { (byDay[p.date] = byDay[p.date] || []).push(p); });
+  const pin = p => {
+    const lines = [
+      ['Date', `${p.displayDate}, ${p.displayTime}`], ['Activity', p.activity], [elementLabel(), p.element], ['Chainage', chainageText(p)],
+      ['Side', p.side], ['Place', p.address], ['Engineer', p.engineer && p.engineer.name], ['Remarks', p.description]
+    ].filter(l => l[1]);
+    return `    <Placemark>
+      <name>${x([p.activity, chainageText(p, 'short') ? 'Ch ' + chainageText(p, 'short') : p.element].filter(Boolean).join(' · '))}</name>
+      <TimeStamp><when>${x(new Date(p.timestamp).toISOString())}</when></TimeStamp>
+      <styleUrl>#${p.photoType === 'Hindrance' ? 'hind' : 'photo'}</styleUrl>
+      <description><![CDATA[${lines.map(l => `<b>${x(l[0])}:</b> ${x(l[1])}`).join('<br>')}]]></description>
+      <Point><coordinates>${+p.location.lng},${+p.location.lat}${p.location.altitude != null ? ',' + p.location.altitude : ''}</coordinates></Point>
+    </Placemark>`;
+  };
+  const kml = `<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document>
+  <name>${x(meta.fullName)} — ${x(meta.title)}</name>
+  <description>${x(withGps.length)} photo spots${meta.preparedBy ? ' · Prepared by ' + x(meta.preparedBy) : ''} · CivilCam Pro</description>
+  <Style id="photo"><IconStyle><color>ff24a5f5</color><scale>1.1</scale><Icon><href>http://maps.google.com/mapfiles/kml/shapes/camera.png</href></Icon></IconStyle></Style>
+  <Style id="hind"><IconStyle><color>ff7171f8</color><scale>1.2</scale><Icon><href>http://maps.google.com/mapfiles/kml/shapes/caution.png</href></Icon></IconStyle></Style>
+${Object.keys(byDay).sort().map(d => `  <Folder>
+    <name>${x(fmtDate(d))} (${byDay[d].length})</name>
+${byDay[d].map(pin).join('\n')}
+  </Folder>`).join('\n')}
+</Document>
+</kml>
+`;
+  return new Blob([kml], { type: 'application/vnd.google-earth.kml+xml' });
 }

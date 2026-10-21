@@ -5,7 +5,7 @@
 // ============================================================
 window.CIVILCAM_CONFIG = {
   firebase: {
-    projectId: '',        // e.g. 'civilcam-pro'
+    projectId: 'civilcam-pro-fpn',
     storageBucket: ''     // e.g. 'civilcam-pro.appspot.com' or 'civilcam-pro.firebasestorage.app'
   },
   // The AI function's URL after `firebase deploy --only functions`,

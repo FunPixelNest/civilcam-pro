@@ -11,7 +11,6 @@ function showOnly(id) {
 
 let currentTab = 'camera';
 function switchTab(tabName) {
-  if (tabName === 'chainage' && !isLinearProject(currentProject)) tabName = 'gallery';
   currentTab = tabName;
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -24,6 +23,7 @@ function switchTab(tabName) {
   if (tabName === 'gallery') renderGallery();
   if (tabName === 'chainage') renderStrip();
   if (tabName === 'export') renderExportScreen();
+  if (tabName === 'hindrance') renderHindrances();
 }
 
 // ============================================================
@@ -72,7 +72,7 @@ function renderChips(container, key, current, onPick, opts = {}) {
     el.appendChild(b);
   };
   if (opts.all) add(opts.all, null, '');
-  values.forEach(v => add(v, v, isCustomOption(key, v) ? 'custom' : ''));
+  values.forEach(v => add(v, v, !opts.plain && isCustomOption(key, v) ? 'custom' : ''));
   if (opts.others) {
     const b = document.createElement('button');
     b.type = 'button';

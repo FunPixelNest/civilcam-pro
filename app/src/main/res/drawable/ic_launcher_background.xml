@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="#0f172a" />
-</shape>
+<!-- CivilCam Pro icon background: evening sky, tower crane, site ground -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path android:pathData="M0,0 H108 V108 H0 Z" android:fillColor="#13284a" />
+    <path android:pathData="M20,50 A34,34 0 1,0 88,50 A34,34 0 1,0 20,50 Z" android:fillColor="#1d3a66" />
+    <path android:pathData="M27,80 V33 H29.4 V80 Z" android:fillColor="#36578a" />
+    <path android:pathData="M22,33.5 H58 V35.8 H22 Z" android:fillColor="#36578a" />
+    <path android:pathData="M27,33.5 L28.2,28.5 L29.4,33.5 Z" android:fillColor="#36578a" />
+    <path android:pathData="M28.2,29 L56,33.5" android:strokeColor="#36578a" android:strokeWidth="0.6" />
+    <path android:pathData="M22,35.8 H25.5 V39 H22 Z" android:fillColor="#36578a" />
+    <path android:pathData="M0,80 H108 V108 H0 Z" android:fillColor="#0d1b33" />
+</vector>

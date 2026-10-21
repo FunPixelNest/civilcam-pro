@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">CivilCam Pro</string>
+    <!-- AdMob app: CivilCam Pro (Android). Ad unit IDs are in AdsManager.kt. -->
+    <string name="admob_app_id" translatable="false">ca-app-pub-5089346574611451~1477640643</string>
 </resources>

@@ -10,6 +10,10 @@
         android:maxSdkVersion="28" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
+    <!-- Read the GPS position saved inside photos the engineer imports from other camera apps.
+         Photos themselves are only opened through the system file picker, so no broad
+         photo-library permission is needed. -->
+    <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
 
     <!-- Lets "Send to WhatsApp" check whether WhatsApp / WhatsApp Business is installed -->
     <queries>
@@ -28,7 +32,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CivilCamPro"
         android:usesCleartextTraffic="true"
+        android:enableOnBackInvokedCallback="true"
         android:hardwareAccelerated="true">
+
+        <!-- AdMob app ID. This is Google's TEST ID: replace it with your own from admob.google.com
+             (Apps > App settings) before publishing, together with the ad unit IDs in AdsManager.kt. -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="@string/admob_app_id" />
 
         <activity
             android:name=".SplashActivity"

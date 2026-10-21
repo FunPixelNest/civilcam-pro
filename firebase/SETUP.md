@@ -28,9 +28,18 @@ Go to **Authentication → Sign-in method** and enable:
   2. Create a **Services ID**, enable *Sign in with Apple*, and use the same redirect URI as above.
   3. Fill in the Services ID, Team ID, Key ID and private key in Firebase.
 
-## 4. Create the database and file storage
-1. Go to **Firestore Database → Create database**. Choose the region `asia-south1` (Mumbai), in production mode.
-2. Go to **Storage → Get started**, same region.
+## 4. Create the database
+Go to **Firestore Database → Create database**. Choose the region `asia-south1` (Mumbai), in production mode.
+
+The database holds only text details and a small preview (about 15 KB) of each photo. Full photos go to each engineer's own Google Drive (step 4a), so you don't need Cloud Storage. Leave `storageBucket` empty in `config.js`.
+
+## 4a. Let the app use Google Drive for photos
+1. Open https://console.cloud.google.com/apis/library/drive.googleapis.com and select the same project. Click **Enable**.
+2. Open **Google Auth Platform → Data access** (or **OAuth consent screen → Scopes**).
+3. Click **Add or remove scopes** and add `.../auth/drive.file`. This scope lets CivilCam see only the files it creates, never the rest of someone's Drive. Google treats it as non-sensitive, so no app review is needed.
+4. While the consent screen is in **Testing**, add the engineers' Gmail addresses under **Audience → Test users**. Click **Publish app** when everyone should be able to use it.
+
+After signing in with Google, the app asks once: *"Allow CivilCam Pro to see, edit, create and delete only the specific Google Drive files you use with this app"*. Photos then go to **My Drive → CivilCam → <project name>**. Engineers can turn this on or off under **Account**.
 
 ## 5. Deploy the rules and the AI function
 On your computer, with Node 20 installed:
@@ -65,3 +74,4 @@ Rebuild the app. On first start you'll now see the sign-in buttons.
 - **Company e-mail** (e.g. `name@yourcompany.com`): everyone with the same e-mail domain sees the same projects, photos and custom list values ("Others").
 - **Personal e-mail** (Gmail, Outlook.com, iCloud…): your data is private to you, and syncs between your own phones.
 - Photos are uploaded in the background when there is internet. Until then they stay safe on the phone.
+- Full photos live in the engineer's own Google Drive. Colleagues see the details and a small preview, and **Drive** in the photo viewer opens the full photo if the owner has shared the folder with them. To share a whole project, the engineer shares **My Drive → CivilCam → <project>** with the team, or with the company domain on Google Workspace.

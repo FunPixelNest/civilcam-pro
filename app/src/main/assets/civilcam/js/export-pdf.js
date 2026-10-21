@@ -132,6 +132,7 @@ async function buildPDF(pages, imgs, meta, opts) {
     doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5); doc.setTextColor(...pdfRGB(RC.muted));
     if (meta.preparedBy) doc.text('Prepared by: ' + meta.preparedBy, M, PH - 7.5);
     doc.text(`Page ${i} of ${total}`, PW - M, PH - 7.5, { align: 'right' });
+    if (meta.brand) { doc.setFontSize(7); doc.text(meta.brand, PW / 2, PH - 4, { align: 'center' }); }
   }
 
   doc.setProperties({ title: `${meta.fullName} — ${meta.title}`, author: meta.preparedBy || '', creator: 'CivilCam Pro' });

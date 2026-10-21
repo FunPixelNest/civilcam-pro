@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- App icon for Android 5 to 7 (newer versions use mipmap-anydpi-v26) -->
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@drawable/ic_launcher_background" />
-    <item android:drawable="@drawable/ic_launcher_foreground" />
-</layer-list>
+<!-- Fallback only: phones use the PNG icons in the mipmap-*dpi folders -->
+<bitmap xmlns:android="http://schemas.android.com/apk/res/android"
+    android:src="@drawable/splash_art"
+    android:gravity="fill" />

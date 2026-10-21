@@ -100,7 +100,7 @@ async function buildWord(pages, imgs, meta, opts) {
       new D.TextRun({ text: meta.preparedBy ? 'Prepared by: ' + meta.preparedBy : '', size: 17, color: RC.muted }),
       new D.TextRun({ children: ['\tPage ', D.PageNumber.CURRENT, ' of ', D.PageNumber.TOTAL_PAGES], size: 17, color: RC.muted })
     ]
-  })] });
+  })].concat(meta.brand ? [new D.Paragraph({ alignment: D.AlignmentType.CENTER, children: [new D.TextRun({ text: meta.brand, size: 14, color: RC.muted })] })] : []) });
 
   const doc = new D.Document({
     creator: meta.preparedBy || 'CivilCam Pro',

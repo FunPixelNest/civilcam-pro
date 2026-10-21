@@ -6,8 +6,10 @@ const LAYOUTS = {
   B: { name: '2 per page', desc: 'Two photos, one above the other', perPage: 2, cols: 1, slide: 2 },
   C: { name: '4 per page', desc: '2 × 2 grid', perPage: 4, cols: 2, slide: 4 },
   D: { name: '6 per page', desc: '2 × 3 grid, compact', perPage: 6, cols: 2, slide: 6 },
-  E: { name: 'Same chainage, date-wise', desc: 'Each location over time, oldest first', perPage: 4, cols: 2, slide: 4 }
+  E: { name: 'Same location, date-wise', desc: 'Each location over time, oldest first', perPage: 4, cols: 2, slide: 4 }
 };
+
+function elementLabel() { return (currentProject && LAYOUTS_SITE[projectLayout(currentProject)].element) || 'Location'; }
 
 // Which extra details to print under each photo (Activity, Chainage and Side are always shown)
 const CAPTION_OPTIONS = [
@@ -21,12 +23,13 @@ const CAPTION_OPTIONS = [
 function captionLines(p, opts, inGroup = false) {
   const lines = [];
   if (!inGroup) {
-    lines.push([['Activity', p.activity], ['Chainage', chainageText(p)], ['Side', p.side]].filter(x => x[1]));
+    lines.push([['Activity', p.activity], [elementLabel(), p.element], ['Chainage', chainageText(p)], ['Side', p.side]].filter(x => x[1]));
   }
   const second = [];
   if (opts.date || inGroup) second.push(['Date', `${p.displayDate}, ${p.displayTime}`]);
   if (opts.engineer && p.engineer && p.engineer.name) second.push(['Engineer', [p.engineer.name, p.engineer.designation].filter(Boolean).join(', ')]);
   if (opts.gps && p.location) second.push(['GPS', `${p.location.lat}, ${p.location.lng}`]);
+  if (opts.gps && p.address) second.push(['Place', p.address]);
   if (second.length) lines.push(second);
   if (opts.description) {
     const f = (p.fields || []).filter(x => x.value).map(x => [x.label, x.value]);
@@ -40,6 +43,7 @@ function captionLines(p, opts, inGroup = false) {
 function captionSentence(p, opts) {
   let s = `${p.activity}`;
   if (chainageText(p)) s += p.chTo && p.chTo !== p.chFrom ? ` at Chainage ${p.chFrom} to ${p.chTo}` : ` at Chainage ${p.chFrom}`;
+  if (p.element) s += `${chainageText(p) ? ',' : ' at'} ${p.element}`;
   if (p.side) s += `, ${p.side}`;
   s += `, taken on ${p.displayDate} at ${p.displayTime}`;
   if (p.engineer && p.engineer.name) s += ` by ${[p.engineer.name, p.engineer.designation].filter(Boolean).join(', ')}`;
@@ -61,16 +65,23 @@ function paginate(list, layoutKey, project) {
     return pages;
   }
   // Layout E: one location at a time, oldest photo first
-  const groups = buildGroups(list, Object.assign({ startM: 0, groupSize: 100 }, project || {}));
-  const loose = list.filter(p => photoChMid(p) == null);
-  if (loose.length) groups.push({ from: null, to: null, photos: loose });
+  let groups;
+  if (usesElements(project)) {
+    const order = projectElements(project).concat(project.extraElements || []);
+    const names = [...new Set(list.map(p => p.element || ''))].sort((a, b) => (order.indexOf(a) + 1 || 1e6) - (order.indexOf(b) + 1 || 1e6));
+    groups = names.map(n => ({ element: n || 'Not recorded', photos: list.filter(p => (p.element || '') === n) }));
+  } else {
+    groups = buildGroups(list, Object.assign({ startM: 0, groupSize: 100 }, project || {}));
+    const loose = list.filter(p => photoChMid(p) == null);
+    if (loose.length) groups.push({ from: null, to: null, photos: loose });
+  }
   groups.forEach(g => {
     const sorted = g.photos.slice().sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
     const acts = [...new Set(sorted.map(p => p.activity))];
     const sides = [...new Set(sorted.map(p => p.side).filter(Boolean))];
     const header = [
       ['Activity', acts.join(', ')],
-      ['Chainage', g.from == null ? 'Not recorded' : `From ${fmtCh(g.from)} To ${fmtCh(g.to)}`],
+      g.element ? [elementLabel(), g.element] : ['Chainage', g.from == null ? 'Not recorded' : `From ${fmtCh(g.from)} To ${fmtCh(g.to)}`],
       ['Side', sides.join(', ')]
     ].filter(x => x[1]);
     const dates = new Set(sorted.map(p => p.date)).size;

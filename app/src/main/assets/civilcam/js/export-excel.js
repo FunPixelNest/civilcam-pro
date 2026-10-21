@@ -13,7 +13,7 @@ async function buildExcel(list, imgs, meta, opts) {
       margins: { left: 0.4, right: 0.4, top: 0.5, bottom: 0.6, header: 0.2, footer: 0.25 }
     },
     headerFooter: {
-      oddFooter: `&L&8${(meta.preparedBy ? 'Prepared by: ' + meta.preparedBy : '').replace(/&/g, '&&')}&R&8Page &P of &N`
+      oddFooter: `&L&8${(meta.preparedBy ? 'Prepared by: ' + meta.preparedBy : '').replace(/&/g, '&&')}${meta.brand ? '&C&7' + meta.brand.replace(/&/g, '&&') : ''}&R&8Page &P of &N`
     }
   });
 

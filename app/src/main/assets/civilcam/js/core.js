@@ -11,6 +11,7 @@ let currentModalPhoto = null;
 let currentActivity = 'Earthwork';
 let currentSide = 'LHS';
 let currentPhotoType = 'General';
+let currentElement = '';          // floor / pier / zone for non-chainage projects
 let metadataEnabled = (() => { try { return localStorage.getItem('stampOn') !== '0'; } catch (e) { return true; } })();
 let cameraStream = null;
 let facingMode = 'environment';
@@ -33,18 +34,132 @@ const DEFAULT_OPTIONS = {
   side: ['LHS', 'RHS', 'Both Sides', 'Median', 'Centre Line'],
   photoType: ['General', 'Hindrance'],
   hindranceField: ['Land owner name', 'Phone no.', 'Survey no.', 'Village / Location', 'Issue', 'Area affected'],
-  projectType: ['Road / Highway', 'Bridge', 'Building', 'Canal / Irrigation', 'Railway', 'Pipeline']
+  projectType: ['Road / Highway', 'Building', 'Bridge / Flyover', 'Canal / Irrigation', 'Railway / Metro', 'Pipeline', 'Plant / Industrial']
 };
 let customOptions = {};       // { activity: ['Utility Shifting'], side: [...] }
 
 function getOptions(key) {
-  const base = DEFAULT_OPTIONS[key] || [];
+  const base = baseOptions(key);
   const extra = (customOptions[key] || []).filter(v => !base.includes(v));
   return base.concat(extra);
 }
 
 function isCustomOption(key, value) {
-  return !(DEFAULT_OPTIONS[key] || []).includes(value);
+  return !baseOptions(key).includes(value);
+}
+
+// ============================================================
+// SITE TYPES — how a project is laid out on the site map
+//   road / canal / rail / pipe : along a chainage
+//   building : floors          bridge : abutments and piers (chainage optional)
+//   plant    : zones
+// ============================================================
+const LAYOUTS_SITE = {
+  road:     { name: 'Road',            linear: true,  tab: 'Chainage' },
+  canal:    { name: 'Canal',           linear: true,  tab: 'Chainage' },
+  rail:     { name: 'Rail / Metro',    linear: true,  tab: 'Chainage' },
+  pipe:     { name: 'Pipeline',        linear: true,  tab: 'Chainage' },
+  bridge:   { name: 'Bridge',          linear: false, tab: 'Piers',  element: 'Pier / Abutment' },
+  building: { name: 'Building',        linear: false, tab: 'Floors', element: 'Floor' },
+  plant:    { name: 'Zones',           linear: false, tab: 'Zones',  element: 'Zone' }
+};
+
+function guessLayout(type) {
+  const t = String(type || '').toLowerCase();
+  if (/build|tower|apartment|house|hospital|school|college|hotel|mall|office|residen|commercial|villa/.test(t)) return 'building';
+  if (/bridge|flyover|viaduct|\brob\b|\brub\b|overpass|underpass/.test(t)) return 'bridge';
+  if (/plant|industr|factory|stp|wtp|etp|substation|refinery|warehouse|shed/.test(t)) return 'plant';
+  if (/canal|irrig|drain|channel|river|embankment/.test(t)) return 'canal';
+  if (/rail|metro|track/.test(t)) return 'rail';
+  if (/pipe|water supply|sewer|gas line/.test(t)) return 'pipe';
+  return 'road';
+}
+
+function projectLayout(p) {
+  if (!p) return 'road';
+  return p.layout && LAYOUTS_SITE[p.layout] ? p.layout : guessLayout(p.type);
+}
+function isLinearLayout(p) { return LAYOUTS_SITE[projectLayout(p)].linear; }
+function usesElements(p) { return !!LAYOUTS_SITE[projectLayout(p)].element; }
+
+const ORD = n => n + (n % 100 >= 11 && n % 100 <= 13 ? 'th' : ['th', 'st', 'nd', 'rd'][n % 10] || 'th');
+
+// Floors / piers / zones of a project, in site order (bottom-up, left to right)
+function projectElements(p) {
+  const kind = projectLayout(p);
+  if (kind === 'building') {
+    const b = Math.max(0, +p.basements || 0), f = Math.max(0, p.floors == null ? 4 : +p.floors);
+    const out = [];
+    if (p.foundation !== false) out.push('Foundation');
+    for (let i = b; i >= 1; i--) out.push('Basement ' + i);
+    out.push('Ground Floor');
+    for (let i = 1; i <= f; i++) out.push(ORD(i) + ' Floor');
+    if (p.terrace !== false) out.push('Terrace');
+    return out;
+  }
+  if (kind === 'bridge') {
+    const n = Math.max(1, p.spans == null ? 4 : +p.spans);
+    const out = ['A1'];
+    for (let i = 1; i < n; i++) out.push('P' + i);
+    out.push('A2');
+    if (p.deck !== false) out.push('Deck / Superstructure');
+    return out;
+  }
+  if (kind === 'plant') return (p.zones && p.zones.length ? p.zones : ['Main building', 'Equipment area', 'Utilities', 'Storage', 'Roads & drains']).slice();
+  return [];
+}
+
+// "Ch 12+350 · RHS" for roads, "3rd Floor" for buildings, "P4 · Ch 1+200" for bridges
+function placeText(p, style = 'short') {
+  const ch = chainageText(p, style);
+  return [p.element || '', ch ? (style === 'short' ? 'Ch ' : 'Chainage ') + ch : ''].filter(Boolean).join(' · ');
+}
+
+// Built-in list values depend on the kind of project that is open
+const OPTIONS_BY_LAYOUT = {
+  activity: {
+    road: null,   // the general list below
+    building: ['Excavation', 'PCC', 'Footing / Raft', 'Columns', 'Beams & Slab', 'Shuttering', 'Reinforcement/Steel', 'Concrete Works',
+      'Brickwork / Blockwork', 'Plastering', 'Waterproofing', 'Electrical', 'Plumbing', 'Fire Fighting', 'HVAC', 'Flooring / Tiling',
+      'Doors & Windows', 'Painting', 'Facade / Glazing', 'Lift', 'External Works', 'Finishing Works', 'Testing & QA', 'Safety Works', 'Hindrance'],
+    bridge: ['Piling', 'Pile Cap', 'Open Foundation', 'Pier / Abutment', 'Pier Cap', 'Bearings', 'Girders / Launching', 'Deck Slab',
+      'Reinforcement/Steel', 'Concrete Works', 'Expansion Joint', 'Crash Barrier', 'Wearing Coat', 'Approach / RE Wall',
+      'Drainage Works', 'Load Test', 'Testing & QA', 'Safety Works', 'Hindrance'],
+    canal: ['Site Clearing', 'Earthwork Excavation', 'Embankment', 'Compaction', 'Canal Lining', 'CD Works / Aqueduct', 'Regulator',
+      'Fall / Drop', 'Outlet', 'Bridge Works', 'Culvert Works', 'Service Road', 'Survey Works', 'Testing & QA', 'Safety Works', 'Hindrance'],
+    rail: ['Site Clearing', 'Formation / Earthwork', 'Blanketing', 'Ballast', 'Sleepers', 'Track Linking', 'Welding', 'Bridge Works',
+      'Culvert Works', 'OHE', 'Signalling', 'Station Works', 'Level Crossing', 'Survey Works', 'Testing & QA', 'Safety Works', 'Hindrance'],
+    pipe: ['Site Clearing', 'Trenching', 'Pipe Stringing', 'Welding / Jointing', 'Lowering & Laying', 'Bedding', 'Backfilling',
+      'Valve Chamber', 'Thrust Block', 'Crossing (Road/Rail)', 'Hydro Test', 'Restoration', 'Survey Works', 'Testing & QA', 'Safety Works', 'Hindrance'],
+    plant: ['Excavation', 'Foundation Works', 'Equipment Foundation', 'Structural Steel', 'Roofing / Cladding', 'Concrete Works',
+      'Equipment Erection', 'Piping', 'Electrical', 'Instrumentation', 'Roads & Drains', 'Commissioning', 'Testing & QA', 'Safety Works', 'Hindrance']
+  },
+  side: {
+    road: null,
+    building: ['Inside', 'North', 'South', 'East', 'West', 'Facade', 'Roof'],
+    bridge: ['LHS', 'RHS', 'Upstream', 'Downstream', 'Top', 'Underside'],
+    canal: ['Left bank', 'Right bank', 'Canal bed', 'Both banks', 'Service road'],
+    rail: ['Up line', 'Down line', 'Both lines', 'Station', 'Yard'],
+    pipe: ['Along RoW', 'Left of RoW', 'Right of RoW', 'Crossing'],
+    plant: ['Inside', 'Outside', 'Roof', 'Ground']
+  }
+};
+
+function baseOptions(key) {
+  const by = OPTIONS_BY_LAYOUT[key];
+  if (by && typeof currentProject !== 'undefined' && currentProject) {
+    const list = by[projectLayout(currentProject)];
+    if (list) return list;
+  }
+  return DEFAULT_OPTIONS[key] || [];
+}
+
+// Where a photo sits across the width of a linear site: -1 top (LHS / left bank / up line), 1 bottom, 0 middle
+function sideLane(side) {
+  const s = String(side || '').toLowerCase();
+  if (/^(lhs|left|up\b|up line|upstream)/.test(s)) return -1;
+  if (/^(rhs|right|down\b|down line|downstream)/.test(s)) return 1;
+  return 0;
 }
 
 // Saves a new "Others" value so it shows up as a normal choice from now on
@@ -262,6 +377,10 @@ const ICONS = {
   x: '<path d="M6 6l12 12M18 6L6 18"/>',
   check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
   chevronRight: '<path d="M9 5l7 7-7 7"/>',
+  minus: '<path d="M5 12h14"/>',
+  building: '<path d="M5 21V4h10v17M15 9h4v12M3 21h18M8 8h2M8 12h2M8 16h2"/>',
+  mail: '<path d="M3 6h18v12H3z"/><path d="M3 7l9 6 9-6"/>',
+  help: '<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .9-1 1.7M12 17v.5"/>',
   chevronDown: '<path d="M6 9l6 6 6-6"/>',
   back: '<path d="M15 5l-7 7 7 7"/>',
   sparkles: '<path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.8 2.2 2.2.8-2.2.8L19 21l-.8-2.2-2.2-.8 2.2-.8z"/>',
@@ -281,7 +400,13 @@ const ICONS = {
   whatsapp: '<path d="M4 20l1.3-4A8 8 0 1 1 8.2 19z"/><path d="M9 9.5c0 3 2.5 5.5 5.5 5.5l1.2-1.4-1.9-.9-.8.8c-1-.4-2-1.4-2.4-2.4l.8-.8-.9-1.9z"/>',
   settings: '<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/>',
   calendar: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
-  pin: '<path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>'
+  pin: '<path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',
+  clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  import: '<path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/>',
+  users: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14a6 6 0 0 1 3.5 6"/>',
+  play: '<circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5z"/>',
+  crown: '<path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z"/>',
+  cloudDown: '<path d="M7 18a4.5 4.5 0 0 1-.6-9A6 6 0 0 1 18 9.5a4.3 4.3 0 0 1-.5 8.5"/><path d="M12 11v9M9 17l3 3 3-3"/>'
 };
 
 function ic(name, size = 20) {
@@ -362,6 +487,15 @@ async function shareFiles(files, text, app = '') {
   if (app === 'whatsapp' && text) window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
   for (const f of files) await saveFile(f.data, f.name, f.mime);
   return false;
+}
+
+// Opens the phone's file manager at Download/CivilCam ('reports') or Pictures/CivilCam ('photos')
+function openSavedFolder(kind) {
+  if (hasAndroidBridge() && typeof window.AndroidBridge.openFolder === 'function') {
+    window.AndroidBridge.openFolder(kind);
+  } else {
+    showToast(kind === 'photos' ? 'Saved photos are in your Downloads folder' : 'Reports are in your Downloads folder');
+  }
 }
 
 function savedMessage(result, what, mime) {

@@ -3,7 +3,7 @@
 // ============================================================
 const galleryFilter = {
   period: 'all',
-  activity: new Set(), side: new Set(), photoType: new Set(),
+  activity: new Set(), side: new Set(), photoType: new Set(), element: new Set(),
   chFrom: null, chTo: null,        // metres
   text: '', smart: null             // smart: parsed search {chMid, chTol, period, activity, side, text}
 };
@@ -14,6 +14,7 @@ function matchesFilter(p, f) {
   if (f.activity.size && !f.activity.has(p.activity)) return false;
   if (f.side.size && !f.side.has(p.side)) return false;
   if (f.photoType && f.photoType.size && !f.photoType.has(p.photoType)) return false;
+  if (f.element && f.element.size && !f.element.has(p.element)) return false;
   const mid = photoChMid(p);
   if ((f.chFrom != null || f.chTo != null) && mid == null) return false;
   if (f.chFrom != null && mid < f.chFrom) return false;
@@ -28,7 +29,7 @@ function matchesFilter(p, f) {
   }
   const text = s ? s.text : f.text;
   if (text) {
-    const hay = [p.activity, p.side, p.chFrom, p.chTo, p.description, fieldsText(p), p.displayDate, p.photoType,
+    const hay = [p.activity, p.side, p.element, p.chFrom, p.chTo, p.description, fieldsText(p), p.displayDate, p.photoType,
       p.engineer && p.engineer.name].join(' ').toLowerCase();
     if (!text.toLowerCase().split(/\s+/).every(w => hay.includes(w))) return false;
   }
@@ -56,21 +57,22 @@ function filterButtonsHTML(f, varName, rerender) {
   let html = btn('activity', label(f.activity, 'Activity'), f.activity.size) +
     btn('side', label(f.side, 'Side'), f.side.size) +
     (f.photoType ? btn('photoType', label(f.photoType, 'Type'), f.photoType.size) : '') +
-    btn('chainage', chLabel, f.chFrom != null || f.chTo != null);
-  const any = f.activity.size || f.side.size || (f.photoType && f.photoType.size) || f.chFrom != null || f.chTo != null || f.smart;
+    (usesElements(currentProject) ? btn('element', label(f.element, LAYOUTS_SITE[projectLayout(currentProject)].element), f.element.size) : '') +
+    (isLinearLayout(currentProject) || projectLayout(currentProject) === 'bridge' ? btn('chainage', chLabel, f.chFrom != null || f.chTo != null) : '');
+  const any = f.activity.size || f.side.size || (f.photoType && f.photoType.size) || (f.element && f.element.size) || f.chFrom != null || f.chTo != null || f.smart;
   if (any) html += `<button class="chip clear" onclick="clearFilters(${varName}, ${rerender})">${ic('x', 13)}Clear</button>`;
   return html;
 }
 
 function clearFilters(f, rerender) {
-  f.activity.clear(); f.side.clear(); if (f.photoType) f.photoType.clear();
+  f.activity.clear(); f.side.clear(); if (f.photoType) f.photoType.clear(); if (f.element) f.element.clear();
   f.chFrom = null; f.chTo = null; f.smart = null;
   if (f === galleryFilter) { f.text = ''; document.getElementById('gallery-search-input').value = ''; }
   rerender();
 }
 
 function openFilterSheet(key, f, rerender) {
-  const titles = { activity: 'Activity', side: 'Side', photoType: 'Photo type', chainage: 'Chainage range' };
+  const titles = { activity: 'Activity', side: 'Side', photoType: 'Photo type', chainage: 'Chainage range', element: LAYOUTS_SITE[projectLayout(currentProject)].element || 'Location' };
   document.getElementById('filter-sheet-title').textContent = titles[key];
   const chips = document.getElementById('filter-sheet-chips');
   const extra = document.getElementById('filter-sheet-extra');
@@ -85,11 +87,12 @@ function openFilterSheet(key, f, rerender) {
   } else {
     // Values in use in this project come first, so custom ones are easy to find
     const used = new Set(projectPhotos().map(p => p[key]).filter(Boolean));
-    const values = [...new Set([...used, ...getOptions(key)])];
+    const isEl = key === 'element';
+    const values = isEl ? projectElements(currentProject).concat(currentProject.extraElements || []).filter(e => used.has(e)) : [...new Set([...used, ...getOptions(key)])];
     const draw = () => renderChips(chips, key, f[key], v => {
       if (f[key].has(v)) f[key].delete(v); else f[key].add(v);
       draw(); rerender();
-    }, { multi: true, values, others: true, othersLabel: 'Add a value to the list' });
+    }, { multi: true, values, others: !isEl, plain: isEl, othersLabel: 'Add a value to the list' });
     draw();
     extra.innerHTML = `<div class="sheet-hint" style="margin-top:12px">Pick one or more. "Others" adds a value that isn't listed; it's saved for next time.</div>`;
   }
@@ -188,34 +191,75 @@ function renderGallery() {
 
 function thumbHTML(p) {
   const sel = selectedPhotos.has(p.id);
-  const ch = chainageText(p, 'short');
-  return `<div class="photo-thumb${sel ? ' selected' : ''}" data-id="${p.id}"
-    onclick="onThumbClick('${p.id}')" oncontextmenu="event.preventDefault();toggleSelect('${p.id}')"
-    ontouchstart="thumbPressStart('${p.id}')" ontouchend="thumbPressEnd()" ontouchmove="thumbPressEnd()">
+  const ch = [p.element, chainageText(p, 'short')].filter(Boolean).join(' · ');
+  return `<div class="photo-thumb${sel ? ' selected' : ''}" data-id="${p.id}" role="button" tabindex="0" aria-label="Photo ${esc(ch || p.displayDate)}">
     <img src="${p.imageData || ''}" loading="lazy" alt="">
     <div class="select-badge">${ic('check', 14)}</div>
-    ${p.photoType === 'Hindrance' ? `<div class="type-badge">${ic('alert', 12)}</div>` : ''}
+    ${p.photoType === 'Hindrance' ? `<div class="type-badge${p.hind && p.hind.status === 'cleared' ? ' done' : ''}">${ic(p.hind && p.hind.status === 'cleared' ? 'check' : 'alert', 12)}</div>` : ''}
+    ${Sync.enabled() && !p.synced && !p.previewOnly ? `<div class="wait-badge" title="Not backed up yet">${ic('cloud', 11)}</div>` : ''}
+    ${p.repeatOf ? '<div class="pair-badge">2×</div>' : ''}
+    ${takenByOther(p) ? `<div class="by-badge">${esc((p.engineer.name || p.engineer.email).split(/[ @]/)[0])}</div>` : ''}
+    ${p.previewOnly ? `<div class="prev-badge" title="Preview: full photo on request">${ic('cloudDown', 11)}</div>` : ''}
     ${ch ? `<div class="meta-badge">${esc(ch)}</div>` : ''}
   </div>`;
 }
 
-let pressTimer = null, pressFired = false;
-function thumbPressStart(id) {
-  pressFired = false;
-  clearTimeout(pressTimer);
-  pressTimer = setTimeout(() => { pressFired = true; toggleSelect(id); if (navigator.vibrate) navigator.vibrate(20); }, 450);
-}
-function thumbPressEnd() { clearTimeout(pressTimer); }
+// Press and hold a photo to start selecting; then tap more photos to add or remove them.
+// One set of pointer handlers on the grid: a small finger wobble does not cancel the press, and
+// the phone's own long-press menu (which used to undo the selection straight away) is blocked.
+const press = { timer: null, id: null, x: 0, y: 0, fired: false };
+(function attachThumbPress() {
+  const grid = () => document.getElementById('gallery-grid');
+  const thumbOf = e => e.target.closest && e.target.closest('.photo-thumb');
+  document.addEventListener('pointerdown', e => {
+    const t = thumbOf(e);
+    if (!t || !grid() || !grid().contains(t)) return;
+    clearTimeout(press.timer);
+    Object.assign(press, { id: t.dataset.id, x: e.clientX, y: e.clientY, fired: false });
+    press.timer = setTimeout(() => {
+      press.fired = true;
+      toggleSelect(press.id);
+      if (navigator.vibrate) navigator.vibrate(25);
+    }, 450);
+  });
+  document.addEventListener('pointermove', e => {
+    if (press.timer && Math.hypot(e.clientX - press.x, e.clientY - press.y) > 12) { clearTimeout(press.timer); press.timer = null; }
+  });
+  ['pointerup', 'pointercancel'].forEach(n => document.addEventListener(n, () => { clearTimeout(press.timer); press.timer = null; }));
+  document.addEventListener('contextmenu', e => {
+    const t = thumbOf(e);
+    if (!t) return;
+    e.preventDefault();
+    if (!press.fired && e.pointerType !== 'touch' && !('ontouchstart' in window)) toggleSelect(t.dataset.id);   // right-click on a PC
+  });
+  document.addEventListener('click', e => {
+    const t = thumbOf(e);
+    if (!t || !grid() || !grid().contains(t)) return;
+    if (press.fired) { press.fired = false; return; }
+    onThumbClick(t.dataset.id);
+  });
+  document.addEventListener('keydown', e => {
+    const t = thumbOf(e);
+    if (t && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); onThumbClick(t.dataset.id); }
+  });
+})();
 
 function onThumbClick(id) {
-  if (pressFired) { pressFired = false; return; }
   if (selectedPhotos.size > 0) toggleSelect(id); else openPhotoModal(id);
 }
 
 function toggleSelect(id) {
   if (selectedPhotos.has(id)) selectedPhotos.delete(id); else selectedPhotos.add(id);
+  document.querySelectorAll(`.photo-thumb[data-id="${id}"]`).forEach(el => el.classList.toggle('selected', selectedPhotos.has(id)));
   updateSelectionUI();
+}
+
+function selectAllShown() {
+  const shown = getFilteredPhotos();
+  const all = shown.every(p => selectedPhotos.has(p.id));
+  shown.forEach(p => all ? selectedPhotos.delete(p.id) : selectedPhotos.add(p.id));
   renderGallery();
+  updateSelectionUI();
 }
 
 function clearSelection() {
@@ -227,6 +271,9 @@ function clearSelection() {
 function updateSelectionUI() {
   document.getElementById('gallery-action-bar').classList.toggle('visible', selectedPhotos.size > 0);
   document.getElementById('sel-count-lbl').textContent = `${selectedPhotos.size} selected`;
+  const shown = currentTab === 'gallery' && currentProject ? getFilteredPhotos() : [];
+  const allBtn = document.getElementById('sel-all-btn');
+  if (allBtn) allBtn.textContent = shown.length && shown.every(p => selectedPhotos.has(p.id)) ? 'None' : 'All';
 }
 
 // ============================================================
@@ -237,18 +284,29 @@ function openPhotoModal(id) {
   if (!p) return;
   currentModalPhoto = p;
   document.getElementById('modal-img').src = p.imageData || '';
-  document.getElementById('modal-title').textContent = [p.activity, chainageText(p, 'short')].filter(Boolean).join(' · ');
+  // Full photo kept in someone's Google Drive: offer to open it there
+  document.getElementById('drive-btn').style.display = p.previewOnly || p.driveLink ? '' : 'none';
+  document.getElementById('drive-btn').innerHTML = p.previewOnly ? ic('cloudDown', 18) + 'Full' : ic('open', 18) + 'Drive';
+  document.getElementById('compare-btn').style.display = linkedPhotos(p).length > 1 ? '' : 'none';
+  document.getElementById('modal-title').textContent = [p.activity, placeText(p)].filter(Boolean).join(' · ');
   const loc = p.location;
   const item = (label, value, full) => value ? `<div class="meta-item${full ? ' full' : ''}"><div class="meta-item-label">${label}</div><div class="meta-item-value">${esc(value)}</div></div>` : '';
   document.getElementById('modal-meta-grid').innerHTML =
     item('Date', `${p.displayDate}, ${p.displayTime}`) +
-    item('Chainage', chainageText(p) || '—') +
+    (p.element ? item(LAYOUTS_SITE[projectLayout(currentProject)].element || 'Location', p.element) : '') +
+    (chainageText(p) || !p.element ? item('Chainage', chainageText(p) || '—') : '') +
     item('Activity', p.activity) +
     item('Side', p.side) +
     item('Type', p.photoType !== 'General' ? p.photoType : '') +
+    item('Hindrance', p.hind ? `${p.hind.ref} · ${p.hind.status === 'cleared' ? 'Cleared ' + fmtDate(p.hind.clearedAt) : 'Open, ' + hindDays(p) + ' days'}` : '') +
+    item('Backup', !Sync.enabled() ? '' : p.synced ? (p.driveId ? 'In Google Drive' : 'Backed up') : 'Waiting to upload') +
     item('Engineer', p.engineer && p.engineer.name ? [p.engineer.name, p.engineer.designation].filter(Boolean).join(', ') : '') +
     (p.fields || []).map(f => item(f.label, f.value, true)).join('') +
-    item('GPS', loc ? `${loc.lat}, ${loc.lng} (±${loc.accuracy} m)` : '', true);
+    item('Place', p.address || '', true) +
+    item('Facing', p.heading != null ? headingText(p.heading) : '') +
+    item('GPS', loc ? `${loc.lat}, ${loc.lng}${loc.accuracy != null ? ` (±${loc.accuracy} m)` : ''}${loc.altitude != null ? ` · altitude ${loc.altitude} m` : ''}` : '', true) +
+    (p.imported ? item('Imported from', [p.imported.from, p.imported.camera].filter(Boolean).join(' · '), true) : '') +
+    (p.previewOnly ? item('Photo', `Small preview. The full photo is in ${takenByOther(p) ? (p.engineer.name || p.driveOwner || 'a colleague') + "'s" : 'your'} Google Drive: tap Full photo to save it to this phone or to your Drive.`, true) : '');
   document.getElementById('modal-desc').value = p.description || '';
   document.getElementById('ai-caption-btn').style.display = AI.available() ? '' : 'none';
   document.getElementById('photo-modal').classList.add('visible');
@@ -278,7 +336,7 @@ async function aiCaption() {
     showLoading('Describing the photo…', 'You can edit the text before it is saved');
     const r = await AI.call('caption', {
       image: await downscaleDataUrl(p.imageData, 1024),
-      activity: p.activity, chainage: chainageText(p), side: p.side, photoType: p.photoType,
+      activity: p.activity, chainage: placeText(p, 'long'), side: p.side, photoType: p.photoType,
       existing: document.getElementById('modal-desc').value
     });
     const box = document.getElementById('modal-desc');
@@ -298,14 +356,17 @@ async function deletePhotoFromModal() {
 
 async function deletePhotos(ids, quiet) {
   for (const id of ids) {
+    const ph = photos.find(p => p.id === id);
     await DB.delPhoto(id);
-    Sync.markDeleted('photos', id);
+    Sync.markDeleted('photos', id, ph ? Sync.photoPath(ph) : '');
   }
   photos = photos.filter(p => !ids.includes(p.id));
   ids.forEach(id => selectedPhotos.delete(id));
   updateSelectionUI();
   if (currentTab === 'gallery') renderGallery();
   updateLastThumb();
+  updateHindranceBadge();
+  Sync.updateDot();
   showToast(quiet ? 'Photo removed — take it again' : `${ids.length} photo${ids.length === 1 ? '' : 's'} deleted`, 'danger');
 }
 
@@ -320,25 +381,32 @@ async function deleteSelected() {
 // ============================================================
 async function downloadPhoto(p) {
   if (!p) return;
-  const ok = await saveFile(p.imageData, photoFileName(p), 'image/jpeg');
+  let data = p.imageData;
+  if (p.previewOnly) {
+    try { showLoading('Getting the full photo…'); data = await fullImageOf(p); }
+    catch (e) { hideLoading(); showToast(e.message + '. Saving the preview instead.', ''); }
+    hideLoading();
+  }
+  const ok = await saveFile(data, photoFileName(p), 'image/jpeg');
   savedMessage(ok, 'Photo', 'image/jpeg');
 }
 
 function shareText(list) {
   if (list.length === 1) {
     const p = list[0];
-    return [p.projectName, p.activity, chainageText(p) ? 'Ch ' + chainageText(p) : '', p.side, fieldsText(p, ', '), p.description].filter(Boolean).join(' | ');
+    return [p.projectName, p.activity, p.element, chainageText(p) ? 'Ch ' + chainageText(p) : '', p.side, fieldsText(p, ', '), p.description].filter(Boolean).join(' | ');
   }
   return `${currentProject.name}: ${list.length} site photos`;
 }
 
-function sharePhotoList(list, app = '') {
+async function sharePhotoList(list, app = '') {
   if (!list.length) return;
-  shareFiles(list.map(p => ({ name: photoFileName(p), mime: 'image/jpeg', data: p.imageData })), shareText(list), app);
+  const full = await fullImages(list, 'Getting full photos to share…');     // previews of colleagues' photos
+  shareFiles(full.map(p => ({ name: photoFileName(p), mime: 'image/jpeg', data: p.imageData })), shareText(full), app);
 }
 
 function sharePhoto(p, app = '') { if (p) sharePhotoList([p], app); }
-function shareSelected() { sharePhotoList(photos.filter(p => selectedPhotos.has(p.id))); }
+function shareSelected(app = '') { sharePhotoList(photos.filter(p => selectedPhotos.has(p.id)), app); }
 
 function downscaleDataUrl(dataUrl, max) {
   return new Promise(res => {

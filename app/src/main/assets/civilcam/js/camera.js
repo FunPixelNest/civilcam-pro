@@ -16,6 +16,31 @@ function renderDetailChips() {
   renderChips('side-row', 'side', currentSide, v => {
     currentSide = v; renderDetailChips(); updateOverlayMeta();
   }, { others: true, othersLabel: 'Add a side / location' });
+  // Floor / pier / zone for projects that are not laid out by chainage
+  const p = currentProject, kind = projectLayout(p), L = LAYOUTS_SITE[kind];
+  document.getElementById('element-block').style.display = L.element ? '' : 'none';
+  document.getElementById('ch-block').style.display = L.linear || kind === 'bridge' ? '' : 'none';
+  document.getElementById('ch-label').textContent = kind === 'bridge' ? 'Chainage (optional)' : 'Chainage';
+  document.getElementById('side-label').textContent = kind === 'building' || kind === 'plant' ? 'Face / area' : 'Side';
+  if (L.element) {
+    document.getElementById('element-label').textContent = L.element;
+    const els = projectElements(p);
+    const extra = (p.extraElements || []).filter(e => !els.includes(e));
+    renderChips('element-row', 'element', currentElement, v => {
+      currentElement = v; saveJSON('lastElement_' + p.id, v); renderDetailChips(); updateOverlayMeta();
+    }, { values: els.concat(extra), plain: true });
+    const more = document.createElement('button');
+    more.type = 'button'; more.className = 'chip others'; more.innerHTML = ic('plus', 14) + 'Others';
+    more.onclick = async () => {
+      const v = await askText('Add a ' + L.element.toLowerCase(), 'For example a stair core, a lift pit or an annexe. It is added to this project.');
+      if (!v || !v.trim()) return;
+      p.extraElements = (p.extraElements || []).concat(v.trim());
+      p.updatedAt = Date.now(); p.synced = false;
+      await DB.put('projects', p); Sync.schedule();
+      currentElement = v.trim(); renderDetailChips(); updateOverlayMeta();
+    };
+    document.getElementById('element-row').appendChild(more);
+  }
   document.getElementById('hindrance-block').style.display = currentPhotoType === 'Hindrance' ? '' : 'none';
   renderHindranceFields();
 }
@@ -43,10 +68,13 @@ function getDetails() {
   const fields = currentPhotoType === 'Hindrance'
     ? getOptions('hindranceField').map(label => ({ label, value: (hindranceValues[label] || '').trim() })).filter(f => f.value)
     : [];
+  const kind = projectLayout(currentProject);
+  const useCh = LAYOUTS_SITE[kind].linear || kind === 'bridge';
   return {
     activity: currentActivity, side: currentSide, photoType: currentPhotoType,
-    chFrom, chTo: chTo === chFrom ? '' : chTo,
-    chFromM: parseCh(chFrom), chToM: chTo === chFrom ? null : parseCh(chTo),
+    element: usesElements(currentProject) ? currentElement : '',
+    chFrom: useCh ? chFrom : '', chTo: !useCh || chTo === chFrom ? '' : chTo,
+    chFromM: useCh ? parseCh(chFrom) : null, chToM: !useCh || chTo === chFrom ? null : parseCh(chTo),
     description: document.getElementById('desc-input').value.trim(),
     fields
   };
@@ -69,14 +97,14 @@ function updateChHint() {
 
 function updateOverlayMeta() {
   const d = getDetails();
-  const site = [d.activity, chainageText(d, 'short') ? 'Ch ' + chainageText(d, 'short') : '', d.side].filter(Boolean).join('  |  ');
+  const site = [d.activity, d.element, chainageText(d, 'short') ? 'Ch ' + chainageText(d, 'short') : '', d.side].filter(Boolean).join('  |  ');
   document.getElementById('ov-main').textContent = site;
   document.getElementById('ov-engineer').textContent = profile.name ? 'Engineer: ' + [profile.name, profile.designation].filter(Boolean).join(', ') : '';
   const descBits = [fieldsText(d), d.description].filter(Boolean).join('  |  ');
   document.getElementById('ov-desc').textContent = descBits;
 
   document.getElementById('dc-main').textContent = (d.photoType !== 'General' ? d.photoType + ' · ' : '') + d.activity;
-  const parts = [chainageText(d, 'short') ? 'Ch ' + chainageText(d, 'short') : 'No chainage', d.side];
+  const parts = [placeText(d) || (usesElements(currentProject) ? 'No ' + LAYOUTS_SITE[projectLayout(currentProject)].element.toLowerCase() : 'No chainage'), d.side];
   if (descBits) parts.push(descBits);
   document.getElementById('dc-sub').textContent = parts.join('  ·  ');
   updateChHint();
@@ -149,14 +177,47 @@ function startLocationTracking() {
       currentLocation = {
         lat: pos.coords.latitude.toFixed(6),
         lng: pos.coords.longitude.toFixed(6),
-        accuracy: Math.round(pos.coords.accuracy)
+        accuracy: Math.round(pos.coords.accuracy),
+        altitude: pos.coords.altitude != null ? Math.round(pos.coords.altitude) : null
       };
-      document.getElementById('ov-gps').textContent = `GPS: ${currentLocation.lat}, ${currentLocation.lng} (±${currentLocation.accuracy}m)`;
+      updateGpsLine();
+      maybeLookUpAddress();
     },
     () => { document.getElementById('ov-gps').textContent = 'GPS: Unavailable (turn on Location)'; },
     { enableHighAccuracy: true, maximumAge: 5000 }
   );
 }
+
+// ---------- place name and camera direction for the stamp ----------
+let currentAddress = '', addressAt = null, currentHeading = null;
+const DIRS = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+function headingText(h) { return h == null ? '' : `Facing ${DIRS[Math.round(h / 45) % 8]} ${Math.round(h)}°`; }
+
+function updateGpsLine() {
+  const el = document.getElementById('ov-gps');
+  if (!el || !currentLocation) return;
+  el.textContent = [`GPS: ${currentLocation.lat}, ${currentLocation.lng} (±${currentLocation.accuracy}m)`, headingText(currentHeading), currentAddress].filter(Boolean).join('  ·  ');
+}
+
+// Asks the phone for the place name when the engineer has moved more than 150 m
+function maybeLookUpAddress() {
+  if (!currentLocation || !hasAndroidBridge() || typeof window.AndroidBridge.reverseGeocode !== 'function' || !navigator.onLine) return;
+  const here = { lat: +currentLocation.lat, lng: +currentLocation.lng };
+  if (addressAt && gpsDistance(addressAt, here) < 150) return;
+  addressAt = here;
+  window.AndroidBridge.reverseGeocode('addr', here.lat, here.lng);
+}
+window.onNativeAddress = function (id, text) {
+  currentAddress = text || '';
+  updateGpsLine();
+};
+
+// Compass: which way the camera points (phone held upright)
+window.addEventListener('deviceorientationabsolute', e => {
+  if (e.alpha == null) return;
+  const h = (360 - e.alpha) % 360;
+  if (currentHeading == null || Math.abs(h - currentHeading) > 4) { currentHeading = h; updateGpsLine(); }
+}, true);
 
 function startClock() {
   if (clockInterval) clearInterval(clockInterval);
@@ -224,6 +285,8 @@ async function capturePhoto() {
     displayDate: fmtDate(now),
     displayTime: fmtTime(now),
     location: currentLocation ? Object.assign({}, currentLocation) : null,
+    address: currentLocation && currentAddress ? currentAddress : '',
+    heading: currentHeading != null ? Math.round(currentHeading) : null,
     engineer: { name: profile.name, designation: profile.designation, email: profile.email },
     hasMetadata: metadataEnabled,
     sharpness,
@@ -234,9 +297,12 @@ async function capturePhoto() {
   if (metadataEnabled) drawStamp(ctx, canvas.width, canvas.height, photo);
   photo.imageData = writeExif(canvas.toDataURL('image/jpeg', 0.85), photo);
 
+  applyRepeatTo(photo);
   await DB.save(photo);
   photos.unshift(photo);
+  if (photo.photoType === 'Hindrance') { await ensureHindranceRefs(); updateHindranceBadge(); }
   Sync.schedule();
+  Sync.updateDot();
 
   // Clear one-off details unless the engineer asked to keep them
   if (!document.getElementById('desc-keep').checked) {
@@ -247,10 +313,11 @@ async function capturePhoto() {
   }
   updateLastThumb();
 
+  const wasRepeat = await afterRepeatCapture(photo);
   if (sharpness !== null && sharpness < BLUR_LIMIT) {
     showToast('This photo may be blurry', 'danger', { label: 'RETAKE', onClick: () => deletePhotos([photo.id], true) });
-  } else {
-    showToast('Saved to ' + currentProject.name, 'success');
+  } else if (!wasRepeat) {
+    showToast(photo.hind ? `Saved as hindrance ${photo.hind.ref}` : 'Saved to ' + currentProject.name, 'success');
   }
 }
 
@@ -260,7 +327,7 @@ function drawStamp(ctx, w, h, p) {
   const lh = Math.round(fs * 1.38);
   const pad = Math.round(fs * 0.8);
   const maxW = w - pad * 2;
-  const gpsText = p.location ? `GPS: ${p.location.lat}, ${p.location.lng} (±${p.location.accuracy}m)` : 'GPS: Unavailable';
+  const gpsText = p.location ? `GPS: ${p.location.lat}, ${p.location.lng}${p.location.accuracy != null ? ` (±${p.location.accuracy}m)` : ''}${p.location.altitude != null ? `  Alt ${p.location.altitude} m` : ''}${p.heading != null ? '  ' + headingText(p.heading) : ''}` : 'GPS: Unavailable';
   const lines = [];
   const push = (text, colour, bold, maxLines = 1) => {
     if (!text) return;
@@ -268,9 +335,10 @@ function drawStamp(ctx, w, h, p) {
     wrapText(ctx, text, maxW, maxLines).forEach(t => lines.push([t, colour, bold]));
   };
   push(p.projectName, '#fbbf24', true);
-  push([p.activity, chainageText(p, 'short') ? 'Ch: ' + chainageText(p, 'short') : '', p.side].filter(Boolean).join('  |  '), '#ffffff', true, 2);
+  push([p.activity, p.element, chainageText(p, 'short') ? 'Ch: ' + chainageText(p, 'short') : '', p.side].filter(Boolean).join('  |  '), '#ffffff', true, 2);
   push(`${p.displayDate}  ${new Date(p.timestamp).toLocaleTimeString('en-GB')}`, '#e2e8f0', false);
   push(gpsText, '#fcd34d', false);
+  if (p.address) push(p.address, '#fde68a', false);
   if (p.engineer && p.engineer.name) push('Engineer: ' + [p.engineer.name, p.engineer.designation].filter(Boolean).join(', '), '#e2e8f0', false);
   const long = p.photoType === 'Hindrance' ? 8 : 4;
   push(fieldsText(p), '#ffffff', false, long);
@@ -354,6 +422,7 @@ function photoSummaryText(p) {
   return [
     `${p.projectFullName || p.projectName}`,
     `Activity: ${p.activity}`,
+    p.element ? `${LAYOUTS_SITE[projectLayout(currentProject)].element || 'Location'}: ${p.element}` : '',
     chainageText(p) ? `Chainage: ${chainageText(p)}` : '',
     p.side ? `Side: ${p.side}` : '',
     p.photoType !== 'General' ? `Type: ${p.photoType}` : '',
@@ -377,7 +446,7 @@ function writeExif(dataUrl, p) {
       zeroth[piexif.ImageIFD.Artist] = asciiOnly(p.engineer.name);
       zeroth[piexif.ImageIFD.XPAuthor] = ucs2Bytes(p.engineer.name);
     }
-    zeroth[piexif.ImageIFD.XPTitle] = ucs2Bytes([p.activity, chainageText(p, 'short'), p.side].filter(Boolean).join(' | '));
+    zeroth[piexif.ImageIFD.XPTitle] = ucs2Bytes([p.activity, p.element, chainageText(p, 'short'), p.side].filter(Boolean).join(' | '));
     zeroth[piexif.ImageIFD.XPComment] = ucs2Bytes(summary);
     zeroth[piexif.ImageIFD.XPSubject] = ucs2Bytes(p.projectFullName || p.projectName);
     zeroth[piexif.ImageIFD.XPKeywords] = ucs2Bytes([p.projectName, p.activity, p.side, p.photoType].filter(Boolean).join(';'));

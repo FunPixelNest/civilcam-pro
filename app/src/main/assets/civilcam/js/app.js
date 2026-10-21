@@ -1,8 +1,14 @@
 // ============================================================
 // START-UP
 // ============================================================
+// The sign-in page always comes first on a new install. If this build is not
+// connected to Firebase yet, it says so and "Use without an account" still works.
 function showAuth() {
-  if (!Account.available()) { if (!profile.name) showProfileForm(); else afterProfileReady(); return; }
+  const ready = Account.available();
+  document.getElementById('auth-buttons').classList.toggle('not-ready', !ready);
+  document.getElementById('auth-note').textContent = ready
+    ? 'Signing in keeps your projects backed up and shared with your company.'
+    : 'Sign-in is not switched on in this build yet. Use the app without an account for now; you can sign in later from Account and nothing is lost.';
   showOnly('auth-screen');
 }
 
@@ -15,6 +21,7 @@ function afterProfileReady() {
     showProjects();
   }
   Sync.updateDot();
+  setTimeout(() => { if (typeof autoImportScan === 'function') autoImportScan(); }, 2500);
 }
 
 async function boot() {
@@ -32,7 +39,7 @@ async function boot() {
   startClock();
 
   const choice = loadJSON('authChoice', '');
-  if (Account.available() && !choice && !Account.isSignedIn()) showAuth();
+  if (!choice && !Account.isSignedIn()) showAuth();
   else if (!profile.name) showProfileForm();
   else afterProfileReady();
 

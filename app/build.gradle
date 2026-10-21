@@ -11,14 +11,14 @@ if (file('google-services.json').exists()) {
 
 android {
     namespace 'com.funpixelnest.civilcampro'
-    compileSdk 34
+    compileSdk 36
 
     defaultConfig {
         applicationId "com.funpixelnest.civilcampro"
-        minSdk 23   // Android 6.0+, needed by Firebase sign-in
-        targetSdk 34
-        versionCode 1
-        versionName "1.0"
+        minSdk 24       // Android 7.0+, needed by the Google Mobile Ads SDK
+        targetSdk 36    // Android 16: required by Google Play for new apps and updates
+        versionCode 2
+        versionName "1.1"
     }
 
     buildTypes {
@@ -29,19 +29,23 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
+}
 
-    kotlinOptions {
-        jvmTarget = '1.8'
+kotlin {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
     }
 }
 
 dependencies {
-    implementation 'androidx.core:core-ktx:1.12.0'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'androidx.activity:activity-ktx:1.8.2'
+    implementation 'androidx.core:core-ktx:1.13.1'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'androidx.activity:activity-ktx:1.9.3'
+    // Reads date, time and GPS from photos taken with other camera apps
+    implementation 'androidx.exifinterface:exifinterface:1.3.7'
 
     // Sign-in: Firebase Auth (Google, Microsoft / company accounts, Apple)
     implementation platform('com.google.firebase:firebase-bom:33.7.0')
@@ -49,6 +53,14 @@ dependencies {
     implementation 'androidx.credentials:credentials:1.3.0'
     implementation 'androidx.credentials:credentials-play-services-auth:1.3.0'
     implementation 'com.google.android.libraries.identity.googleid:googleid:1.1.1'
+    // Google Drive permission for photo backup (AuthorizationClient)
+    implementation 'com.google.android.gms:play-services-auth:21.2.0'
+
+    // Ads (AdMob) and the consent message required in the EU / UK
+    implementation 'com.google.android.gms:play-services-ads:25.5.0'
+    implementation 'com.google.android.ump:user-messaging-platform:4.0.0'
+    // CivilCam Pro subscription through Google Play
+    implementation 'com.android.billingclient:billing:8.0.0'
 }
 
 // The PDF, Word, Excel and PowerPoint libraries are bundled in

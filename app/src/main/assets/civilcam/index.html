@@ -12,7 +12,7 @@
 <!-- ===== WELCOME / SIGN IN ===== -->
 <div id="auth-screen" class="full-screen">
   <div class="auth-hero">
-    <div class="brand-mark"><i data-ic="camera" data-size="34"></i></div>
+    <img class="brand-logo" src="img/logo.png" alt="CivilCam Pro">
     <div class="brand-name">CivilCam Pro</div>
     <div class="brand-sub">Site photographs, chainage-wise, ready for the client.</div>
   </div>
@@ -46,7 +46,11 @@
       <div class="top-kicker" id="projects-hello">Projects</div>
       <div class="top-title">Your projects</div>
     </div>
-    <button class="icon-btn" onclick="openAccountSheet()" aria-label="Account"><i data-ic="user"></i></button>
+    <div class="top-actions">
+      <button class="pro-chip" onclick="openPaywall('projects')" aria-label="CivilCam Pro"><i data-ic="crown" data-size="14"></i>PRO</button>
+      <button class="icon-btn" onclick="openHelp()" aria-label="How it works"><i data-ic="help"></i></button>
+      <button class="icon-btn" onclick="openAccountSheet()" aria-label="Account"><i data-ic="user"></i></button>
+    </div>
   </div>
   <div class="project-list" id="project-list"></div>
   <button class="fab" onclick="openProjectSheet()"><i data-ic="plus"></i><span>New project</span></button>
@@ -60,7 +64,8 @@
       <div class="header-project-name" id="header-project-name">—</div>
       <div class="header-project-sub" id="header-project-sub"></div>
     </div>
-    <span class="sync-dot" id="sync-dot" title="Sync status"></span>
+    <button class="sync-pill local" id="sync-pill" onclick="openSyncSheet()" aria-label="Sync status"><span>On phone</span></button>
+    <button class="icon-btn team-head-btn" onclick="openTeam()" aria-label="Team: engineers on this project"><i data-ic="users"></i></button>
     <button class="icon-btn" onclick="openProjectSheet(currentProject)" aria-label="Edit project"><i data-ic="edit"></i></button>
   </div>
 
@@ -68,6 +73,7 @@
   <div id="camera-screen" class="screen active">
     <video id="camera-video" autoplay playsinline muted></video>
     <canvas id="camera-canvas"></canvas>
+    <img id="ghost-img" class="ghost-img" alt="">
     <div class="capture-flash" id="capture-flash"></div>
 
     <div class="cam-top">
@@ -76,6 +82,7 @@
       </button>
       <div class="cam-top-right">
         <button class="cam-pill stamp-pill" id="meta-toggle" onclick="toggleMetadata()"><i data-ic="tag" data-size="16"></i><span id="meta-toggle-lbl">Stamp</span></button>
+        <button class="cam-sync" id="cam-sync" style="display:none" onclick="openSyncSheet()" aria-label="Photos waiting to upload"><i data-ic="cloud" data-size="15"></i><span>0</span></button>
         <button class="cam-round" id="flash-btn" onclick="toggleFlash()" aria-label="Torch"><i data-ic="flash" data-size="18"></i></button>
       </div>
     </div>
@@ -90,6 +97,13 @@
     </div>
 
     <div class="cam-bottom">
+      <div class="repeat-bar" id="repeat-bar">
+        <div class="rb-top">
+          <div class="rb-text"><b id="repeat-title">Same spot</b><div class="repeat-gps" id="repeat-gps"></div></div>
+          <button class="cam-round" onclick="endRepeat()" aria-label="Stop same-spot photo"><i data-ic="x" data-size="18"></i></button>
+        </div>
+        <label class="rb-slider"><span>Earlier photo</span><input type="range" id="ghost-opacity" min="0" max="85" value="40" oninput="setGhostOpacity(this.value)"></label>
+      </div>
       <button class="details-card" onclick="openDetailsSheet()">
         <div class="dc-text">
           <div class="dc-main" id="dc-main">Earthwork</div>
@@ -107,18 +121,24 @@
 
   <!-- GALLERY -->
   <div id="gallery-screen" class="screen">
+    <div class="gallery-top">
     <div class="gallery-search">
       <span class="search-ic"><i data-ic="search" data-size="18"></i></span>
       <input type="text" id="gallery-search-input" placeholder="Search, e.g. culvert near 14 km last month" oninput="onGallerySearch()" onkeydown="if(event.key==='Enter')runSmartSearch()">
       <button class="ai-chip" id="smart-search-btn" onclick="runSmartSearch()" style="display:none"><i data-ic="sparkles" data-size="14"></i>AI</button>
+    </div>
+    <button class="import-btn" onclick="openImportSheet()" aria-label="Import photos from other camera apps"><i data-ic="import" data-size="20"></i></button>
     </div>
     <div class="chip-scroll" id="gallery-period"></div>
     <div class="chip-scroll filters" id="gallery-filters"></div>
     <div class="gallery-action-bar" id="gallery-action-bar">
       <div class="sel-count" id="sel-count-lbl">0 selected</div>
       <div class="action-btns">
+        <button class="action-btn" id="sel-all-btn" onclick="selectAllShown()">All</button>
+        <button class="action-btn wa" onclick="shareSelected('whatsapp')" aria-label="Send to WhatsApp"><i data-ic="whatsapp" data-size="16"></i></button>
         <button class="action-btn" onclick="shareSelected()"><i data-ic="share" data-size="16"></i>Share</button>
-        <button class="action-btn" onclick="switchTab('export')"><i data-ic="file" data-size="16"></i>Report</button>
+        <button class="action-btn" onclick="saveSelected()" aria-label="Save to phone"><i data-ic="download" data-size="16"></i></button>
+        <button class="action-btn" onclick="switchTab('export')" aria-label="Make a report"><i data-ic="file" data-size="16"></i></button>
         <button class="action-btn danger" onclick="deleteSelected()"><i data-ic="trash" data-size="16"></i></button>
         <button class="action-btn" onclick="clearSelection()" aria-label="Clear selection"><i data-ic="x" data-size="16"></i></button>
       </div>
@@ -135,11 +155,23 @@
         <div><div class="strip-title" id="strip-title">Chainage</div><div class="strip-sub" id="strip-sub"></div></div>
         <div class="seg" id="strip-group-size"></div>
       </div>
-      <div class="strip" id="strip"></div>
-      <div class="strip-axis" id="strip-axis"></div>
-      <div class="strip-legend"><span><b class="lg0"></b>none</span><span><b class="lg1"></b>few</span><span><b class="lg3"></b>many photos</span></div>
+      <div class="map-box" id="site-map"></div>
+      <div class="strip-legend" id="map-legend"></div>
     </div>
     <div class="group-list" id="group-list"></div>
+  </div>
+
+  <!-- HINDRANCE REGISTER -->
+  <div id="hindrance-screen" class="screen">
+    <div class="hind-scroll">
+      <div class="hind-summary" id="hind-summary"></div>
+      <div class="chip-scroll inset hind-chips" id="hind-filter"></div>
+      <div id="hind-list"></div>
+      <div class="hind-export">
+        <button class="btn" onclick="exportHindrances('pdf')"><i data-ic="file" data-size="18"></i>Register PDF</button>
+        <button class="btn" onclick="exportHindrances('xlsx')"><i data-ic="file" data-size="18"></i>Register Excel</button>
+      </div>
+    </div>
   </div>
 
   <!-- EXPORT -->
@@ -174,6 +206,8 @@
       <div class="format-grid" id="format-grid"></div>
     </div>
 
+    <div class="export-section" id="brand-section" style="display:none"></div>
+
     <div class="export-section">
       <button class="btn primary block lg" id="export-generate-btn" onclick="generateExport()"><i data-ic="file"></i>Create report</button>
     </div>
@@ -183,6 +217,7 @@
     <button class="tab-btn active" data-tab="camera" onclick="switchTab('camera')"><i data-ic="camera" data-size="22"></i><span>Camera</span></button>
     <button class="tab-btn" data-tab="gallery" onclick="switchTab('gallery')"><i data-ic="image" data-size="22"></i><span>Gallery</span></button>
     <button class="tab-btn" data-tab="chainage" id="tab-chainage" onclick="switchTab('chainage')"><i data-ic="strip" data-size="22"></i><span>Chainage</span></button>
+    <button class="tab-btn" data-tab="hindrance" onclick="switchTab('hindrance')"><span class="tab-ic"><i data-ic="alert" data-size="22"></i><b class="tab-badge" id="hind-badge" style="display:none">0</b></span><span>Hindrance</span></button>
     <button class="tab-btn" data-tab="export" onclick="switchTab('export')"><i data-ic="file" data-size="22"></i><span>Reports</span></button>
   </div>
 </div>
@@ -201,14 +236,21 @@
     <div class="sheet-label">Activity</div>
     <div class="chip-wrap" id="activity-row"></div>
 
-    <div class="sheet-label">Chainage</div>
+    <div id="element-block" style="display:none">
+      <div class="sheet-label" id="element-label">Floor</div>
+      <div class="chip-wrap" id="element-row"></div>
+    </div>
+
+    <div id="ch-block">
+    <div class="sheet-label" id="ch-label">Chainage</div>
     <div class="ch-row">
       <label class="field compact"><span>From</span><input type="text" class="input" id="ch-from-input" placeholder="12+350" inputmode="decimal" autocomplete="off" oninput="updateOverlayMeta()" onblur="this.value=normCh(this.value);updateOverlayMeta()"></label>
       <label class="field compact"><span>To (optional)</span><input type="text" class="input" id="ch-to-input" placeholder="12+400" inputmode="decimal" autocomplete="off" oninput="updateOverlayMeta()" onblur="this.value=normCh(this.value);updateOverlayMeta()"></label>
     </div>
     <div class="ch-hint" id="ch-hint"></div>
+    </div>
 
-    <div class="sheet-label">Side</div>
+    <div class="sheet-label" id="side-label">Side</div>
     <div class="chip-wrap" id="side-row"></div>
 
     <div id="hindrance-block" style="display:none">
@@ -234,8 +276,29 @@
     <label class="field"><span>Full project name * <em>printed at the top of every report page</em></span><textarea class="input" id="pj-full" rows="3" placeholder="e.g. Four-laning of NH-44 from Km 0+000 to Km 25+000, Package 3"></textarea></label>
     <div class="sheet-label">Project type</div>
     <div class="chip-wrap" id="pj-type-row"></div>
+    <div class="sheet-label">Show on the site map as</div>
+    <div class="chip-wrap" id="pj-layout-row"></div>
+    <div class="sheet-hint" id="pj-layout-hint"></div>
+
+    <div id="pj-building-block" class="pj-block">
+      <div class="ch-row three">
+        <label class="field compact"><span>Basements</span><input class="input" id="pj-basements" type="number" min="0" max="10" inputmode="numeric" placeholder="0" oninput="updateProjectPreview()"></label>
+        <label class="field compact"><span>Floors above ground</span><input class="input" id="pj-floors" type="number" min="0" max="200" inputmode="numeric" placeholder="4" oninput="updateProjectPreview()"></label>
+      </div>
+      <label class="check-line"><input type="checkbox" id="pj-foundation" checked onchange="updateProjectPreview()"> Foundation level</label>
+      <label class="check-line"><input type="checkbox" id="pj-terrace" checked onchange="updateProjectPreview()"> Terrace</label>
+    </div>
+    <div id="pj-bridge-block" class="pj-block">
+      <label class="field compact"><span>Number of spans</span><input class="input" id="pj-spans" type="number" min="1" max="300" inputmode="numeric" placeholder="4" oninput="updateProjectPreview()"></label>
+      <label class="check-line"><input type="checkbox" id="pj-deck" checked onchange="updateProjectPreview()"> Deck / superstructure as its own location</label>
+    </div>
+    <div id="pj-plant-block" class="pj-block">
+      <label class="field compact"><span>Zones, one per line</span><textarea class="input" id="pj-zones" rows="5" placeholder="Boiler house&#10;Turbine building&#10;Cooling tower&#10;Switchyard" oninput="updateProjectPreview()"></textarea></label>
+    </div>
+    <div class="pj-preview" id="pj-preview"></div>
+
     <div id="pj-road-block">
-      <div class="sheet-label">Project chainage</div>
+      <div class="sheet-label" id="pj-ch-label">Project chainage</div>
       <div class="ch-row">
         <label class="field compact"><span>Start</span><input class="input" id="pj-start" placeholder="0+000" inputmode="decimal" oninput="updateProjectChHint()" onblur="this.value=normCh(this.value,true);updateProjectChHint()"></label>
         <label class="field compact"><span>End</span><input class="input" id="pj-end" placeholder="25+000" inputmode="decimal" oninput="updateProjectChHint()" onblur="this.value=normCh(this.value,true);updateProjectChHint()"></label>
@@ -244,6 +307,18 @@
     </div>
     <label class="field"><span>Client</span><input class="input" id="pj-client" placeholder="optional"></label>
     <label class="field"><span>Contractor</span><input class="input" id="pj-contractor" placeholder="optional"></label>
+    <div id="pj-team-block">
+      <div class="sheet-label">Team: engineers on this project</div>
+      <div class="sheet-hint" id="pj-team-hint"></div>
+      <button class="btn block" type="button" id="pj-team-signin" onclick="closeSheet('project-sheet');showAuth()" style="display:none"><i data-ic="user" data-size="16"></i>Sign in to add engineers</button>
+      <div id="pj-team-list"></div>
+      <div class="team-add" id="pj-team-add">
+        <input class="input" id="pj-team-email" type="email" inputmode="email" autocomplete="off" placeholder="engineer@gmail.com" onkeydown="if(event.key==='Enter'){event.preventDefault();addTeamMember()}">
+        <button class="btn" type="button" onclick="addTeamMember()"><i data-ic="plus" data-size="16"></i>Add</button>
+      </div>
+      <button class="link-btn" type="button" id="pj-team-invite" onclick="inviteTeam()"><i data-ic="whatsapp" data-size="16"></i>Tell them on WhatsApp</button>
+      <button class="link-btn" type="button" id="pj-team-leave" onclick="leaveTeam()" style="display:none">Leave this team</button>
+    </div>
     <button class="btn primary block" onclick="saveProjectFromSheet()">Save project</button>
     <button class="btn danger-ghost block" id="pj-delete" onclick="deleteProjectFromSheet()" style="display:none">Delete project</button>
   </div>
@@ -304,8 +379,137 @@
     <label class="field"><span>Company</span><input class="input" id="ac-company"></label>
     <button class="btn primary block" onclick="saveProfileFromAccount()">Save</button>
     <button class="btn block" id="ac-sync" onclick="Sync.now(true)"><i data-ic="cloud" data-size="18"></i>Sync now</button>
+    <button class="btn block" id="ac-drive" onclick="Drive.enabled() ? Drive.disconnect() : Drive.connect()"></button>
+    <div class="note" id="ac-drive-note"></div>
     <button class="btn block" id="ac-signin" onclick="closeSheet('account-sheet');showAuth()">Sign in to back up and share</button>
+    <button class="btn block pro-row" id="ac-pro" onclick="closeSheet('account-sheet');openPaywall('account')"></button>
+    <button class="btn block" id="ac-adprivacy" onclick="showAdPrivacy()" style="display:none">Ad privacy choices</button>
+    <button class="btn block" onclick="closeSheet('account-sheet');openHelp()"><i data-ic="help" data-size="18"></i>How it works</button>
+    <button class="btn block" onclick="closeSheet('account-sheet');openFeedback()"><i data-ic="mail" data-size="18"></i>Support &amp; suggestions</button>
     <button class="btn danger-ghost block" id="ac-signout" onclick="Account.signOut()"><i data-ic="logout" data-size="18"></i>Sign out</button>
+  </div>
+</div>
+
+<!-- Clear a hindrance -->
+<div class="sheet-backdrop" id="clear-sheet" onclick="if (event.target === this) closeSheet('clear-sheet')">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title" id="clear-title">Clear hindrance</div>
+    <div class="sheet-hint">A photo from the same spot is the best proof that it is cleared.</div>
+    <button class="btn primary block lg" onclick="clearWithPhoto()"><i data-ic="camera"></i>Take clearance photo</button>
+    <button class="btn block" onclick="clearWithoutPhoto()">Mark cleared without a photo</button>
+  </div>
+</div>
+
+<!-- Sync status -->
+<div class="sheet-backdrop" id="sync-sheet" onclick="if (event.target === this) closeSheet('sync-sheet')">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">Backup</div>
+    <div class="sync-state" id="sync-state"></div>
+    <div class="sync-counts" id="sync-counts"></div>
+    <div class="sync-waiting" id="sync-waiting"></div>
+    <label class="toggle-row"><span><b>Upload photos on Wi-Fi only</b><small>Saves mobile data. Details still sync on mobile data.</small></span>
+      <input type="checkbox" id="sync-wifi" onchange="saveJSON('syncWifiOnly', this.checked); Sync.updateDot()"></label>
+    <button class="btn primary block" id="sync-now-btn" onclick="Sync.now(true)"><i data-ic="cloud" data-size="18"></i>Upload now</button>
+    <button class="btn block" id="sync-signin-btn" onclick="closeSheet('sync-sheet');showAuth()">Sign in to back up</button>
+  </div>
+</div>
+
+<!-- Import from other camera apps -->
+<div class="sheet-backdrop" id="import-sheet" onclick="if (event.target === this) closeSheet('import-sheet')">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">Import photos</div>
+    <div class="sheet-hint">From GPS Map Camera, Timestamp Camera, the phone camera or any other app, into <b id="imp-project"></b>. Date, time and GPS saved in the photos are kept.</div>
+    <button class="btn primary block lg" onclick="importPick()"><i data-ic="image"></i>Pick photos</button>
+    <div id="imp-folder-block">
+      <div class="section-title" style="margin-top:20px">Synced camera folders</div>
+      <div class="sheet-hint">New photos in these folders are offered every time you open the app.</div>
+      <div id="imp-folders"></div>
+      <div class="btn-row">
+        <button class="btn block" onclick="importAddFolder()"><i data-ic="plus" data-size="18"></i>Add a folder</button>
+        <button class="btn block" id="imp-sync-btn" onclick="importScan()"><i data-ic="cloudDown" data-size="18"></i>Check now</button>
+      </div>
+    </div>
+  </div>
+</div>
+<input type="file" id="import-file" accept="image/*" multiple hidden onchange="onImportFiles(this)">
+
+<div class="sheet-backdrop" id="import-review" onclick="if (event.target === this) cancelImport()">
+  <div class="sheet tall">
+    <div class="sheet-handle"></div>
+    <div class="group-head">
+      <div><div class="sheet-title" id="imp-title">Photos</div><div class="sheet-hint">Tap a photo to leave it out.</div></div>
+      <button class="icon-btn" onclick="cancelImport()" aria-label="Cancel"><i data-ic="x"></i></button>
+    </div>
+    <div class="imp-summary" id="imp-summary"></div>
+    <div class="imp-grid" id="imp-grid"></div>
+    <div class="section-title" style="margin-top:16px">Details for these photos</div>
+    <div class="ch-row">
+      <label class="field compact"><span>Activity</span><select class="input" id="imp-act"></select></label>
+      <label class="field compact"><span>Side</span><select class="input" id="imp-side"></select></label>
+    </div>
+    <div class="ch-row">
+      <label class="field compact" id="imp-el-wrap"><span id="imp-el-lbl">Floor</span><select class="input" id="imp-el"></select></label>
+      <label class="field compact"><span>Type</span><select class="input" id="imp-type"></select></label>
+    </div>
+    <div id="imp-ch-wrap">
+      <div class="sheet-label">Chainage</div>
+      <div class="chip-wrap" id="imp-ch-mode">
+        <button class="chip" data-mode="suggest" onclick="setImportChMode('suggest')">From nearby photos (GPS)</button>
+        <button class="chip" data-mode="same" onclick="setImportChMode('same')">Same for all</button>
+        <button class="chip" data-mode="none" onclick="setImportChMode('none')">Leave empty</button>
+      </div>
+      <input class="input" id="imp-ch-value" placeholder="12+350" inputmode="decimal" style="margin-top:8px">
+    </div>
+    <label class="field"><span>Description <em>optional</em></span><input class="input" id="imp-desc" placeholder="e.g. Photos from Ramesh's phone"></label>
+    <label class="check-line"><input type="checkbox" id="imp-stamp"> Print the CivilCam stamp on them (leave off if they already have one)</label>
+    <button class="btn primary block lg" id="imp-add-btn" onclick="commitImport()">Add photos</button>
+  </div>
+</div>
+
+<div class="sheet-backdrop" id="choice-sheet">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title" id="choice-title">Choose</div>
+    <div class="sheet-hint" id="choice-hint"></div>
+    <div id="choice-list"></div>
+  </div>
+</div>
+
+<!-- CivilCam Pro -->
+<div class="sheet-backdrop" id="pro-sheet" onclick="if (event.target === this) closeSheet('pro-sheet')">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div id="pro-body"></div>
+  </div>
+</div>
+
+<!-- Support and suggestions -->
+<div class="sheet-backdrop" id="help-sheet" onclick="if (event.target === this) closeSheet('help-sheet')">
+  <div class="sheet tall">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">How CivilCam Pro works</div>
+    <div class="sheet-hint">Tap a topic to open it.</div>
+    <div id="help-list"></div>
+    <button class="btn block" onclick="closeSheet('help-sheet');openFeedback()"><i data-ic="mail" data-size="18"></i>Still stuck? Support &amp; suggestions</button>
+    <button class="btn primary block" onclick="closeSheet('help-sheet')">Got it</button>
+  </div>
+</div>
+
+<div class="sheet-backdrop" id="feedback-sheet" onclick="if (event.target === this) closeSheet('feedback-sheet')">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">Support &amp; suggestions</div>
+    <div class="sheet-hint">Tell us about a problem or an idea. It goes to the CivilCam Pro team by e-mail.</div>
+    <div class="sheet-label">This is</div>
+    <div class="chip-wrap" id="fb-kind"></div>
+    <label class="field"><span>Message</span><textarea class="input" id="fb-text" rows="6" placeholder="What happened, or what would make the app better for your site?"></textarea></label>
+    <label class="field"><span>Your phone / WhatsApp <em>optional, if you'd like a call back</em></span><input class="input" id="fb-phone" inputmode="tel" placeholder="+91 …"></label>
+    <label class="check-line"><input type="checkbox" id="fb-info" checked> Add app and phone details (helps us fix problems)</label>
+    <button class="btn primary block lg" onclick="sendFeedback()"><i data-ic="mail"></i>Send</button>
+    <div class="note" id="fb-note">Opens your e-mail app with the message ready to send to info@funpixelnest.com.</div>
   </div>
 </div>
 
@@ -323,6 +527,10 @@
       <button class="share-btn" onclick="openResult()"><i data-ic="open" data-size="24"></i>Open</button>
       <button class="share-btn" onclick="saveResultAgain()"><i data-ic="download" data-size="24"></i>Save</button>
     </div>
+    <button class="folder-btn" onclick="openSavedFolder('reports')">
+      <i data-ic="folder" data-size="22"></i>
+      <span><b>Show in file manager</b><small>Download / CivilCam</small></span>
+    </button>
     <div class="section-title" style="margin-top:18px">Same photos as</div>
     <div class="also-row" id="also-row"></div>
   </div>
@@ -343,9 +551,30 @@
       <button class="btn" onclick="sharePhoto(currentModalPhoto,'whatsapp')"><i data-ic="whatsapp" data-size="18"></i>WhatsApp</button>
       <button class="btn" onclick="sharePhoto(currentModalPhoto)"><i data-ic="share" data-size="18"></i>Share</button>
       <button class="btn" onclick="downloadPhoto(currentModalPhoto)"><i data-ic="download" data-size="18"></i>Save</button>
+      <button class="btn" id="drive-btn" style="display:none" onclick="currentModalPhoto && currentModalPhoto.previewOnly ? fullPhotoActions(currentModalPhoto) : openDriveLink(currentModalPhoto)"><i data-ic="open" data-size="18"></i>Drive</button>
       <button class="btn danger-ghost" onclick="deletePhotoFromModal()" aria-label="Delete"><i data-ic="trash" data-size="18"></i></button>
     </div>
+    <div class="viewer-actions">
+      <button class="btn" onclick="startRepeat(currentModalPhoto.id)"><i data-ic="camera" data-size="18"></i>Photo, same spot</button>
+      <button class="btn" id="compare-btn" style="display:none" onclick="compareFromModal()"><i data-ic="strip" data-size="18"></i>Before / after</button>
+    </div>
   </div>
+</div>
+
+<!-- Before / after -->
+<div class="viewer" id="compare-modal">
+  <div class="viewer-top">
+    <button class="icon-btn dark" onclick="closeCompare()" aria-label="Close"><i data-ic="x"></i></button>
+    <div class="viewer-title" id="cmp-title"></div>
+  </div>
+  <div class="cmp-stage" id="cmp-stage">
+    <img id="cmp-before" alt="Before">
+    <img id="cmp-after" alt="After">
+    <div class="cmp-line" id="cmp-line"><span></span></div>
+    <div class="cmp-lbl left" id="cmp-before-lbl"></div>
+    <div class="cmp-lbl right" id="cmp-after-lbl"></div>
+  </div>
+  <div class="cmp-hint">Drag across the photo to compare</div>
 </div>
 
 <div class="loading-overlay" id="loading-overlay">
@@ -366,16 +595,26 @@
 <script src="js/core.js"></script>
 <script src="js/ui.js"></script>
 <script src="js/account.js"></script>
+<script src="js/drive.js"></script>
+<script src="js/hindrance.js"></script>
+<script src="js/repeat.js"></script>
+<script src="js/import.js"></script>
+<script src="js/team.js"></script>
+<script src="js/help.js"></script>
 <script src="js/projects.js"></script>
 <script src="js/camera.js"></script>
 <script src="js/gallery.js"></script>
+<script src="js/sitemap.js"></script>
 <script src="js/chainage.js"></script>
+<script src="js/feedback.js"></script>
 <script src="js/report-common.js"></script>
 <script src="js/export-pdf.js"></script>
 <script src="js/export-word.js"></script>
 <script src="js/export-excel.js"></script>
 <script src="js/export-ppt.js"></script>
 <script src="js/export.js"></script>
+<script src="js/client-view.js"></script>
+<script src="js/monetize.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>

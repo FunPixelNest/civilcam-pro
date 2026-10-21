@@ -40,6 +40,11 @@ const Account = (() => {
     saveJSON('authChoice', 'account');
     showToast('Signed in as ' + (r.email || r.name), 'success');
     Sync.now();
+    // Google accounts: ask once for permission to keep full photos in their own Drive
+    if (/google/i.test(r.provider || '') && Drive.supported() && !loadJSON('driveBackupAsked', false)) {
+      saveJSON('driveBackupAsked', true);
+      setTimeout(() => Drive.connect(), 600);
+    }
     if (firstTime || !profile.designation) showProfileForm(); else afterProfileReady();
   };
 
@@ -91,7 +96,17 @@ const Account = (() => {
 // ============================================================
 const Sync = (() => {
   let timer = null, running = false, status = 'idle', lastError = '';
-  const base = () => `https://firestore.googleapis.com/v1/projects/${CONFIG.firebase.projectId}/databases/(default)/documents/orgs/${encodeURIComponent(Account.orgId())}`;
+  let progress = null;          // { done, total } while photos upload
+  // Where things live in Firestore:
+  //   orgs/<company domain or u_uid>/{projects,photos,options}/<id>   own / company projects
+  //   teams/<projectId>  (+ /photos/<id>)                              projects shared with named engineers
+  const root = () => `https://firestore.googleapis.com/v1/projects/${CONFIG.firebase.projectId}/databases/(default)/documents`;
+  const orgPath = () => `orgs/${encodeURIComponent(Account.orgId())}`;
+  const base = () => `${root()}/${orgPath()}`;
+  const enc1 = encodeURIComponent;
+  function projectOf(p) { return projects.find(x => x.id === p.projectId); }
+  function projectPath(pj) { return pj.team ? `teams/${enc1(pj.id)}` : `${orgPath()}/projects/${enc1(pj.id)}`; }
+  function photoPath(p, pj = projectOf(p)) { return pj && pj.team ? `teams/${enc1(pj.id)}/photos/${enc1(p.id)}` : `${orgPath()}/photos/${enc1(p.id)}`; }
 
   function enabled() { return Account.available() && Account.isSignedIn(); }
 
@@ -101,9 +116,10 @@ const Sync = (() => {
     timer = setTimeout(() => now(), 3000);
   }
 
-  function markDeleted(coll, id) {
+  // path: the document to mark deleted (defaults to the own / company space)
+  function markDeleted(coll, id, path) {
     const q = loadJSON('pendingDeletes', []);
-    q.push({ coll, id });
+    q.push({ coll, id, path: path || '' });
     saveJSON('pendingDeletes', q);
     schedule();
   }
@@ -148,12 +164,14 @@ const Sync = (() => {
   }
 
   const putDoc = (coll, id, data, token) => api('PATCH', `${base()}/${coll}/${encodeURIComponent(id)}`, token, { fields: encFields(data) });
+  const putAt = (path, data, token) => api('PATCH', `${root()}/${path}`, token, { fields: encFields(data) });
 
-  async function query(coll, since, token) {
+  // Changed documents of one collection under parent (default: own / company space)
+  async function query(coll, since, token, parent) {
     const out = [];
     let cursor = since;
     for (;;) {
-      const rows = await api('POST', `${base()}:runQuery`, token, { structuredQuery: {
+      const rows = await api('POST', `${parent ? `${root()}/${parent}` : base()}:runQuery`, token, { structuredQuery: {
         from: [{ collectionId: coll }],
         where: { fieldFilter: { field: { fieldPath: 'updatedAt' }, op: 'GREATER_THAN', value: { integerValue: String(cursor) } } },
         orderBy: [{ field: { fieldPath: 'updatedAt' }, direction: 'ASCENDING' }],
@@ -187,10 +205,27 @@ const Sync = (() => {
   }
 
   // ----- one sync round -----
+  // Photos and changes still on this phone only
+  function pending() {
+    const waitingPhotos = photos.filter(p => !p.synced && p.imageData && !p.previewOnly);
+    return {
+      photos: waitingPhotos.filter(p => !p.uploaded).length,
+      details: waitingPhotos.filter(p => p.uploaded).length + projects.filter(p => !p.synced).length + loadJSON('pendingDeletes', []).length,
+      list: waitingPhotos
+    };
+  }
+
+  function onWifi() {
+    const c = navigator.connection;
+    if (!c || !c.type || c.type === 'unknown') return true;     // can't tell: allow
+    return c.type === 'wifi' || c.type === 'ethernet';
+  }
+
   async function now(manual) {
     if (!enabled()) { if (manual) showToast('Sign in to sync', 'danger'); return; }
     if (running) return;
     if (!navigator.onLine) { status = 'offline'; updateDot(); return; }
+    if (!manual && loadJSON('syncWifiOnly', false) && !onWifi() && pending().photos) { status = 'waitwifi'; updateDot(); return; }
     running = true; status = 'syncing'; updateDot();
     try {
       const token = await Account.getToken();
@@ -198,7 +233,7 @@ const Sync = (() => {
       // 1. send what changed here
       for (const pj of (await DB.getAll('projects')).filter(x => !x.synced)) {
         const data = Object.assign({}, pj); delete data.synced;
-        await putDoc('projects', pj.id, data, token);
+        await putAt(projectPath(pj), data, token);
         pj.synced = true; await DB.put('projects', pj);
         const mem = projects.find(x => x.id === pj.id);
         if (mem) mem.synced = true;
@@ -207,14 +242,33 @@ const Sync = (() => {
         await putDoc('options', op.key, { key: op.key, values: op.values, updatedAt: op.updatedAt }, token);
         op.synced = true; await DB.put('options', op);
       }
-      for (const p of photos.filter(x => !x.synced && x.imageData)) {
-        if (!p.uploaded) { await uploadImage(p, token); p.uploaded = true; }
-        const data = Object.assign({}, p); delete data.imageData; delete data.synced;
-        await putDoc('photos', p.id, data, token);
+      const toSend = photos.filter(x => !x.synced && x.imageData);
+      progress = { done: 0, total: toSend.length };
+      for (const p of toSend) {
+        progress.done++; updateDot();
+        if (!p.uploaded) {
+          // Small preview for colleagues; the full photo goes to the engineer's Google Drive
+          if (!p.thumb) p.thumb = await makePreview(p.imageData);
+          if (Drive.enabled()) {
+            const f = await Drive.upload(p);
+            p.driveId = f.id; p.driveLink = f.webViewLink || ''; p.driveOwner = profile.email;
+          } else if (CONFIG.firebase.storageBucket && !loadJSON('driveBackup', false)) {
+            await uploadImage(p, token);
+          }
+          p.uploaded = true;
+        }
+        // Team project: let the team open the full photo from this engineer's Drive (by link)
+        const pj = projectOf(p);
+        if (pj && pj.team && p.driveId && !p.linkShared && p.driveOwner === profile.email && Drive.enabled()) {
+          try { await Drive.shareByLink(p.driveId); p.linkShared = true; } catch (e) { console.warn('Drive sharing', e); }
+        }
+        const data = Object.assign({}, p);
+        delete data.imageData; delete data.synced; delete data.previewOnly; delete data.fullCached;
+        await putAt(photoPath(p, pj), data, token);
         p.synced = true; await DB.save(p);
       }
       const dels = loadJSON('pendingDeletes', []);
-      for (const d of dels) await putDoc(d.coll, d.id, { id: d.id, deleted: true, updatedAt: Date.now() }, token);
+      for (const d of dels) await putAt(d.path || `${orgPath()}/${d.coll}/${enc1(d.id)}`, Object.assign({ id: d.id, deleted: true, updatedAt: Date.now() }, d.extra || {}), token);
       saveJSON('pendingDeletes', []);
 
       // 2. bring in what colleagues (or this account on another phone) changed
@@ -223,7 +277,8 @@ const Sync = (() => {
       for (const pj of await query('projects', since, token)) {
         newest = Math.max(newest, pj.updatedAt || 0);
         const local = projects.find(x => x.id === pj.id);
-        if (pj.deleted) { if (local) { projects = projects.filter(x => x.id !== pj.id); await DB.del('projects', pj.id); changed = true; } continue; }
+        // (a project that became a team project leaves a "deleted" marker here; the team copy wins)
+        if (pj.deleted) { if (local && !local.team) { projects = projects.filter(x => x.id !== pj.id); await DB.del('projects', pj.id); changed = true; } continue; }
         if (!local || (local.updatedAt || 0) < pj.updatedAt) {
           const rec = Object.assign({}, local || {}, pj, { synced: true });
           await DB.put('projects', rec);
@@ -238,20 +293,15 @@ const Sync = (() => {
         await DB.put('options', { key: op.key, values: merged, updatedAt: op.updatedAt, synced: merged.length === (op.values || []).length });
         changed = true;
       }
-      for (const rp of await query('photos', since, token)) {
-        newest = Math.max(newest, rp.updatedAt || 0);
-        const local = photos.find(x => x.id === rp.id);
-        if (rp.deleted) { if (local) { photos = photos.filter(x => x.id !== rp.id); await DB.delPhoto(rp.id); changed = true; } continue; }
-        if (local && (local.updatedAt || 0) >= rp.updatedAt) continue;
-        const rec = normPhoto(Object.assign({}, local || {}, rp, { synced: true, uploaded: true }));
-        if (!rec.imageData) {
-          try { rec.imageData = await downloadImage(rp.id, token); } catch (e) { continue; }
-        }
-        await DB.save(rec);
-        if (local) Object.assign(local, rec); else photos.push(rec);
-        changed = true;
-      }
+      const pulled = await query('photos', since, token);
+      pulled.forEach(rp => { newest = Math.max(newest, rp.updatedAt || 0); });
+      if (await mergePhotos(pulled)) changed = true;
       saveJSON('lastPull_' + Account.orgId(), newest);
+
+      // 3. projects shared with this engineer by name (team projects) and their photos
+      if (profile.email) {
+        if (await pullTeams(token)) changed = true;
+      }
       if (changed) {
         photos.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
         refreshAfterSync();
@@ -265,15 +315,93 @@ const Sync = (() => {
       if (manual) showToast('Sync failed: ' + e.message, 'danger');
     } finally {
       running = false;
+      progress = null;
       updateDot();
     }
   }
 
+  // Photos coming from the cloud keep only the small preview on this phone. The full photo is
+  // fetched when the engineer asks for it (save to phone, save to Drive, share, report).
+  async function mergePhotos(list, fromTeam) {
+    let changed = false;
+    for (const rp of list) {
+      const local = photos.find(x => x.id === rp.id);
+      // Markers left in the own / company space when a project moved to a team are ignored
+      const movedToTeam = !fromTeam && local && (projectOf(local) || {}).team;
+      if (rp.deleted) { if (local && !movedToTeam) { photos = photos.filter(x => x.id !== rp.id); await DB.delPhoto(rp.id); changed = true; } continue; }
+      if (local && (local.updatedAt || 0) >= rp.updatedAt) continue;
+      const rec = normPhoto(Object.assign({}, local || {}, rp, { synced: true, uploaded: true }));
+      if (!rec.imageData) { rec.imageData = rec.thumb || ''; rec.previewOnly = true; }
+      await DB.save(rec);
+      if (local) Object.assign(local, rec); else photos.push(rec);
+      changed = true;
+    }
+    return changed;
+  }
+
+  async function pullTeams(token) {
+    const me = profile.email.toLowerCase();
+    const rows = await api('POST', `${root()}:runQuery`, token, { structuredQuery: {
+      from: [{ collectionId: 'teams' }],
+      where: { fieldFilter: { field: { fieldPath: 'members' }, op: 'ARRAY_CONTAINS', value: { stringValue: me } } },
+      limit: 300
+    } });
+    const teams = rows.filter(r => r.document).map(r => decFields(r.document.fields || {}));
+    let changed = false;
+    const ids = new Set();
+    for (const t of teams) {
+      ids.add(t.id);
+      const local = projects.find(x => x.id === t.id);
+      if (t.deleted) { if (local) { await removeProjectLocally(local); changed = true; } continue; }
+      if (!local || (local.updatedAt || 0) < (t.updatedAt || 0) || !local.team) {
+        const rec = Object.assign({}, local || {}, t, { team: true, synced: true });
+        await DB.put('projects', rec);
+        if (local) Object.assign(local, rec); else projects.push(rec);
+        changed = true;
+      }
+      const key = 'lastPull_team_' + t.id;
+      const since = loadJSON(key, 0);
+      const list = await query('photos', since, token, `teams/${enc1(t.id)}`);
+      if (await mergePhotos(list, true)) changed = true;
+      saveJSON(key, list.reduce((m, p) => Math.max(m, p.updatedAt || 0), since));
+    }
+    // Taken off a team by its owner: drop the project from this phone (own unsent photos stay)
+    for (const pj of projects.filter(x => x.team && x.synced && !ids.has(x.id) && (x.owner || '') !== me)) {
+      await removeProjectLocally(pj, true);
+      showToast(`You are no longer in the team for ${pj.name}`, '');
+      changed = true;
+    }
+    return changed;
+  }
+
+  async function removeProjectLocally(pj, keepUnsent) {
+    for (const ph of photos.filter(p => p.projectId === pj.id && !(keepUnsent && !p.synced))) await DB.delPhoto(ph.id);
+    photos = photos.filter(p => p.projectId !== pj.id || (keepUnsent && !p.synced));
+    projects = projects.filter(x => x.id !== pj.id);
+    await DB.del('projects', pj.id);
+  }
+
+  // Header badge, camera chip, gallery badges and the sync sheet all read from here
   function updateDot() {
-    const dot = document.getElementById('sync-dot');
-    if (!dot) return;
-    dot.className = 'sync-dot ' + (enabled() ? status : 'off');
-    dot.title = statusText();
+    const pill = document.getElementById('sync-pill');
+    const cam = document.getElementById('cam-sync');
+    const n = pending();
+    let cls, text;
+    if (!enabled()) { cls = 'local'; text = 'On phone'; }
+    else if (running && progress) { cls = 'syncing'; text = `Uploading ${progress.done}/${progress.total}`; }
+    else if (status === 'offline' || !navigator.onLine) { cls = 'offline'; text = n.photos ? `Offline · ${n.photos} waiting` : 'Offline'; }
+    else if (status === 'waitwifi') { cls = 'offline'; text = `Waiting for Wi-Fi · ${n.photos}`; }
+    else if (status === 'error') { cls = 'error'; text = 'Sync problem'; }
+    else if (n.photos || n.details) { cls = 'waiting'; text = `${n.photos + n.details} waiting`; }
+    else { cls = 'idle'; text = 'Synced'; }
+    if (pill) { pill.className = 'sync-pill ' + cls; pill.querySelector('span').textContent = text; pill.title = statusText(); }
+    if (cam) {
+      const show = enabled() && (n.photos > 0 || cls === 'error');
+      cam.style.display = show ? '' : 'none';
+      cam.className = 'cam-sync ' + cls;
+      cam.querySelector('span').textContent = cls === 'syncing' ? `${progress.done}/${progress.total}` : `${n.photos}`;
+    }
+    if (document.getElementById('sync-sheet') && document.getElementById('sync-sheet').classList.contains('open')) renderSyncSheet();
   }
 
   function statusText() {
@@ -282,11 +410,16 @@ const Sync = (() => {
     if (status === 'syncing') return 'Syncing…';
     if (status === 'error') return 'Sync problem: ' + lastError;
     if (status === 'offline') return 'Offline — will sync later';
+    if (status === 'waitwifi') return 'Waiting for Wi-Fi to upload photos';
     return at ? 'Synced ' + fmtTime(at) : 'Not synced yet';
   }
 
-  window.addEventListener('online', () => schedule());
-  return { schedule, now, markDeleted, updateDot, statusText, enabled };
+  window.addEventListener('online', () => { status = 'idle'; updateDot(); schedule(); });
+  window.addEventListener('offline', () => { status = 'offline'; updateDot(); });
+  if (navigator.connection && navigator.connection.addEventListener) {
+    navigator.connection.addEventListener('change', () => { if (status === 'waitwifi' && onWifi()) schedule(); });
+  }
+  return { schedule, now, markDeleted, updateDot, statusText, enabled, pending, lastError: () => lastError, photoPath, projectPath, orgPath, putAt, root, downloadImage };
 })();
 
 function refreshAfterSync() {
@@ -298,7 +431,41 @@ function refreshAfterSync() {
     applyProjectToUI();
     if (currentTab === 'gallery') renderGallery();
     if (currentTab === 'chainage') renderStrip();
+    if (currentTab === 'hindrance') renderHindrances();
   }
+}
+
+// ============================================================
+// BACKUP SHEET: what is safe in the cloud, what is still only on this phone
+// ============================================================
+function openSyncSheet() {
+  renderSyncSheet();
+  openSheet('sync-sheet');
+}
+
+function renderSyncSheet() {
+  const on = Sync.enabled();
+  const n = Sync.pending();
+  const pill = document.getElementById('sync-pill');
+  const cls = pill ? pill.className.replace('sync-pill', '').trim() : '';
+  const total = photos.length;
+  const where = typeof Drive !== 'undefined' && Drive.enabled() ? 'your Google Drive' : 'the cloud';
+  document.getElementById('sync-state').className = 'sync-state ' + cls;
+  document.getElementById('sync-state').innerHTML = !on
+    ? `<b>Photos are only on this phone</b><span>If the phone is lost or reset, they are gone. Sign in to back them up to ${where}.</span>`
+    : `<b>${esc(Sync.statusText())}</b><span>${n.photos ? `${n.photos} photo${n.photos === 1 ? '' : 's'} not backed up yet. They are safe on the phone and upload by themselves when there is a connection.` : `All photos are backed up to ${where}.`}</span>`;
+  document.getElementById('sync-counts').innerHTML = on ? `
+    <div class="hs-box"><b>${total - n.photos}</b><span>backed up</span></div>
+    <div class="hs-box ${n.photos ? 'warn' : ''}"><b>${n.photos}</b><span>photos waiting</span></div>
+    <div class="hs-box"><b>${n.details}</b><span>changes waiting</span></div>` : '';
+  const waiting = n.list.filter(p => !p.uploaded).slice(0, 24);
+  document.getElementById('sync-waiting').innerHTML = on && waiting.length
+    ? `<div class="section-title">Waiting to upload</div><div class="sw-grid">${waiting.map(p => `<button onclick="closeSheet('sync-sheet');openPhotoModal('${p.id}')"><img src="${p.imageData}" alt=""></button>`).join('')}</div>` : '';
+  document.getElementById('sync-wifi').checked = !!loadJSON('syncWifiOnly', false);
+  document.getElementById('sync-wifi').closest('.toggle-row').style.display = on ? '' : 'none';
+  document.getElementById('sync-now-btn').style.display = on ? '' : 'none';
+  document.getElementById('sync-now-btn').disabled = !navigator.onLine;
+  document.getElementById('sync-signin-btn').style.display = on ? 'none' : '';
 }
 
 // ============================================================

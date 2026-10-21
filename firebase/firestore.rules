@@ -23,5 +23,44 @@ service cloud.firestore {
     match /orgs/{org}/{collection}/{doc} {
       allow read, write: if member(org) && collection in ['projects', 'photos', 'options'];
     }
+
+    // Team projects: teams/{projectId} holds the project with members = [lower-case e-mails].
+    // Members read and write the project and its photos. Only the owner changes the member list;
+    // a member may take only themselves off it (leave the team).
+    function myEmail() { return request.auth.token.email.lower(); }
+    function verifiedEmail() {
+      return signedIn() && request.auth.token.email != null && request.auth.token.email_verified == true;
+    }
+    function isMember(pid) {
+      return verifiedEmail() && myEmail() in get(/databases/$(database)/documents/teams/$(pid)).data.members;
+    }
+    match /teams/{pid} {
+      allow read: if verifiedEmail() && myEmail() in resource.data.members;
+      allow create: if verifiedEmail()
+        && request.resource.data.owner == myEmail()
+        && request.resource.data.members is list
+        && myEmail() in request.resource.data.members
+        && request.resource.data.members.size() <= 50;
+      allow update: if verifiedEmail()
+        && myEmail() in resource.data.members
+        && request.resource.data.owner == resource.data.owner
+        && request.resource.data.members.size() <= 50
+        && (resource.data.owner == myEmail()
+            || request.resource.data.members == resource.data.members
+            || request.resource.data.members == resource.data.members.removeAll([myEmail()]));
+      allow delete: if verifiedEmail() && resource.data.owner == myEmail();
+
+      match /photos/{photoId} {
+        allow read, write: if isMember(pid);
+      }
+    }
+
+    // Support & suggestions: anyone signed in can send one; only the team reads them (in the console)
+    match /feedback/{id} {
+      allow create: if signedIn()
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.text is string
+        && request.resource.data.text.size() < 20000;
+    }
   }
 }
