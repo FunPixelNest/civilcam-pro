@@ -44,7 +44,7 @@ const Drive = (() => {
     const send = () => fetch(url, { method, headers: Object.assign({ Authorization: 'Bearer ' + t }, headers), body });
     let r = await send();
     if (r.status === 401) { token = null; t = await getToken(false); r = await send(); }   // token expired
-    if (!r.ok) throw new Error('Drive ' + r.status);
+    if (!r.ok) { const e = new Error('Drive ' + r.status); e.status = r.status; throw e; }
     return r;
   }
 
@@ -79,8 +79,19 @@ const Drive = (() => {
     ].filter(Boolean).join(' | ');
   }
 
-  // Uploads one photo; returns { id, webViewLink }
+  // Uploads one photo; returns { id, webViewLink }.
+  // A 404 means the remembered CivilCam folders are gone (deleted, or Drive permission was given
+  // with a different Google account): forget them, make new ones and try once more.
   async function upload(p) {
+    try { return await uploadOnce(p); }
+    catch (e) {
+      if (e.status !== 404) throw e;
+      saveJSON('driveFolders', {});
+      return await uploadOnce(p);
+    }
+  }
+
+  async function uploadOnce(p) {
     const proj = projects.find(x => x.id === p.projectId);
     const root = await folder('CivilCam');
     const dir = await folder(proj ? (proj.name || 'Project') : 'Photos', root);

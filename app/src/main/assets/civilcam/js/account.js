@@ -261,8 +261,11 @@ const Sync = (() => {
       }
       const toSend = photos.filter(x => !x.synced && x.imageData);
       progress = { done: 0, total: toSend.length };
+      let failed = 0, firstFail = '';
       for (const p of toSend) {
         progress.done++; updateDot();
+        // One photo that will not upload must not stop all the others
+        try {
         if (!p.uploaded) {
           // Small preview for colleagues; the full photo goes to the engineer's Google Drive
           if (!p.thumb) p.thumb = await makePreview(p.imageData);
@@ -289,6 +292,11 @@ const Sync = (() => {
         delete data.imageData; delete data.synced; delete data.previewOnly; delete data.fullCached;
         await putAt(photoPath(p, pj), data, token);
         p.synced = true; await DB.save(p);
+        } catch (e) {
+          failed++; if (!firstFail) firstFail = e.message;
+          console.warn('Photo upload failed', p.id, e);
+          if (/consent needed|cancel|Not connected to OneDrive|sign-in needed/i.test(e.message)) throw e;   // the same for every photo
+        }
       }
       const dels = loadJSON('pendingDeletes', []);
       for (const d of dels) await putAt(d.path || `${orgPath()}/${d.coll}/${enc1(d.id)}`, Object.assign({ id: d.id, deleted: true, updatedAt: Date.now() }, d.extra || {}), token);
@@ -329,6 +337,7 @@ const Sync = (() => {
         photos.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
         refreshAfterSync();
       }
+      if (failed) throw new Error(`${failed} photo${failed === 1 ? '' : 's'} could not upload (${firstFail}). They are safe on the phone and will be tried again.`);
       status = 'idle'; lastError = '';
       saveJSON('lastSyncAt', Date.now());
       if (manual) showToast('Everything is synced', 'success');
