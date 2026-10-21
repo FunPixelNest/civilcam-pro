@@ -48,10 +48,15 @@
     </div>
     <div class="top-actions">
       <button class="pro-chip" onclick="openPaywall('projects')" aria-label="CivilCam Pro"><i data-ic="crown" data-size="14"></i>PRO</button>
-      <button class="icon-btn" onclick="openHelp()" aria-label="How it works"><i data-ic="help"></i></button>
+      <button class="help-pill" onclick="openHelp()"><i data-ic="help" data-size="16"></i>Help</button>
       <button class="icon-btn" onclick="openAccountSheet()" aria-label="Account"><i data-ic="user"></i></button>
     </div>
   </div>
+  <button class="help-banner" id="help-banner" onclick="openHelp()">
+    <span class="menu-ic"><i data-ic="help" data-size="20"></i></span>
+    <span><b>How CivilCam Pro works</b><small>A 2-minute guide to projects, photos, team, reports and backup</small></span>
+    <span class="hb-x" role="button" aria-label="Hide" onclick="event.stopPropagation();hideHelpBanner()">Hide</span>
+  </button>
   <div class="project-list" id="project-list"></div>
   <button class="fab" onclick="openProjectSheet()"><i data-ic="plus"></i><span>New project</span></button>
 </div>

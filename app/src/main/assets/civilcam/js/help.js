@@ -102,3 +102,15 @@ function openProjectMenu() {
   document.getElementById('pm-team').textContent = n > 1 ? `${n} engineers share this project` : 'Share this project with other engineers by e-mail';
   openSheet('project-menu');
 }
+
+// The "How it works" card on the Projects screen, until the engineer hides it
+function hideHelpBanner() {
+  try { localStorage.setItem('civilcam_help_banner_hidden', '1'); } catch (e) {}
+  const b = document.getElementById('help-banner'); if (b) b.style.display = 'none';
+}
+(function () {
+  let hidden = false;
+  try { hidden = localStorage.getItem('civilcam_help_banner_hidden') === '1'; } catch (e) {}
+  const b = document.getElementById('help-banner');
+  if (b && hidden) b.style.display = 'none';
+})();

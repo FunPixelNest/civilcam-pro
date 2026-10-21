@@ -226,12 +226,24 @@ const Sync = (() => {
     return c.type === 'wifi' || c.type === 'ethernet';
   }
 
+  // Plain words for the errors engineers may see
+  function friendlySyncError(msg) {
+    msg = String(msg || '');
+    if (/consent needed|Drive permission/i.test(msg)) return 'Google Drive needs your permission again. Tap Sync now and choose your Google account.';
+    if (/Not connected to OneDrive|OneDrive sign-in needed|No OneDrive access/i.test(msg)) return 'OneDrive needs you to sign in again. Tap Sync now.';
+    if (/cancel/i.test(msg)) return 'Permission was not given, so full photos stay on this phone for now.';
+    return msg;
+  }
+
   async function now(manual) {
     if (!enabled()) { if (manual) showToast('Sign in to sync', 'danger'); return; }
     if (running) return;
     if (!navigator.onLine) { status = 'offline'; updateDot(); return; }
     if (!manual && loadJSON('syncWifiOnly', false) && !onWifi() && pending().photos) { status = 'waitwifi'; updateDot(); return; }
     running = true; status = 'syncing'; updateDot();
+    // Tapping "Sync now" may show Google's / Microsoft's permission screen if it is needed again;
+    // background syncs never pop anything up.
+    window.cloudPromptAllowed = !!manual;
     try {
       const token = await Account.getToken();
 
@@ -322,9 +334,10 @@ const Sync = (() => {
       if (manual) showToast('Everything is synced', 'success');
     } catch (e) {
       console.warn('Sync failed', e);
-      status = 'error'; lastError = e.message;
-      if (manual) showToast('Sync failed: ' + e.message, 'danger');
+      status = 'error'; lastError = friendlySyncError(e.message);
+      if (manual) showToast('Sync failed: ' + lastError, 'danger');
     } finally {
+      window.cloudPromptAllowed = false;
       running = false;
       progress = null;
       updateDot();

@@ -41,7 +41,7 @@ const OneDrive = (() => {
   }
 
   async function api(method, url, body, headers = {}) {
-    let t = await getToken(false);
+    let t = await getToken(window.cloudPromptAllowed === true);
     const send = () => fetch(url, { method, headers: Object.assign({ Authorization: 'Bearer ' + t }, headers), body });
     let r = await send();
     if (r.status === 401) { token = null; t = await getToken(false); r = await send(); }

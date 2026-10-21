@@ -116,40 +116,69 @@ class AuthHelper(private val activity: AppCompatActivity, private val webView: W
     private var pendingDriveRequest: String? = null
 
     // Must be registered while the activity is being created (AuthHelper is built in onCreate)
+    private val drivePrefs by lazy { activity.getSharedPreferences("civilcam_drive", android.content.Context.MODE_PRIVATE) }
+
     private val driveConsent = activity.registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { res ->
         val id = pendingDriveRequest ?: return@registerForActivityResult
         pendingDriveRequest = null
         try {
             val result = Identity.getAuthorizationClient(activity).getAuthorizationResultFromIntent(res.data)
+            rememberDriveAccount(result)
             sendDriveToken(id, result.accessToken, null)
         } catch (e: Exception) {
             sendDriveToken(id, null, if (res.resultCode == Activity.RESULT_CANCELED) "cancelled" else (e.message ?: "Drive permission failed"))
         }
     }
 
+    /** Remembers which Google account was given Drive permission, so later requests don't ask again. */
+    private fun rememberDriveAccount(result: com.google.android.gms.auth.api.identity.AuthorizationResult) {
+        val email = try { result.toGoogleSignInAccount()?.email } catch (e: Exception) { null }
+        if (!email.isNullOrBlank()) drivePrefs.edit().putString("account", email).apply()
+    }
+
+    /** The Google account to use for Drive: the one given permission before, else the Google sign-in account. */
+    private fun driveAccount(): String? {
+        drivePrefs.getString("account", null)?.let { return it }
+        val user = auth?.currentUser ?: return null
+        val google = user.providerData.any { it.providerId == "google.com" }
+        return if (google) user.email else null
+    }
+
     /**
      * Gets a Google Drive access token. If the engineer has not allowed Drive yet:
      * interactive = true shows Google's permission screen, false just reports "consent needed".
+     * With more than one Google account on the phone Google cannot tell which one to use, so the
+     * account given permission earlier is named in the request.
      */
     fun getDriveToken(requestId: String, interactive: Boolean) {
-        activity.runOnUiThread {
-            val request = AuthorizationRequest.builder().setRequestedScopes(listOf(driveScope)).build()
-            Identity.getAuthorizationClient(activity).authorize(request)
-                .addOnSuccessListener { result ->
-                    val pending = result.pendingIntent
-                    if (result.hasResolution() && pending != null) {
-                        if (!interactive) {
-                            sendDriveToken(requestId, null, "consent needed")
-                        } else {
-                            pendingDriveRequest = requestId
-                            driveConsent.launch(IntentSenderRequest.Builder(pending.intentSender).build())
-                        }
+        activity.runOnUiThread { requestDrive(requestId, interactive, driveAccount()) }
+    }
+
+    private fun requestDrive(requestId: String, interactive: Boolean, email: String?) {
+        val builder = AuthorizationRequest.builder().setRequestedScopes(listOf(driveScope))
+        if (!email.isNullOrBlank()) builder.setAccount(android.accounts.Account(email, "com.google"))
+        Identity.getAuthorizationClient(activity).authorize(builder.build())
+            .addOnSuccessListener { result ->
+                val pending = result.pendingIntent
+                if (result.hasResolution() && pending != null) {
+                    if (!interactive) {
+                        sendDriveToken(requestId, null, "consent needed")
                     } else {
-                        sendDriveToken(requestId, result.accessToken, null)
+                        pendingDriveRequest = requestId
+                        driveConsent.launch(IntentSenderRequest.Builder(pending.intentSender).build())
                     }
+                } else {
+                    rememberDriveAccount(result)
+                    sendDriveToken(requestId, result.accessToken, null)
                 }
-                .addOnFailureListener { sendDriveToken(requestId, null, it.message ?: "Drive permission failed") }
-        }
+            }
+            .addOnFailureListener {
+                // The remembered account may have been removed from the phone: try once without it
+                if (!email.isNullOrBlank()) {
+                    drivePrefs.edit().remove("account").apply()
+                    requestDrive(requestId, interactive, null)
+                } else sendDriveToken(requestId, null, it.message ?: "Drive permission failed")
+            }
     }
 
     private fun sendDriveToken(requestId: String, token: String?, error: String?) {

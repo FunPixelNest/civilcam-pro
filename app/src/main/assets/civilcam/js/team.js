@@ -128,9 +128,13 @@ async function fullImageOf(p) {
   if (fullCache.has(p.id)) return fullCache.get(p.id);
   let data = null;
   const store = PhotoStore.of(p);
-  if (p.driveId && p.driveOwner === profile.email && store.enabled()) data = await store.download(p.driveId);
-  else if (p.driveId) data = await store.fetchShared(p);
-  else if (CONFIG.firebase.storageBucket && Sync.enabled()) data = await Sync.downloadImage(p.id, await Account.getToken());
+  const prev = window.cloudPromptAllowed;
+  window.cloudPromptAllowed = true;       // the engineer asked for it: a permission screen is fine
+  try {
+    if (p.driveId && p.driveOwner === profile.email && store.enabled()) data = await store.download(p.driveId);
+    else if (p.driveId) data = await store.fetchShared(p);
+    else if (CONFIG.firebase.storageBucket && Sync.enabled()) data = await Sync.downloadImage(p.id, await Account.getToken());
+  } finally { window.cloudPromptAllowed = prev; }
   if (!data) throw new Error(`The full photo is only on ${p.engineer && p.engineer.name ? p.engineer.name + "'s" : 'the other engineer\'s'} phone so far`);
   fullCache.set(p.id, data);
   return data;
@@ -174,7 +178,8 @@ async function fullPhotoActions(p) {
       savedMessage(await saveFile(data, photoFileName(p), 'image/jpeg'), 'Photo', 'image/jpeg');
     } else if (choice === 'drive') {
       setLoadingSub('Uploading to your Drive');
-      await mine.upload(Object.assign({}, p, { imageData: data }));
+      window.cloudPromptAllowed = true;
+      try { await mine.upload(Object.assign({}, p, { imageData: data })); } finally { window.cloudPromptAllowed = false; }
       hideLoading();
       showToast('Saved in your ' + mine.folder, 'success');
     } else if (choice === 'keep') {
