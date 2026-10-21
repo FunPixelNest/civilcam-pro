@@ -29,6 +29,8 @@
     <string msgid="1656852541809559762" name="abc_toolbar_collapse_description">"Σύμπτυξη"</string>
     <string msgid="8397015543330865059" name="android.credentials.TYPE_PASSWORD_CREDENTIAL">"Κωδικός πρόσβασης"</string>
     <string msgid="3929015085059320822" name="androidx.credentials.TYPE_PUBLIC_KEY_CREDENTIAL">"Κλειδί πρόσβασης"</string>
+    <string name="app_loading">Φόρτωση…</string>
+    <string name="broker_processing">Γίνεται επεξεργασία από το μεσολαβητή</string>
     <string msgid="881409763997275156" name="call_notification_answer_action">"Απάντηση"</string>
     <string msgid="8793775615905189152" name="call_notification_answer_video_action">"Βίντεο"</string>
     <string msgid="3229508546291798546" name="call_notification_decline_action">"Απόρριψη"</string>
@@ -58,6 +60,77 @@
     <string msgid="4566929209979330987" name="fallback_menu_item_copy_link">"Αντιγραφή συνδέσμου"</string>
     <string msgid="3413186855122069269" name="fallback_menu_item_open_in_browser">"Άνοιγμα σε πρόγραμμα περιήγησης"</string>
     <string msgid="7145444925855055364" name="fallback_menu_item_share_link">"Κοινοποίηση συνδέσμου"</string>
+    <string name="http_auth_dialog_cancel">Άκυρο</string>
+    <string name="http_auth_dialog_login">Σύνδεση</string>
+    <string name="http_auth_dialog_origin_host">Κεντρικός υπολογιστής: %1$s</string>
+    <string name="http_auth_dialog_password">Κωδικός πρόσβασης</string>
+    <string name="http_auth_dialog_title">Εισαγάγετε τα διαπιστευτήρια σας</string>
+    <string name="http_auth_dialog_username">Όνομα χρήστη</string>
+    <string name="native_body">Σώμα</string>
+    <string name="native_headline">Τίτλος</string>
+    <string name="native_media_view">Προβολή μέσων</string>
+    <string name="notifications_permission_confirm">Να επιτρέπεται</string>
+    <string name="notifications_permission_decline">Να μην επιτρέπεται</string>
+    <string name="notifications_permission_title">Να επιτρέπεται στην εφαρμογή να σας στέλνει ειδοποιήσεις;</string>
+    <string name="offline_dialog_image_description">Εικονίδιο</string>
+    <string name="offline_dialog_text">Ευχαριστούμε για το ενδιαφέρον που δείχνετε.\nΘα σας δώσουμε περισσότερες πληροφορίες μόλις συνδεθείτε ξανά στο διαδίκτυο.</string>
+    <string name="offline_notification_title">Συνδεθήκατε ξανά στο διαδίκτυο! Ας συνεχίσουμε από εκεί που σταματήσαμε</string>
+    <string name="offline_notification_title_with_advertiser">Συνδεθήκατε ξανά στο διαδίκτυο! Μάθετε περισσότερα για τον διαφημιζόμενο %s</string>
+    <string name="offline_opt_in_confirm">ΟΚ</string>
+    <string name="offline_opt_in_decline">Όχι</string>
+    <string name="offline_opt_in_message">Θα σας στείλουμε μια ειδοποίηση με έναν σύνδεσμο στον ιστότοπο του διαφημιζόμενου.</string>
+    <string name="offline_opt_in_title">Άνοιγμα της διαφήμισης όταν συνδεθείτε ξανά στο διαδίκτυο</string>
+    <string name="qr_code_rationale_allow">Επιτρέπεται</string>
+    <string name="qr_code_rationale_block">Αποκλεισμός</string>
+    <string name="qr_code_rationale_header">Να επιτρέπεται σε αυτήν την εφαρμογή η πρόσβαση στην κάμερά σας;</string>
+    <string name="qr_code_rationale_message">Στη συνέχεια, μπορείτε να εισέλθετε με έναν κωδικό QR.</string>
+    <string name="s1">Αποθήκευση εικόνας</string>
+    <string name="s2">Να επιτραπεί στη διαφήμιση να αποθηκεύσει την εικόνα στο gallery φωτογραφιών;</string>
+    <string name="s3">Αποδοχή</string>
+    <string name="s4">Απόρριψη</string>
+    <string name="s5">Δημιουργία συμβάντος ημερολογίου</string>
+    <string name="s6">Να επιτραπεί στη διαφήμιση να δημιουργήσει ένα συμβάν ημερολογίου;</string>
+    <string name="s7">Δοκιμαστική διαφήμιση</string>
     <string msgid="6264217191555673260" name="search_menu_title">"Αναζήτηση"</string>
+    <string name="smartcard_cert_dialog_negative_button">Άκυρο</string>
+    <string name="smartcard_cert_dialog_positive_button">Συνέχεια</string>
+    <string name="smartcard_cert_dialog_title">Επιλέξτε ένα πιστοποιητικό για να εισέλθετε</string>
+    <string name="smartcard_early_unplug_dialog_message">Καταργήθηκε η συσκευή έξυπνης κάρτας. Τοποθετήστε ξανά τη συσκευή πριν επιχειρήσετε να συνδεθείτε ξανά.</string>
+    <string name="smartcard_early_unplug_dialog_title">Επανάληψη</string>
+    <string name="smartcard_error_dialog_positive_button">OK</string>
+    <string name="smartcard_general_error_dialog_message">Δυστυχώς, παρουσιάστηκε ένα απρόσμενο σφάλμα. Δοκιμάστε ξανά αργότερα.</string>
+    <string name="smartcard_general_error_dialog_title">Δοκιμάστε ξανά αργότερα</string>
+    <string name="smartcard_max_attempt_dialog_message">Πάρα πολλές αποτυχημένες προσπάθειες, δοκιμάστε ξανά αργότερα.</string>
+    <string name="smartcard_max_attempt_dialog_title">Δοκιμάστε ξανά αργότερα</string>
+    <string name="smartcard_nfc_diff_connected_message">Χρησιμοποιήστε την έξυπνη κάρτα με την οποία πραγματοποιήσατε είσοδο αρχικά.</string>
+    <string name="smartcard_nfc_diff_connected_positive_button">Το κατάλαβα</string>
+    <string name="smartcard_nfc_diff_connected_title">Μπορείτε να χρησιμοποιήσετε μόνο μία έξυπνη κάρτα κάθε φορά</string>
+    <string name="smartcard_nfc_loading_dialog_message">Διατηρήστε την έξυπνη κάρτα σας στη θέση της.</string>
+    <string name="smartcard_nfc_loading_dialog_title">Ανάγνωση της έξυπνης κάρτας σας</string>
+    <string name="smartcard_nfc_prompt_dialog_message">Κρατήστε μια έξυπνη κάρτα στο πίσω μέρος του τηλεφώνου σας.</string>
+    <string name="smartcard_nfc_prompt_dialog_negative_button">Άκυρο</string>
+    <string name="smartcard_nfc_prompt_dialog_title">Προετοιμασία της έξυπνης κάρτας σας</string>
+    <string name="smartcard_nfc_reminder_dialog_message">Για να εισέλθετε με NFC, ενεργοποιήστε το NFC στις ρυθμίσεις της συσκευής σας. Στη συνέχεια, εισέλθετε ξανά.</string>
+    <string name="smartcard_nfc_reminder_dialog_positive_button">Το κατάλαβα</string>
+    <string name="smartcard_nfc_reminder_dialog_title">Ενεργοποίηση NFC στις ρυθμίσεις συσκευής</string>
+    <string name="smartcard_no_cert_dialog_message">Επιβεβαιώστε ότι το πιστοποιητικό σας έχει εκχωρηθεί σωστά στη συσκευή έξυπνης κάρτας σας.</string>
+    <string name="smartcard_no_cert_dialog_title">Δεν βρέθηκαν ισχύοντα πιστοποιητικά.</string>
+    <string name="smartcard_pin_dialog_error_message">Το PIN που πληκτρολογήσατε δεν ήταν σωστό</string>
+    <string name="smartcard_pin_dialog_message">Εισαγάγετε το PIN της έξυπνης κάρτας για να αποκτήσετε πρόσβαση στο πιστοποιητικό και να εισέλθετε</string>
+    <string name="smartcard_pin_dialog_negative_button">Άκυρο</string>
+    <string name="smartcard_pin_dialog_positive_button">Ξεκλείδωμα</string>
+    <string name="smartcard_pin_dialog_title">Ξεκλείδωμα έξυπνης κάρτας</string>
+    <string name="smartcard_pin_layout_edittext_hint">PIN</string>
+    <string name="smartcard_prompt_dialog_message">Συνδέστε ή κρατήστε μια έξυπνη κάρτα στο πίσω μέρος του τηλεφώνου σας.</string>
+    <string name="smartcard_prompt_dialog_negative_button">Άκυρο</string>
+    <string name="smartcard_prompt_dialog_title">Προετοιμασία της έξυπνης κάρτας σας</string>
+    <string name="smartcard_removal_prompt_dialog_positive_button">Το κατάλαβα</string>
+    <string name="smartcard_removal_prompt_dialog_title">Τώρα μπορείτε να καταργήσετε την έξυπνη κάρτα σας</string>
     <string msgid="6277540029070332960" name="status_bar_notification_info_overflow">"999+"</string>
+    <string name="user_choice_dialog_negative_button">Άκυρο</string>
+    <string name="user_choice_dialog_on_device_name">Πιστοποιητικό σε αυτήν τη συσκευή</string>
+    <string name="user_choice_dialog_positive_button">Συνέχεια</string>
+    <string name="user_choice_dialog_smartcard_name">Φυσική έξυπνη κάρτα</string>
+    <string name="user_choice_dialog_title">Πώς θέλετε να εισέλθετε;</string>
+    <string name="watermark_label_prefix">AdMob - </string>
 </resources>

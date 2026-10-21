@@ -45,6 +45,11 @@ const Account = (() => {
       saveJSON('driveBackupAsked', true);
       setTimeout(() => Drive.connect(), 600);
     }
+    // Microsoft accounts: their photos go to their own OneDrive
+    if (/microsoft/i.test(r.provider || '') && OneDrive.supported() && !loadJSON('oneDriveAsked', false)) {
+      saveJSON('oneDriveAsked', true);
+      setTimeout(() => OneDrive.connect(), 600);
+    }
     if (firstTime || !profile.designation) showProfileForm(); else afterProfileReady();
   };
 
@@ -249,9 +254,10 @@ const Sync = (() => {
         if (!p.uploaded) {
           // Small preview for colleagues; the full photo goes to the engineer's Google Drive
           if (!p.thumb) p.thumb = await makePreview(p.imageData);
-          if (Drive.enabled()) {
-            const f = await Drive.upload(p);
-            p.driveId = f.id; p.driveLink = f.webViewLink || ''; p.driveOwner = profile.email;
+          const store = PhotoStore.active();
+          if (store) {
+            const f = await store.upload(p);
+            p.driveId = f.id; p.driveLink = f.webViewLink || ''; p.driveOwner = profile.email; p.store = store.key;
           } else if (CONFIG.firebase.storageBucket && !loadJSON('driveBackup', false)) {
             await uploadImage(p, token);
           }
@@ -259,8 +265,13 @@ const Sync = (() => {
         }
         // Team project: let the team open the full photo from this engineer's Drive (by link)
         const pj = projectOf(p);
-        if (pj && pj.team && p.driveId && !p.linkShared && p.driveOwner === profile.email && Drive.enabled()) {
-          try { await Drive.shareByLink(p.driveId); p.linkShared = true; } catch (e) { console.warn('Drive sharing', e); }
+        const own = PhotoStore.of(p);
+        if (pj && pj.team && p.driveId && !p.linkShared && p.driveOwner === profile.email && own.enabled()) {
+          try {
+            const url = await own.shareByLink(p.driveId);
+            if (url) p.shareUrl = url;
+            p.linkShared = true;
+          } catch (e) { console.warn('Photo sharing', e); }
         }
         const data = Object.assign({}, p);
         delete data.imageData; delete data.synced; delete data.previewOnly; delete data.fullCached;
@@ -449,7 +460,8 @@ function renderSyncSheet() {
   const pill = document.getElementById('sync-pill');
   const cls = pill ? pill.className.replace('sync-pill', '').trim() : '';
   const total = photos.length;
-  const where = typeof Drive !== 'undefined' && Drive.enabled() ? 'your Google Drive' : 'the cloud';
+  const st = typeof PhotoStore !== 'undefined' ? PhotoStore.active() : null;
+  const where = st ? 'your ' + st.label : 'the cloud';
   document.getElementById('sync-state').className = 'sync-state ' + cls;
   document.getElementById('sync-state').innerHTML = !on
     ? `<b>Photos are only on this phone</b><span>If the phone is lost or reset, they are gone. Sign in to back them up to ${where}.</span>`

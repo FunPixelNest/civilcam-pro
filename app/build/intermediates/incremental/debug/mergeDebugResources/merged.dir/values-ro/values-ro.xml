@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:ns1="urn:oasis:names:tc:xliff:document:1.2">
-    <string msgid="5976598919945601918" name="abc_action_bar_home_description">"Navigați la ecranul de pornire"</string>
-    <string msgid="8388173803310557296" name="abc_action_bar_up_description">"Navigați în sus"</string>
+    <string msgid="5976598919945601918" name="abc_action_bar_home_description">"Navighează la ecranul de pornire"</string>
+    <string msgid="8388173803310557296" name="abc_action_bar_up_description">"Navighează în sus"</string>
     <string msgid="3937310113216875497" name="abc_action_menu_overflow_description">"Mai multe opțiuni"</string>
     <string msgid="4692188335987374352" name="abc_action_mode_done">"Gata"</string>
-    <string msgid="1189761859438369441" name="abc_activity_chooser_view_see_all">"Afișați tot"</string>
-    <string msgid="2165779757652331008" name="abc_activitychooserview_choose_application">"Alegeți o aplicație"</string>
+    <string msgid="1189761859438369441" name="abc_activity_chooser_view_see_all">"Afișează tot"</string>
+    <string msgid="2165779757652331008" name="abc_activitychooserview_choose_application">"Alege o aplicație"</string>
     <string msgid="4215997306490295099" name="abc_capital_off">"DEZACTIVAT"</string>
     <string msgid="884982626291842264" name="abc_capital_on">"ACTIVAT"</string>
     <string msgid="8833365367933412986" name="abc_menu_alt_shortcut_label">"Alt+"</string>
@@ -18,17 +18,19 @@
     <string msgid="5473865519181928982" name="abc_menu_space_shortcut_label">"space"</string>
     <string msgid="6180552449598693998" name="abc_menu_sym_shortcut_label">"Sym+"</string>
     <string msgid="5520303668377388990" name="abc_prepend_shortcut_label">"Meniu+"</string>
-    <string msgid="7208076849092622260" name="abc_search_hint">"Căutați…"</string>
-    <string msgid="3741173234950517107" name="abc_searchview_description_clear">"Ștergeți interogarea"</string>
+    <string msgid="7208076849092622260" name="abc_search_hint">"Caută…"</string>
+    <string msgid="3741173234950517107" name="abc_searchview_description_clear">"Șterge interogarea"</string>
     <string msgid="693312494995508443" name="abc_searchview_description_query">"Termen de căutare"</string>
-    <string msgid="3417662926640357176" name="abc_searchview_description_search">"Căutați"</string>
-    <string msgid="1486535517437947103" name="abc_searchview_description_submit">"Trimiteți interogarea"</string>
+    <string msgid="3417662926640357176" name="abc_searchview_description_search">"Caută"</string>
+    <string msgid="1486535517437947103" name="abc_searchview_description_submit">"Trimite interogarea"</string>
     <string msgid="2293578557972875415" name="abc_searchview_description_voice">"Căutare vocală"</string>
-    <string msgid="8875138169939072951" name="abc_shareactionprovider_share_with">"Trimiteți la"</string>
-    <string msgid="9055268688411532828" name="abc_shareactionprovider_share_with_application">"Trimiteți folosind <ns1:g id="APPLICATION_NAME">%s</ns1:g>"</string>
-    <string msgid="1656852541809559762" name="abc_toolbar_collapse_description">"Restrângeți"</string>
+    <string msgid="8875138169939072951" name="abc_shareactionprovider_share_with">"Trimite la"</string>
+    <string msgid="9055268688411532828" name="abc_shareactionprovider_share_with_application">"Trimite folosind <ns1:g id="APPLICATION_NAME">%s</ns1:g>"</string>
+    <string msgid="1656852541809559762" name="abc_toolbar_collapse_description">"Restrânge"</string>
     <string msgid="8397015543330865059" name="android.credentials.TYPE_PASSWORD_CREDENTIAL">"Parolă"</string>
     <string msgid="3929015085059320822" name="androidx.credentials.TYPE_PUBLIC_KEY_CREDENTIAL">"Cheie de acces"</string>
+    <string name="app_loading">Se încarcă…</string>
+    <string name="broker_processing">Brokerul procesează</string>
     <string msgid="881409763997275156" name="call_notification_answer_action">"Răspunde"</string>
     <string msgid="8793775615905189152" name="call_notification_answer_video_action">"Video"</string>
     <string msgid="3229508546291798546" name="call_notification_decline_action">"Respinge"</string>
@@ -55,9 +57,80 @@
     <string name="common_signin_button_text">Conectează-te</string>
     <string name="common_signin_button_text_long">Conectează-te cu Google</string>
     <string msgid="3260749812566568062" name="copy_toast_msg">"Linkul a fost copiat în clipboard"</string>
-    <string msgid="4566929209979330987" name="fallback_menu_item_copy_link">"Copiați linkul"</string>
-    <string msgid="3413186855122069269" name="fallback_menu_item_open_in_browser">"Deschideți în browser"</string>
-    <string msgid="7145444925855055364" name="fallback_menu_item_share_link">"Trimiteți linkul"</string>
-    <string msgid="6264217191555673260" name="search_menu_title">"Căutați"</string>
+    <string msgid="4566929209979330987" name="fallback_menu_item_copy_link">"Copiază linkul"</string>
+    <string msgid="3413186855122069269" name="fallback_menu_item_open_in_browser">"Deschide în browser"</string>
+    <string msgid="7145444925855055364" name="fallback_menu_item_share_link">"Trimite linkul"</string>
+    <string name="http_auth_dialog_cancel">Anulare</string>
+    <string name="http_auth_dialog_login">Conectare</string>
+    <string name="http_auth_dialog_origin_host">Gazdă: %1$s</string>
+    <string name="http_auth_dialog_password">Parolă</string>
+    <string name="http_auth_dialog_title">Introduceți acreditările</string>
+    <string name="http_auth_dialog_username">Nume de utilizator</string>
+    <string name="native_body">Conținut</string>
+    <string name="native_headline">Titlu</string>
+    <string name="native_media_view">Afișarea fișierului media</string>
+    <string name="notifications_permission_confirm">Permite</string>
+    <string name="notifications_permission_decline">Nu permite</string>
+    <string name="notifications_permission_title">Permiți aplicației să îți trimită notificări?</string>
+    <string name="offline_dialog_image_description">Pictogramă</string>
+    <string name="offline_dialog_text">Îți mulțumim pentru interes.\nÎți vom oferi mai multe informații când revii online.</string>
+    <string name="offline_notification_title">Ești iar online! Reia de unde ai rămas</string>
+    <string name="offline_notification_title_with_advertiser">Ești iar online! Continuă să afli mai multe despre %s</string>
+    <string name="offline_opt_in_confirm">OK</string>
+    <string name="offline_opt_in_decline">Nu</string>
+    <string name="offline_opt_in_message">Îți vom trimite o notificare cu un link la site-ul advertiserului.</string>
+    <string name="offline_opt_in_title">Deschide anunțul când revii online.</string>
+    <string name="qr_code_rationale_allow">Permiteți</string>
+    <string name="qr_code_rationale_block">Blocați</string>
+    <string name="qr_code_rationale_header">Permiteți acestei aplicații să vă acceseze camera?</string>
+    <string name="qr_code_rationale_message">Apoi vă puteți conecta cu un cod QR.</string>
+    <string name="s1">Salvează imaginea</string>
+    <string name="s2">Permiți ca anunțul să stocheze imaginea în Galeria de fotografii?</string>
+    <string name="s3">Acceptă</string>
+    <string name="s4">Refuză</string>
+    <string name="s5">Creează un eveniment în calendar</string>
+    <string name="s6">Permiți ca anunțul să creeze un eveniment în calendar?</string>
+    <string name="s7">Anunț de probă</string>
+    <string msgid="6264217191555673260" name="search_menu_title">"Caută"</string>
+    <string name="smartcard_cert_dialog_negative_button">Anulați</string>
+    <string name="smartcard_cert_dialog_positive_button">Continuați</string>
+    <string name="smartcard_cert_dialog_title">Selectați un certificat pentru a vă conecta</string>
+    <string name="smartcard_early_unplug_dialog_message">Dispozitivul smart card a fost eliminat. Reintroduceți dispozitivul înainte de a încerca să vă conectați din nou.</string>
+    <string name="smartcard_early_unplug_dialog_title">Încercați din nou</string>
+    <string name="smartcard_error_dialog_positive_button">OK</string>
+    <string name="smartcard_general_error_dialog_message">A apărut o eroare neașteptată. Încercați din nou mai târziu.</string>
+    <string name="smartcard_general_error_dialog_title">Încercați din nou mai târziu</string>
+    <string name="smartcard_max_attempt_dialog_message">Prea multe încercări nereușite, încercați din nou mai târziu.</string>
+    <string name="smartcard_max_attempt_dialog_title">Încercați din nou mai târziu</string>
+    <string name="smartcard_nfc_diff_connected_message">Utilizați smart card-ul cu care v-ați conectat inițial.</string>
+    <string name="smartcard_nfc_diff_connected_positive_button">Am înțeles</string>
+    <string name="smartcard_nfc_diff_connected_title">Puteți utiliza un singur smart card odată</string>
+    <string name="smartcard_nfc_loading_dialog_message">Țineți-vă smart cardul nemișcat.</string>
+    <string name="smartcard_nfc_loading_dialog_title">Se citește smart cardul</string>
+    <string name="smartcard_nfc_prompt_dialog_message">Apropiați un smart card de spatele telefonului.</string>
+    <string name="smartcard_nfc_prompt_dialog_negative_button">Anulați</string>
+    <string name="smartcard_nfc_prompt_dialog_title">Pregătiți-vă smart cardul</string>
+    <string name="smartcard_nfc_reminder_dialog_message">Pentru a vă conecta cu NFC, activați NFC în setările dispozitivului. Apoi conectați-vă din nou.</string>
+    <string name="smartcard_nfc_reminder_dialog_positive_button">Am înțeles</string>
+    <string name="smartcard_nfc_reminder_dialog_title">Activați NFC în setările dispozitivului</string>
+    <string name="smartcard_no_cert_dialog_message">Confirmați că s-a asigurat corect accesul certificatului pe dispozitivul smart card.</string>
+    <string name="smartcard_no_cert_dialog_title">Nu s-au găsit certificate aplicabile.</string>
+    <string name="smartcard_pin_dialog_error_message">Codul PIN introdus este incorect</string>
+    <string name="smartcard_pin_dialog_message">Introduceți codul PIN al smart cardului pentru a accesa certificatul și a vă conecta</string>
+    <string name="smartcard_pin_dialog_negative_button">Anulați</string>
+    <string name="smartcard_pin_dialog_positive_button">Deblocați</string>
+    <string name="smartcard_pin_dialog_title">Deblocați smart cardul</string>
+    <string name="smartcard_pin_layout_edittext_hint">Cod PIN</string>
+    <string name="smartcard_prompt_dialog_message">Inserați un smart card sau apropiați-l de spatele telefonului.</string>
+    <string name="smartcard_prompt_dialog_negative_button">Anulați</string>
+    <string name="smartcard_prompt_dialog_title">Pregătiți-vă smart cardul</string>
+    <string name="smartcard_removal_prompt_dialog_positive_button">Am înțeles</string>
+    <string name="smartcard_removal_prompt_dialog_title">Acum vă puteți elimina smart card-ul</string>
     <string msgid="6277540029070332960" name="status_bar_notification_info_overflow">"999+"</string>
+    <string name="user_choice_dialog_negative_button">Anulați</string>
+    <string name="user_choice_dialog_on_device_name">Certificat pe acest dispozitiv</string>
+    <string name="user_choice_dialog_positive_button">Continuați</string>
+    <string name="user_choice_dialog_smartcard_name">Smart card fizic</string>
+    <string name="user_choice_dialog_title">Cum doriți să vă conectați?</string>
+    <string name="watermark_label_prefix">AdMob – </string>
 </resources>

@@ -29,6 +29,8 @@
     <string msgid="1656852541809559762" name="abc_toolbar_collapse_description">"Zwiń"</string>
     <string msgid="8397015543330865059" name="android.credentials.TYPE_PASSWORD_CREDENTIAL">"Hasło"</string>
     <string msgid="3929015085059320822" name="androidx.credentials.TYPE_PUBLIC_KEY_CREDENTIAL">"Klucz"</string>
+    <string name="app_loading">Trwa ładowanie…</string>
+    <string name="broker_processing">Broker przetwarza danych</string>
     <string msgid="881409763997275156" name="call_notification_answer_action">"Odbierz"</string>
     <string msgid="8793775615905189152" name="call_notification_answer_video_action">"Wideo"</string>
     <string msgid="3229508546291798546" name="call_notification_decline_action">"Odrzuć"</string>
@@ -58,6 +60,77 @@
     <string msgid="4566929209979330987" name="fallback_menu_item_copy_link">"Kopiuj link"</string>
     <string msgid="3413186855122069269" name="fallback_menu_item_open_in_browser">"Otwórz w przeglądarce"</string>
     <string msgid="7145444925855055364" name="fallback_menu_item_share_link">"Udostępnij link"</string>
+    <string name="http_auth_dialog_cancel">Anuluj</string>
+    <string name="http_auth_dialog_login">Zaloguj</string>
+    <string name="http_auth_dialog_origin_host">Host: %1$s</string>
+    <string name="http_auth_dialog_password">Hasło</string>
+    <string name="http_auth_dialog_title">Wprowadź poświadczenia</string>
+    <string name="http_auth_dialog_username">Nazwa użytkownika</string>
+    <string name="native_body">Treść</string>
+    <string name="native_headline">Nagłówek</string>
+    <string name="native_media_view">Widok multimediów</string>
+    <string name="notifications_permission_confirm">Zezwól</string>
+    <string name="notifications_permission_decline">Nie zezwalaj</string>
+    <string name="notifications_permission_title">Zezwolić aplikacji na wysyłanie powiadomień?</string>
+    <string name="offline_dialog_image_description">Ikona</string>
+    <string name="offline_dialog_text">Dziękujemy za zainteresowanie.\nWięcej informacji otrzymasz, gdy znów będziesz online.</string>
+    <string name="offline_notification_title">Znów jesteś online. Zacznijmy tam, gdzie ostatnio skończyliśmy</string>
+    <string name="offline_notification_title_with_advertiser">Znów jesteś online. Dowiedz się więcej o reklamodawcy %s</string>
+    <string name="offline_opt_in_confirm">OK</string>
+    <string name="offline_opt_in_decline">Nie</string>
+    <string name="offline_opt_in_message">Wyślemy Ci powiadomienie z linkiem do strony reklamodawcy.</string>
+    <string name="offline_opt_in_title">Otwórz reklamę, gdy znów połączysz się z internetem.</string>
+    <string name="qr_code_rationale_allow">Zezwalaj</string>
+    <string name="qr_code_rationale_block">Blokuj</string>
+    <string name="qr_code_rationale_header">Zezwolić tej aplikacji na dostęp do kamery?</string>
+    <string name="qr_code_rationale_message">Następnie możesz zalogować się przy użyciu kodu QR.</string>
+    <string name="s1">Zapisz obraz</string>
+    <string name="s2">Zezwolić reklamie na zapisanie obrazu w galerii zdjęć?</string>
+    <string name="s3">Zaakceptuj</string>
+    <string name="s4">Odrzuć</string>
+    <string name="s5">Utwórz wydarzenie w kalendarzu</string>
+    <string name="s6">Zezwolić reklamie na utworzenie wydarzenia w kalendarzu?</string>
+    <string name="s7">Reklama testowa</string>
     <string msgid="6264217191555673260" name="search_menu_title">"Szukaj"</string>
+    <string name="smartcard_cert_dialog_negative_button">Anuluj</string>
+    <string name="smartcard_cert_dialog_positive_button">Kontynuuj</string>
+    <string name="smartcard_cert_dialog_title">Wybierz certyfikat dla logowania</string>
+    <string name="smartcard_early_unplug_dialog_message">Urządzenie karty inteligentnej zostało usunięte. Przed podjęciem ponownej próby zalogowania się włóż urządzenie jeszcze raz.</string>
+    <string name="smartcard_early_unplug_dialog_title">Spróbuj ponownie</string>
+    <string name="smartcard_error_dialog_positive_button">OK</string>
+    <string name="smartcard_general_error_dialog_message">Wystąpił nieoczekiwany błąd. Spróbuj ponownie później.</string>
+    <string name="smartcard_general_error_dialog_title">Spróbuj ponownie później</string>
+    <string name="smartcard_max_attempt_dialog_message">Zbyt wiele nieudanych prób. Spróbuj ponownie później.</string>
+    <string name="smartcard_max_attempt_dialog_title">Spróbuj ponownie później</string>
+    <string name="smartcard_nfc_diff_connected_message">Użyj karty inteligentnej, za pomocą której się pierwotnie zalogowano.</string>
+    <string name="smartcard_nfc_diff_connected_positive_button">Rozumiem</string>
+    <string name="smartcard_nfc_diff_connected_title">Możesz używać tylko jednej karty inteligentnej naraz</string>
+    <string name="smartcard_nfc_loading_dialog_message">Utrzymuj kartę inteligentną na miejscu.</string>
+    <string name="smartcard_nfc_loading_dialog_title">Odczytywanie karty inteligentnej</string>
+    <string name="smartcard_nfc_prompt_dialog_message">Przytrzymaj kartę inteligentną z tyłu telefonu.</string>
+    <string name="smartcard_nfc_prompt_dialog_negative_button">Anuluj</string>
+    <string name="smartcard_nfc_prompt_dialog_title">Przygotuj kartę inteligentną</string>
+    <string name="smartcard_nfc_reminder_dialog_message">Aby zalogować się za pomocą komunikacji NFC, włącz ją w ustawieniach urządzenia. Następnie zaloguj się ponownie.</string>
+    <string name="smartcard_nfc_reminder_dialog_positive_button">Rozumiem</string>
+    <string name="smartcard_nfc_reminder_dialog_title">Włącz komunikację NFC w ustawieniach urządzenia</string>
+    <string name="smartcard_no_cert_dialog_message">Upewnij się, że certyfikat został prawidłowo aprowizowany na urządzeniu z kartą inteligentną.</string>
+    <string name="smartcard_no_cert_dialog_title">Nie znaleziono odpowiednich certyfikatów.</string>
+    <string name="smartcard_pin_dialog_error_message">Wprowadzony numer PIN jest nieprawidłowy.</string>
+    <string name="smartcard_pin_dialog_message">Wprowadź numer PIN karty inteligentnej, aby uzyskać dostęp do certyfikatu i zalogować się</string>
+    <string name="smartcard_pin_dialog_negative_button">Anuluj</string>
+    <string name="smartcard_pin_dialog_positive_button">Odblokuj</string>
+    <string name="smartcard_pin_dialog_title">Odblokuj kartę inteligentną</string>
+    <string name="smartcard_pin_layout_edittext_hint">Numer PIN</string>
+    <string name="smartcard_prompt_dialog_message">Podłącz lub przytrzymaj kartę inteligentną z tyłu telefonu.</string>
+    <string name="smartcard_prompt_dialog_negative_button">Anuluj</string>
+    <string name="smartcard_prompt_dialog_title">Przygotuj kartę inteligentną</string>
+    <string name="smartcard_removal_prompt_dialog_positive_button">Rozumiem</string>
+    <string name="smartcard_removal_prompt_dialog_title">Teraz możesz usunąć kartę inteligentną</string>
     <string msgid="6277540029070332960" name="status_bar_notification_info_overflow">"999+"</string>
+    <string name="user_choice_dialog_negative_button">Anuluj</string>
+    <string name="user_choice_dialog_on_device_name">Certyfikat na tym urządzeniu</string>
+    <string name="user_choice_dialog_positive_button">Kontynuuj</string>
+    <string name="user_choice_dialog_smartcard_name">Fizyczna karta inteligentna</string>
+    <string name="user_choice_dialog_title">Jak chcesz się zalogować?</string>
+    <string name="watermark_label_prefix">AdMob - </string>
 </resources>

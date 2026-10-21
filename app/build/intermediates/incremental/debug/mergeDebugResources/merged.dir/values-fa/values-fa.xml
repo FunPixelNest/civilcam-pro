@@ -58,6 +58,28 @@
     <string msgid="4566929209979330987" name="fallback_menu_item_copy_link">"کپی پیوند"</string>
     <string msgid="3413186855122069269" name="fallback_menu_item_open_in_browser">"بازکردن در مرورگر"</string>
     <string msgid="7145444925855055364" name="fallback_menu_item_share_link">"هم‌رسانی پیوند"</string>
+    <string name="native_body">نوشتار اصلی</string>
+    <string name="native_headline">سرخط</string>
+    <string name="native_media_view">بازدید از رسانه</string>
+    <string name="notifications_permission_confirm">اجازه دادن</string>
+    <string name="notifications_permission_decline">اجازه ندادن</string>
+    <string name="notifications_permission_title">به برنامه اجازه می‌دهید برای شما اعلان ارسال کند؟</string>
+    <string name="offline_dialog_image_description">نماد</string>
+    <string name="offline_dialog_text">‏بابت علاقه‌ای که نشان دادید سپاس‌گزاریم.\nوقتی دوباره آنلاین شدید، اطلاعات بیشتری دراختیارتان می‌گذاریم.</string>
+    <string name="offline_notification_title">دوباره آنلاین شدید! بیایید از همان‌جا که رها کرده بودیم شروع کنیم</string>
+    <string name="offline_notification_title_with_advertiser">دوباره آنلاین شدید! درباره %s اطلاعات بیشتری کسب کنید</string>
+    <string name="offline_opt_in_confirm">تأیید</string>
+    <string name="offline_opt_in_decline">نه متشکرم</string>
+    <string name="offline_opt_in_message">اعلانی با پیوندی به سایت آگهی‌دهنده برایتان ارسال خواهیم کرد.</string>
+    <string name="offline_opt_in_title">وقتی دوباره آنلاین شدید آگهی را باز کنید.</string>
+    <string name="s1">ذخیره تصویر</string>
+    <string name="s2">به آگهی اجازه داده شود تصویر را در گالری تصویر ذخیره کند؟</string>
+    <string name="s3">پذیرفتن</string>
+    <string name="s4">رد کردن</string>
+    <string name="s5">ایجاد رویداد تقویم</string>
+    <string name="s6">به آگهی اجازه داده شود رویداد تقویم ایجاد کند؟</string>
+    <string name="s7">آگهی آزمایشی</string>
     <string msgid="6264217191555673260" name="search_menu_title">"جستجو"</string>
     <string msgid="6277540029070332960" name="status_bar_notification_info_overflow">"999+"</string>
+    <string name="watermark_label_prefix">AdMob - </string>
 </resources>

@@ -24,6 +24,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var billing: BillingHelper
     lateinit var ads: AdsManager
     lateinit var importer: PhotoImporter
+    lateinit var oneDrive: OneDriveHelper
 
     private val requiredPermissions: Array<String>
         get() {
@@ -112,8 +113,9 @@ class MainActivity : AppCompatActivity() {
         billing = BillingHelper(this, webView)
         ads = AdsManager(this, findViewById<FrameLayout>(R.id.adContainer), webView) { billing.isPro }
         importer = PhotoImporter(this, webView)
+        oneDrive = OneDriveHelper(this, webView)
         billing.onProChanged = { pro -> ads.onProChanged(pro) }
-        webView.addJavascriptInterface(WebAppBridge(this, auth, billing, ads, importer), "AndroidBridge")
+        webView.addJavascriptInterface(WebAppBridge(this, auth, billing, ads, importer, oneDrive), "AndroidBridge")
 
         webView.webChromeClient = object : WebChromeClient() {
             override fun onPermissionRequest(request: PermissionRequest) {

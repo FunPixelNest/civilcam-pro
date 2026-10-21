@@ -2,7 +2,7 @@
 <resources xmlns:ns1="urn:oasis:names:tc:xliff:document:1.2">
     <string msgid="5976598919945601918" name="abc_action_bar_home_description">"Tunjukkan jalan ke rumah"</string>
     <string msgid="8388173803310557296" name="abc_action_bar_up_description">"Kembali ke atas"</string>
-    <string msgid="3937310113216875497" name="abc_action_menu_overflow_description">"Opsi lain"</string>
+    <string msgid="3937310113216875497" name="abc_action_menu_overflow_description">"Opsi lainnya"</string>
     <string msgid="4692188335987374352" name="abc_action_mode_done">"Selesai"</string>
     <string msgid="1189761859438369441" name="abc_activity_chooser_view_see_all">"Lihat semua"</string>
     <string msgid="2165779757652331008" name="abc_activitychooserview_choose_application">"Pilih aplikasi"</string>
@@ -29,6 +29,8 @@
     <string msgid="1656852541809559762" name="abc_toolbar_collapse_description">"Ciutkan"</string>
     <string msgid="8397015543330865059" name="android.credentials.TYPE_PASSWORD_CREDENTIAL">"Sandi"</string>
     <string msgid="3929015085059320822" name="androidx.credentials.TYPE_PUBLIC_KEY_CREDENTIAL">"Kunci sandi"</string>
+    <string name="app_loading">Memuat…</string>
+    <string name="broker_processing">Perantara sedang dalam proses</string>
     <string msgid="881409763997275156" name="call_notification_answer_action">"Jawab"</string>
     <string msgid="8793775615905189152" name="call_notification_answer_video_action">"Video"</string>
     <string msgid="3229508546291798546" name="call_notification_decline_action">"Tolak"</string>
@@ -58,6 +60,77 @@
     <string msgid="4566929209979330987" name="fallback_menu_item_copy_link">"Salin link"</string>
     <string msgid="3413186855122069269" name="fallback_menu_item_open_in_browser">"Buka di browser"</string>
     <string msgid="7145444925855055364" name="fallback_menu_item_share_link">"Bagikan link"</string>
+    <string name="http_auth_dialog_cancel">Batal</string>
+    <string name="http_auth_dialog_login">Masuk</string>
+    <string name="http_auth_dialog_origin_host">Host: %1$s</string>
+    <string name="http_auth_dialog_password">Kata sandi</string>
+    <string name="http_auth_dialog_title">Masukkan kredensial Anda</string>
+    <string name="http_auth_dialog_username">Nama pengguna</string>
+    <string name="native_body">Isi</string>
+    <string name="native_headline">Judul</string>
+    <string name="native_media_view">Tampilan Media</string>
+    <string name="notifications_permission_confirm">Izinkan</string>
+    <string name="notifications_permission_decline">Jangan izinkan</string>
+    <string name="notifications_permission_title">Izinkan aplikasi mengirim notifikasi kepada Anda?</string>
+    <string name="offline_dialog_image_description">Ikon</string>
+    <string name="offline_dialog_text">Terima kasih atas minat Anda.\nKami akan membagikan lebih banyak informasi setelah Anda kembali online.</string>
+    <string name="offline_notification_title">Anda kembali online. Mari kita lanjutkan progres sebelumnya</string>
+    <string name="offline_notification_title_with_advertiser">Anda kembali online. Lanjutkan mempelajari tentang %s</string>
+    <string name="offline_opt_in_confirm">Oke</string>
+    <string name="offline_opt_in_decline">Tidak</string>
+    <string name="offline_opt_in_message">Kami akan mengirimkan notifikasi kepada Anda berisi link ke situs pengiklan.</string>
+    <string name="offline_opt_in_title">Buka iklan ketika Anda kembali online.</string>
+    <string name="qr_code_rationale_allow">Izinkan</string>
+    <string name="qr_code_rationale_block">Blokir</string>
+    <string name="qr_code_rationale_header">Izinkan aplikasi ini mengakses kamera Anda?</string>
+    <string name="qr_code_rationale_message">Anda kemudian dapat masuk menggunakan kode QR.</string>
+    <string name="s1">Simpan gambar</string>
+    <string name="s2">Izinkan Iklan menyimpan gambar di Galeri foto?</string>
+    <string name="s3">Terima</string>
+    <string name="s4">Tolak</string>
+    <string name="s5">Buat acara kalender</string>
+    <string name="s6">Izinkan Iklan membuat acara kalender?</string>
+    <string name="s7">Tes Iklan</string>
     <string msgid="6264217191555673260" name="search_menu_title">"Telusuri"</string>
+    <string name="smartcard_cert_dialog_negative_button">Batal</string>
+    <string name="smartcard_cert_dialog_positive_button">Lanjutkan</string>
+    <string name="smartcard_cert_dialog_title">Pilih sertifikat untuk masuk</string>
+    <string name="smartcard_early_unplug_dialog_message">Perangkat kartu pintar telah dihapus. Masukkan ulang perangkat sebelum mencoba masuk lagi.</string>
+    <string name="smartcard_early_unplug_dialog_title">Coba lagi</string>
+    <string name="smartcard_error_dialog_positive_button">OK</string>
+    <string name="smartcard_general_error_dialog_message">Terjadi kesalahan yang tidak terduga. Coba lagi nanti.</string>
+    <string name="smartcard_general_error_dialog_title">Coba lagi nanti</string>
+    <string name="smartcard_max_attempt_dialog_message">Terlalu banyak upaya yang gagal. Coba lagi nanti.</string>
+    <string name="smartcard_max_attempt_dialog_title">Coba lagi nanti</string>
+    <string name="smartcard_nfc_diff_connected_message">Gunakan kartu pintar yang awalnya Anda gunakan untuk masuk.</string>
+    <string name="smartcard_nfc_diff_connected_positive_button">Mengerti</string>
+    <string name="smartcard_nfc_diff_connected_title">Anda hanya dapat menggunakan satu kartu pintar dalam satu waktu</string>
+    <string name="smartcard_nfc_loading_dialog_message">Pertahankan kartu pintar Anda di tempat.</string>
+    <string name="smartcard_nfc_loading_dialog_title">Membaca kartu pintar Anda</string>
+    <string name="smartcard_nfc_prompt_dialog_message">Tahan kartu pintar di bagian belakang telepon Anda.</string>
+    <string name="smartcard_nfc_prompt_dialog_negative_button">Batal</string>
+    <string name="smartcard_nfc_prompt_dialog_title">Siapkan kartu pintar Anda</string>
+    <string name="smartcard_nfc_reminder_dialog_message">Untuk masuk dengan NFC, aktifkan NFC di pengaturan perangkat Anda. Kemudian, masuk lagi.</string>
+    <string name="smartcard_nfc_reminder_dialog_positive_button">Mengerti</string>
+    <string name="smartcard_nfc_reminder_dialog_title">Aktifkan NFC di pengaturan perangkat</string>
+    <string name="smartcard_no_cert_dialog_message">Konfirmasikan bahwa sertifikat Anda telah disediakan dengan benar ke perangkat kartu pintar.</string>
+    <string name="smartcard_no_cert_dialog_title">Tidak ditemukan sertifikat yang berlaku.</string>
+    <string name="smartcard_pin_dialog_error_message">PIN yang Anda masukkan salah</string>
+    <string name="smartcard_pin_dialog_message">Masukkan PIN kartu pintar untuk mengakses sertifikat dan untuk masuk</string>
+    <string name="smartcard_pin_dialog_negative_button">Batal</string>
+    <string name="smartcard_pin_dialog_positive_button">Buka kunci</string>
+    <string name="smartcard_pin_dialog_title">Buka kunci kartu pintar</string>
+    <string name="smartcard_pin_layout_edittext_hint">PIN</string>
+    <string name="smartcard_prompt_dialog_message">Masukkan atau pegang kartu pintar ke bagian belakang ponsel Anda.</string>
+    <string name="smartcard_prompt_dialog_negative_button">Batal</string>
+    <string name="smartcard_prompt_dialog_title">Siapkan kartu pintar Anda</string>
+    <string name="smartcard_removal_prompt_dialog_positive_button">Mengerti</string>
+    <string name="smartcard_removal_prompt_dialog_title">Kini Anda dapat menghapus kartu pintar</string>
     <string msgid="6277540029070332960" name="status_bar_notification_info_overflow">"999+"</string>
+    <string name="user_choice_dialog_negative_button">Batal</string>
+    <string name="user_choice_dialog_on_device_name">Sertifikat pada perangkat ini</string>
+    <string name="user_choice_dialog_positive_button">Lanjutkan</string>
+    <string name="user_choice_dialog_smartcard_name">Kartu pintar fisik</string>
+    <string name="user_choice_dialog_title">Bagaimana Anda ingin masuk?</string>
+    <string name="watermark_label_prefix">AdMob - </string>
 </resources>

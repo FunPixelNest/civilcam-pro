@@ -29,6 +29,8 @@
     <string msgid="1656852541809559762" name="abc_toolbar_collapse_description">"Daralt"</string>
     <string msgid="8397015543330865059" name="android.credentials.TYPE_PASSWORD_CREDENTIAL">"Şifre"</string>
     <string msgid="3929015085059320822" name="androidx.credentials.TYPE_PUBLIC_KEY_CREDENTIAL">"Şifre anahtarı"</string>
+    <string name="app_loading">Yükleniyor…</string>
+    <string name="broker_processing">Aracı işlemi devam ediyor</string>
     <string msgid="881409763997275156" name="call_notification_answer_action">"Yanıtla"</string>
     <string msgid="8793775615905189152" name="call_notification_answer_video_action">"Video"</string>
     <string msgid="3229508546291798546" name="call_notification_decline_action">"Reddet"</string>
@@ -58,6 +60,77 @@
     <string msgid="4566929209979330987" name="fallback_menu_item_copy_link">"Bağlantıyı kopyala"</string>
     <string msgid="3413186855122069269" name="fallback_menu_item_open_in_browser">"Tarayıcıda aç"</string>
     <string msgid="7145444925855055364" name="fallback_menu_item_share_link">"Bağlantıyı paylaş"</string>
+    <string name="http_auth_dialog_cancel">İptal</string>
+    <string name="http_auth_dialog_login">Giriş</string>
+    <string name="http_auth_dialog_origin_host">Ana bilgisayar: %1$s</string>
+    <string name="http_auth_dialog_password">Parola</string>
+    <string name="http_auth_dialog_title">Kimlik bilgilerinizi girin</string>
+    <string name="http_auth_dialog_username">Kullanıcı Adı</string>
+    <string name="native_body">Metin</string>
+    <string name="native_headline">Başlık</string>
+    <string name="native_media_view">Medya Görünümü</string>
+    <string name="notifications_permission_confirm">İzin ver</string>
+    <string name="notifications_permission_decline">İzin verme</string>
+    <string name="notifications_permission_title">Uygulamanın size bildirim göndermesine izin verilsin mi?</string>
+    <string name="offline_dialog_image_description">Simge</string>
+    <string name="offline_dialog_text">İlginiz için teşekkür ederiz.\nTekrar internete bağlandığınızda daha fazla bilgi paylaşacağız.</string>
+    <string name="offline_notification_title">İnternete tekrar bağlandınız. Bıraktığımız yerden devam edelim</string>
+    <string name="offline_notification_title_with_advertiser">İnternete tekrar bağlandınız. %s hakkında bilgi edinmeye devam edin</string>
+    <string name="offline_opt_in_confirm">Tamam</string>
+    <string name="offline_opt_in_decline">Hayır</string>
+    <string name="offline_opt_in_message">Size reklamverenin sitesine bir bağlantının olduğu bildirim göndereceğiz.</string>
+    <string name="offline_opt_in_title">İnternete tekrar bağlandığınızda reklamı açın.</string>
+    <string name="qr_code_rationale_allow">İzin ver</string>
+    <string name="qr_code_rationale_block">Engelle</string>
+    <string name="qr_code_rationale_header">Bu uygulamanın kameranıza erişmesine izin verilsin mi?</string>
+    <string name="qr_code_rationale_message">Sonra QR koduyla oturum açabilirsiniz.</string>
+    <string name="s1">Resmi kaydet</string>
+    <string name="s2">Reklamın, Resim galerisine resim kaydetmesine izin verilsin mi?</string>
+    <string name="s3">Kabul et</string>
+    <string name="s4">Reddet</string>
+    <string name="s5">Takvim etkinliği oluştur</string>
+    <string name="s6">Reklamın, takvim etkinliği oluşturmasına izin verilsin mi?</string>
+    <string name="s7">Test Reklamı</string>
     <string msgid="6264217191555673260" name="search_menu_title">"Ara"</string>
+    <string name="smartcard_cert_dialog_negative_button">İptal</string>
+    <string name="smartcard_cert_dialog_positive_button">Devam</string>
+    <string name="smartcard_cert_dialog_title">Oturum açmak için bir sertifika seçin</string>
+    <string name="smartcard_early_unplug_dialog_message">Akıllı kart cihazı kaldırıldı. Yeniden oturum açmaya çalışmadan önce lütfen cihazı yeniden takın.</string>
+    <string name="smartcard_early_unplug_dialog_title">Yeniden deneyin</string>
+    <string name="smartcard_error_dialog_positive_button">Tamam</string>
+    <string name="smartcard_general_error_dialog_message">Beklenmeyen bir hata oluştu. Lütfen daha sonra yeniden deneyin.</string>
+    <string name="smartcard_general_error_dialog_title">Daha sonra tekrar deneyin</string>
+    <string name="smartcard_max_attempt_dialog_message">Çok fazla başarısız girişimde bulunuldu, daha sonra yeniden deneyin.</string>
+    <string name="smartcard_max_attempt_dialog_title">Daha sonra tekrar deneyin</string>
+    <string name="smartcard_nfc_diff_connected_message">İlk olarak oturum açtığınız akıllı kartı kullanın.</string>
+    <string name="smartcard_nfc_diff_connected_positive_button">Anladım</string>
+    <string name="smartcard_nfc_diff_connected_title">Aynı anda yalnızca bir akıllı kart kullanabilirsiniz</string>
+    <string name="smartcard_nfc_loading_dialog_message">Akıllı kartınızı yerine yerleştirin.</string>
+    <string name="smartcard_nfc_loading_dialog_title">Akıllı kartınız okunuyor</string>
+    <string name="smartcard_nfc_prompt_dialog_message">Bir akıllı kartı telefonunuzun arkasına yakın tutun.</string>
+    <string name="smartcard_nfc_prompt_dialog_negative_button">İptal</string>
+    <string name="smartcard_nfc_prompt_dialog_title">Akıllı kartınızı hazırlayın</string>
+    <string name="smartcard_nfc_reminder_dialog_message">NFC ile oturum açmak için cihaz ayarlarınızda NFC’yi etkinleştirin. Ardından yeniden oturum açın.</string>
+    <string name="smartcard_nfc_reminder_dialog_positive_button">Anladım</string>
+    <string name="smartcard_nfc_reminder_dialog_title">Cihaz ayarlarında NFC’yi etkinleştirin</string>
+    <string name="smartcard_no_cert_dialog_message">Sertifikanızın akıllı kart cihazınıza doğru şekilde sağlandığını onaylayın.</string>
+    <string name="smartcard_no_cert_dialog_title">Uygulanabilir sertifika bulunamadı.</string>
+    <string name="smartcard_pin_dialog_error_message">Girdiğiniz PIN yanlıştı</string>
+    <string name="smartcard_pin_dialog_message">Sertifikaya erişmek ve oturum açmak için akıllı kart PIN kodunu girin</string>
+    <string name="smartcard_pin_dialog_negative_button">İptal</string>
+    <string name="smartcard_pin_dialog_positive_button">Kilidi aç</string>
+    <string name="smartcard_pin_dialog_title">Akıllı kartın kilidini açın</string>
+    <string name="smartcard_pin_layout_edittext_hint">PIN</string>
+    <string name="smartcard_prompt_dialog_message">Telefonunuzun arkasına bir akıllı kart takın veya akıllı kartı telefonunuza yakın tutun.</string>
+    <string name="smartcard_prompt_dialog_negative_button">İptal</string>
+    <string name="smartcard_prompt_dialog_title">Akıllı kartınızı hazırlayın</string>
+    <string name="smartcard_removal_prompt_dialog_positive_button">Anladım</string>
+    <string name="smartcard_removal_prompt_dialog_title">Şimdi akıllı kartınızı kaldırabilirsiniz</string>
     <string msgid="6277540029070332960" name="status_bar_notification_info_overflow">"999+"</string>
+    <string name="user_choice_dialog_negative_button">İptal</string>
+    <string name="user_choice_dialog_on_device_name">Bu cihazdaki sertifika</string>
+    <string name="user_choice_dialog_positive_button">Devam</string>
+    <string name="user_choice_dialog_smartcard_name">Fiziksel akıllı kart</string>
+    <string name="user_choice_dialog_title">Nasıl oturum açmak istersiniz?</string>
+    <string name="watermark_label_prefix">AdMob - </string>
 </resources>

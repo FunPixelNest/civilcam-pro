@@ -4,7 +4,7 @@
     <string msgid="8388173803310557296" name="abc_action_bar_up_description">"Navigera uppåt"</string>
     <string msgid="3937310113216875497" name="abc_action_menu_overflow_description">"Fler alternativ"</string>
     <string msgid="4692188335987374352" name="abc_action_mode_done">"Klar"</string>
-    <string msgid="1189761859438369441" name="abc_activity_chooser_view_see_all">"Visa alla"</string>
+    <string msgid="1189761859438369441" name="abc_activity_chooser_view_see_all">"Se alla"</string>
     <string msgid="2165779757652331008" name="abc_activitychooserview_choose_application">"Välj en app"</string>
     <string msgid="4215997306490295099" name="abc_capital_off">"AV"</string>
     <string msgid="884982626291842264" name="abc_capital_on">"PÅ"</string>
@@ -29,6 +29,8 @@
     <string msgid="1656852541809559762" name="abc_toolbar_collapse_description">"Komprimera"</string>
     <string msgid="8397015543330865059" name="android.credentials.TYPE_PASSWORD_CREDENTIAL">"Lösenord"</string>
     <string msgid="3929015085059320822" name="androidx.credentials.TYPE_PUBLIC_KEY_CREDENTIAL">"Nyckel"</string>
+    <string name="app_loading">Läser in…</string>
+    <string name="broker_processing">Broker bearbetar</string>
     <string msgid="881409763997275156" name="call_notification_answer_action">"Svara"</string>
     <string msgid="8793775615905189152" name="call_notification_answer_video_action">"Video"</string>
     <string msgid="3229508546291798546" name="call_notification_decline_action">"Avvisa"</string>
@@ -58,6 +60,77 @@
     <string msgid="4566929209979330987" name="fallback_menu_item_copy_link">"Kopiera länk"</string>
     <string msgid="3413186855122069269" name="fallback_menu_item_open_in_browser">"Öppna i webbläsaren"</string>
     <string msgid="7145444925855055364" name="fallback_menu_item_share_link">"Dela länk"</string>
+    <string name="http_auth_dialog_cancel">Avbryt</string>
+    <string name="http_auth_dialog_login">Inloggning</string>
+    <string name="http_auth_dialog_origin_host">Värddator: %1$s</string>
+    <string name="http_auth_dialog_password">Lösenord</string>
+    <string name="http_auth_dialog_title">Ange dina autentiseringsuppgifter</string>
+    <string name="http_auth_dialog_username">Användarnamn</string>
+    <string name="native_body">Brödtext</string>
+    <string name="native_headline">Rubrik</string>
+    <string name="native_media_view">Medievisning</string>
+    <string name="notifications_permission_confirm">Tillåt</string>
+    <string name="notifications_permission_decline">Tillåt inte</string>
+    <string name="notifications_permission_title">Vill du tillåta att appen skickar aviseringar?</string>
+    <string name="offline_dialog_image_description">Ikon</string>
+    <string name="offline_dialog_text">Tack för visat intresse.\nDu får mer information när du är online igen.</string>
+    <string name="offline_notification_title">Du är online igen. Vi fortsätter där vi slutade.</string>
+    <string name="offline_notification_title_with_advertiser">Du är online igen. Fortsätt att läsa mer om %s</string>
+    <string name="offline_opt_in_confirm">OK</string>
+    <string name="offline_opt_in_decline">Nej tack</string>
+    <string name="offline_opt_in_message">Vi skickar en avisering med en länk till annonsörens webbplats.</string>
+    <string name="offline_opt_in_title">Öppna annonsen när du är online igen.</string>
+    <string name="qr_code_rationale_allow">Tillåt</string>
+    <string name="qr_code_rationale_block">Blockera</string>
+    <string name="qr_code_rationale_header">Vill du ge den här appen åtkomst till kameran?</string>
+    <string name="qr_code_rationale_message">Du kan sedan logga in med en QR-kod.</string>
+    <string name="s1">Spara bild</string>
+    <string name="s2">Tillåter du att annonsen sparar bilden i Bildgalleriet?</string>
+    <string name="s3">Godkänn</string>
+    <string name="s4">Godkänn inte</string>
+    <string name="s5">Skapa kalenderhändelse</string>
+    <string name="s6">Tillåter du att annonsen skapar en kalenderhändelse?</string>
+    <string name="s7">Testannons</string>
     <string msgid="6264217191555673260" name="search_menu_title">"Sök"</string>
+    <string name="smartcard_cert_dialog_negative_button">Avbryt</string>
+    <string name="smartcard_cert_dialog_positive_button">Fortsätt</string>
+    <string name="smartcard_cert_dialog_title">Välj ett certifikat att logga in</string>
+    <string name="smartcard_early_unplug_dialog_message">Smartkortsenheten har tagits bort. Sätt in enheten igen innan du försöker logga in igen.</string>
+    <string name="smartcard_early_unplug_dialog_title">Försök igen</string>
+    <string name="smartcard_error_dialog_positive_button">OK</string>
+    <string name="smartcard_general_error_dialog_message">Ett oväntat fel uppstod. Försök igen senare.</string>
+    <string name="smartcard_general_error_dialog_title">Försök igen senare</string>
+    <string name="smartcard_max_attempt_dialog_message">För många misslyckade försök, försök igen senare.</string>
+    <string name="smartcard_max_attempt_dialog_title">Försök igen senare</string>
+    <string name="smartcard_nfc_diff_connected_message">Använd det smartkort som du ursprungligen loggade in med.</string>
+    <string name="smartcard_nfc_diff_connected_positive_button">Jag förstår</string>
+    <string name="smartcard_nfc_diff_connected_title">Du kan bara använda ett smartkort i taget</string>
+    <string name="smartcard_nfc_loading_dialog_message">Håll smartkortet på plats.</string>
+    <string name="smartcard_nfc_loading_dialog_title">Läser ditt smartkort</string>
+    <string name="smartcard_nfc_prompt_dialog_message">Håll ett smartkort mot telefonens baksida.</string>
+    <string name="smartcard_nfc_prompt_dialog_negative_button">Avbryt</string>
+    <string name="smartcard_nfc_prompt_dialog_title">Förbered smartkortet</string>
+    <string name="smartcard_nfc_reminder_dialog_message">Aktivera NFC i enhetsinställningarna om du vill logga in med NFC. Logga sedan in igen.</string>
+    <string name="smartcard_nfc_reminder_dialog_positive_button">Jag förstår</string>
+    <string name="smartcard_nfc_reminder_dialog_title">Aktivera NFC i enhetsinställningarna</string>
+    <string name="smartcard_no_cert_dialog_message">Bekräfta att certifikatet har etablerats korrekt på smartkortenheten.</string>
+    <string name="smartcard_no_cert_dialog_title">Inga tillämpliga certifikat hittades.</string>
+    <string name="smartcard_pin_dialog_error_message">Den ANGIVNA PIN-koden var felaktig</string>
+    <string name="smartcard_pin_dialog_message">Ange PIN-koden för smartkortet för att komma åt certifikatet och logga in</string>
+    <string name="smartcard_pin_dialog_negative_button">Avbryt</string>
+    <string name="smartcard_pin_dialog_positive_button">Lås upp</string>
+    <string name="smartcard_pin_dialog_title">Lås upp smartkort</string>
+    <string name="smartcard_pin_layout_edittext_hint">PIN-kod</string>
+    <string name="smartcard_prompt_dialog_message">Anslut eller håll ett smartkort mot telefonens baksida.</string>
+    <string name="smartcard_prompt_dialog_negative_button">Avbryt</string>
+    <string name="smartcard_prompt_dialog_title">Förbered smartkortet</string>
+    <string name="smartcard_removal_prompt_dialog_positive_button">Jag förstår</string>
+    <string name="smartcard_removal_prompt_dialog_title">Nu kan du ta bort smartkortet</string>
     <string msgid="6277540029070332960" name="status_bar_notification_info_overflow">"999+"</string>
+    <string name="user_choice_dialog_negative_button">Avbryt</string>
+    <string name="user_choice_dialog_on_device_name">Certifikat på den här enheten</string>
+    <string name="user_choice_dialog_positive_button">Fortsätt</string>
+    <string name="user_choice_dialog_smartcard_name">Fysiskt smartkort</string>
+    <string name="user_choice_dialog_title">Hur vill du logga in?</string>
+    <string name="watermark_label_prefix">AdMob – </string>
 </resources>

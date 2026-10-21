@@ -29,6 +29,8 @@
     <string msgid="1656852541809559762" name="abc_toolbar_collapse_description">"Összecsukás"</string>
     <string msgid="8397015543330865059" name="android.credentials.TYPE_PASSWORD_CREDENTIAL">"Jelszó"</string>
     <string msgid="3929015085059320822" name="androidx.credentials.TYPE_PUBLIC_KEY_CREDENTIAL">"Azonosítókulcs"</string>
+    <string name="app_loading">Betöltés…</string>
+    <string name="broker_processing">A szervező feldolgozást végez</string>
     <string msgid="881409763997275156" name="call_notification_answer_action">"Fogadás"</string>
     <string msgid="8793775615905189152" name="call_notification_answer_video_action">"Videó"</string>
     <string msgid="3229508546291798546" name="call_notification_decline_action">"Elutasítás"</string>
@@ -58,6 +60,77 @@
     <string msgid="4566929209979330987" name="fallback_menu_item_copy_link">"Link másolása"</string>
     <string msgid="3413186855122069269" name="fallback_menu_item_open_in_browser">"Megnyitás böngészőben"</string>
     <string msgid="7145444925855055364" name="fallback_menu_item_share_link">"Link megosztása"</string>
+    <string name="http_auth_dialog_cancel">Mégse</string>
+    <string name="http_auth_dialog_login">Bejelentkezés</string>
+    <string name="http_auth_dialog_origin_host">Gazdaszámítógép: %1$s</string>
+    <string name="http_auth_dialog_password">Jelszó</string>
+    <string name="http_auth_dialog_title">Adja meg a hitelesítő adatait</string>
+    <string name="http_auth_dialog_username">Felhasználónév</string>
+    <string name="native_body">Törzs</string>
+    <string name="native_headline">Címsor</string>
+    <string name="native_media_view">Médianézet</string>
+    <string name="notifications_permission_confirm">Engedélyezés</string>
+    <string name="notifications_permission_decline">Tiltás</string>
+    <string name="notifications_permission_title">Engedélyezi, hogy az alkalmazás értesítéseket küldjön Önnek?</string>
+    <string name="offline_dialog_image_description">Ikon</string>
+    <string name="offline_dialog_text">Köszönjük érdeklődését!\nAmint újra online lesz, bővebb tájékoztatást fog kapni.</string>
+    <string name="offline_notification_title">Újra van internetkapcsolata. Folytassuk onnan, ahol abbahagytuk.</string>
+    <string name="offline_notification_title_with_advertiser">Újra van internetkapcsolata. Ismerje meg részletesebben a következőt: %s.</string>
+    <string name="offline_opt_in_confirm">OK</string>
+    <string name="offline_opt_in_decline">Nem</string>
+    <string name="offline_opt_in_message">Értesítést küldünk, amelyben a hirdető webhelyére mutató link szerepel.</string>
+    <string name="offline_opt_in_title">Megnyithatja a hirdetést akkor, amikor újra online lesz.</string>
+    <string name="qr_code_rationale_allow">Engedélyezés</string>
+    <string name="qr_code_rationale_block">Letiltás</string>
+    <string name="qr_code_rationale_header">Engedélyezi az alkalmazásnak a kamerához való hozzáférést?</string>
+    <string name="qr_code_rationale_message">Ezután bejelentkezhet QR-kóddal.</string>
+    <string name="s1">Kép mentése</string>
+    <string name="s2">Engedélyezi a hirdetés számára a kép tárolását a Képgalériában?</string>
+    <string name="s3">Elfogadás</string>
+    <string name="s4">Elutasítás</string>
+    <string name="s5">Naptáresemény létrehozása</string>
+    <string name="s6">Engedélyezi a hirdetés számára naptáresemény létrehozását?</string>
+    <string name="s7">Teszthirdetés</string>
     <string msgid="6264217191555673260" name="search_menu_title">"Keresés"</string>
+    <string name="smartcard_cert_dialog_negative_button">Mégse</string>
+    <string name="smartcard_cert_dialog_positive_button">Tovább</string>
+    <string name="smartcard_cert_dialog_title">Jelölje ki a bejelentkezéshez használt tanúsítványt</string>
+    <string name="smartcard_early_unplug_dialog_message">Az intelligenskártya-eszköz el lett távolítva. Az újbóli bejelentkezés előtt helyezze be újra az eszközt.</string>
+    <string name="smartcard_early_unplug_dialog_title">Újra</string>
+    <string name="smartcard_error_dialog_positive_button">OK</string>
+    <string name="smartcard_general_error_dialog_message">Váratlan hiba történt. Később próbálja meg újból.</string>
+    <string name="smartcard_general_error_dialog_title">Próbálkozzon újra később</string>
+    <string name="smartcard_max_attempt_dialog_message">Túl sok sikertelen kísérlet történt. Próbálkozzon újra később.</string>
+    <string name="smartcard_max_attempt_dialog_title">Próbálkozzon újra később</string>
+    <string name="smartcard_nfc_diff_connected_message">Használja azt az intelligens kártyát, amellyel eredetileg bejelentkezett.</string>
+    <string name="smartcard_nfc_diff_connected_positive_button">Rendben</string>
+    <string name="smartcard_nfc_diff_connected_title">Egyszerre csak egy intelligens kártyát használhat</string>
+    <string name="smartcard_nfc_loading_dialog_message">Tartsa tovább az intelligens kártyát a telefonhoz.</string>
+    <string name="smartcard_nfc_loading_dialog_title">Intelligens kártya olvasása folyamatban</string>
+    <string name="smartcard_nfc_prompt_dialog_message">Tartson egy intelligens kártyát a telefon hátlapjához.</string>
+    <string name="smartcard_nfc_prompt_dialog_negative_button">Mégse</string>
+    <string name="smartcard_nfc_prompt_dialog_title">Intelligens kártya előkészítése</string>
+    <string name="smartcard_nfc_reminder_dialog_message">Ha NFC-vel szeretne bejelentkezni, kapcsolja be az NFC-t az eszköz beállításai között. Ezután jelentkezzen be újra.</string>
+    <string name="smartcard_nfc_reminder_dialog_positive_button">Értem</string>
+    <string name="smartcard_nfc_reminder_dialog_title">NFC bekapcsolása az eszközbeállításokban</string>
+    <string name="smartcard_no_cert_dialog_message">Győződjön meg arról, hogy a tanúsítvány megfelelően lett kiépítve az intelligenskártya-eszközön.</string>
+    <string name="smartcard_no_cert_dialog_title">Nem találhatók alkalmazható tanúsítványok.</string>
+    <string name="smartcard_pin_dialog_error_message">A megadott PIN-kód helytelen.</string>
+    <string name="smartcard_pin_dialog_message">Adja meg az intelligens kártya PIN-kódját a tanúsítvány eléréséhez és a bejelentkezéshez</string>
+    <string name="smartcard_pin_dialog_negative_button">Mégse</string>
+    <string name="smartcard_pin_dialog_positive_button">Zárolás feloldása</string>
+    <string name="smartcard_pin_dialog_title">Intelligens kártya zárolásának feloldása</string>
+    <string name="smartcard_pin_layout_edittext_hint">PIN-kód</string>
+    <string name="smartcard_prompt_dialog_message">Helyezzen be egy intelligens kártyát, vagy tartsa a telefon hátlapjához.</string>
+    <string name="smartcard_prompt_dialog_negative_button">Mégse</string>
+    <string name="smartcard_prompt_dialog_title">Intelligens kártya előkészítése</string>
+    <string name="smartcard_removal_prompt_dialog_positive_button">Rendben</string>
+    <string name="smartcard_removal_prompt_dialog_title">Most már eltávolíthatja az intelligens kártyát</string>
     <string msgid="6277540029070332960" name="status_bar_notification_info_overflow">"999+"</string>
+    <string name="user_choice_dialog_negative_button">Mégse</string>
+    <string name="user_choice_dialog_on_device_name">Tanúsítvány ezen az eszközön</string>
+    <string name="user_choice_dialog_positive_button">Folytatás</string>
+    <string name="user_choice_dialog_smartcard_name">Fizikai intelligens kártya</string>
+    <string name="user_choice_dialog_title">Hogyan szeretne bejelentkezni?</string>
+    <string name="watermark_label_prefix">AdMob – </string>
 </resources>

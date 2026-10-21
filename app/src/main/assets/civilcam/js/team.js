@@ -37,7 +37,7 @@ function drawTeamBlock(p) {
     return;
   }
   hint.textContent = owner
-    ? 'Add the e-mail each engineer signs in with. They see this project and all its photos; full photos open from the Google Drive of whoever took them.'
+    ? 'Add the e-mail each engineer signs in with. They see this project and all its photos; full photos open from the Google Drive or OneDrive of whoever took them.'
     : `Shared by ${p.owner}. Only the owner can add or remove engineers.`;
   document.getElementById('pj-team-list').innerHTML = sheetMembers.map(e => `
     <div class="team-row">
@@ -127,8 +127,9 @@ async function fullImageOf(p) {
   if (!p.previewOnly && p.imageData) return p.imageData;
   if (fullCache.has(p.id)) return fullCache.get(p.id);
   let data = null;
-  if (p.driveId && p.driveOwner === profile.email && Drive.enabled()) data = await Drive.download(p.driveId);
-  else if (p.driveId) data = await Drive.fetchShared(p.driveId);
+  const store = PhotoStore.of(p);
+  if (p.driveId && p.driveOwner === profile.email && store.enabled()) data = await store.download(p.driveId);
+  else if (p.driveId) data = await store.fetchShared(p);
   else if (CONFIG.firebase.storageBucket && Sync.enabled()) data = await Sync.downloadImage(p.id, await Account.getToken());
   if (!data) throw new Error(`The full photo is only on ${p.engineer && p.engineer.name ? p.engineer.name + "'s" : 'the other engineer\'s'} phone so far`);
   fullCache.set(p.id, data);
@@ -157,11 +158,12 @@ async function fullImages(list, label) {
 async function fullPhotoActions(p) {
   if (!p) return;
   const opts = [['phone', 'Save to this phone (Pictures / CivilCam)']];
-  if (Drive.enabled()) opts.push(['drive', 'Save to my Google Drive']);
+  const mine = PhotoStore.active();
+  if (mine) opts.push(['drive', 'Save to my ' + mine.label]);
   opts.push(['keep', 'Keep the full photo in the app']);
-  if (p.driveLink) opts.push(['open', 'Open in Google Drive']);
+  if (p.driveLink && !takenByOther(p)) opts.push(['open', 'Open in ' + PhotoStore.of(p).label]);
   const who = p.engineer && p.engineer.name ? p.engineer.name : 'another engineer';
-  const choice = await askChoice('Full photo', `This is a small preview. The full photo is in ${takenByOther(p) ? who + "'s" : 'your'} Google Drive and is only downloaded if you choose.`, opts);
+  const choice = await askChoice('Full photo', `This is a small preview. The full photo is in ${PhotoStore.where(p, takenByOther(p) ? who + "'s" : 'your')} and is only downloaded if you choose.`, opts);
   if (!choice) return;
   if (choice === 'open') { openDriveLink(p); return; }
   try {
@@ -172,9 +174,9 @@ async function fullPhotoActions(p) {
       savedMessage(await saveFile(data, photoFileName(p), 'image/jpeg'), 'Photo', 'image/jpeg');
     } else if (choice === 'drive') {
       setLoadingSub('Uploading to your Drive');
-      await Drive.upload(Object.assign({}, p, { imageData: data }));
+      await mine.upload(Object.assign({}, p, { imageData: data }));
       hideLoading();
-      showToast('Saved in your Google Drive › CivilCam', 'success');
+      showToast('Saved in your ' + mine.folder, 'success');
     } else if (choice === 'keep') {
       p.imageData = data; p.previewOnly = false;
       await DB.save(p);

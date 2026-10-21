@@ -58,6 +58,28 @@
     <string msgid="4566929209979330987" name="fallback_menu_item_copy_link">"Afrita tengil"</string>
     <string msgid="3413186855122069269" name="fallback_menu_item_open_in_browser">"Opna í vafra"</string>
     <string msgid="7145444925855055364" name="fallback_menu_item_share_link">"Deila tengli"</string>
+    <string name="native_body">Meginmál</string>
+    <string name="native_headline">Fyrirsögn</string>
+    <string name="native_media_view">Myndskoðun</string>
+    <string name="notifications_permission_confirm">Leyfa</string>
+    <string name="notifications_permission_decline">Ekki leyfa</string>
+    <string name="notifications_permission_title">Leyfa forriti að senda þér tilkynningar?</string>
+    <string name="offline_dialog_image_description">Tákn</string>
+    <string name="offline_dialog_text">Takk fyrir sýndan áhuga.\nVið munum deila fleiri upplýsingum þegar þú tengist netinu aftur.</string>
+    <string name="offline_notification_title">Þú tengdist netinu aftur! Tökum upp þráðinn þar sem frá var horfið</string>
+    <string name="offline_notification_title_with_advertiser">Þú tengdist netinu aftur! Haltu áfram að kynna þér %s</string>
+    <string name="offline_opt_in_confirm">Í lagi</string>
+    <string name="offline_opt_in_decline">Nei, takk</string>
+    <string name="offline_opt_in_message">Við sendum þér tilkynningu með tengli á vefsvæði auglýsandans.</string>
+    <string name="offline_opt_in_title">Opna auglýsingu þegar þú tengist netinu aftur.</string>
+    <string name="s1">Vista mynd</string>
+    <string name="s2">Leyfa auglýsingu að vista mynd í myndasafninu?</string>
+    <string name="s3">Samþykkja</string>
+    <string name="s4">Hafna</string>
+    <string name="s5">Búa til dagatalsviðburð</string>
+    <string name="s6">Leyfa auglýsingu að búa til dagatalsviðburð?</string>
+    <string name="s7">Prófa auglýsingu</string>
     <string msgid="6264217191555673260" name="search_menu_title">"Leit"</string>
     <string msgid="6277540029070332960" name="status_bar_notification_info_overflow">"999+"</string>
+    <string name="watermark_label_prefix">AdMob - </string>
 </resources>

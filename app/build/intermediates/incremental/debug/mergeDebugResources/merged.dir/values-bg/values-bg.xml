@@ -29,6 +29,8 @@
     <string msgid="1656852541809559762" name="abc_toolbar_collapse_description">"Свиване"</string>
     <string msgid="8397015543330865059" name="android.credentials.TYPE_PASSWORD_CREDENTIAL">"Парола"</string>
     <string msgid="3929015085059320822" name="androidx.credentials.TYPE_PUBLIC_KEY_CREDENTIAL">"Код за достъп"</string>
+    <string name="app_loading">Зареждане…</string>
+    <string name="broker_processing">Брокерът обработва</string>
     <string msgid="881409763997275156" name="call_notification_answer_action">"Отговор"</string>
     <string msgid="8793775615905189152" name="call_notification_answer_video_action">"Видеообаждане"</string>
     <string msgid="3229508546291798546" name="call_notification_decline_action">"Отхвърляне"</string>
@@ -58,6 +60,77 @@
     <string msgid="4566929209979330987" name="fallback_menu_item_copy_link">"Копиране на връзката"</string>
     <string msgid="3413186855122069269" name="fallback_menu_item_open_in_browser">"Отваряне в браузър"</string>
     <string msgid="7145444925855055364" name="fallback_menu_item_share_link">"Споделяне на връзката"</string>
+    <string name="http_auth_dialog_cancel">Отказ</string>
+    <string name="http_auth_dialog_login">Влизане</string>
+    <string name="http_auth_dialog_origin_host">Хост: %1$s</string>
+    <string name="http_auth_dialog_password">Парола</string>
+    <string name="http_auth_dialog_title">Въведете идентификационните си данни</string>
+    <string name="http_auth_dialog_username">Потребителско име</string>
+    <string name="native_body">Основен текст</string>
+    <string name="native_headline">Заглавие</string>
+    <string name="native_media_view">Преглед на мултимедийния файл</string>
+    <string name="notifications_permission_confirm">Разрешаване</string>
+    <string name="notifications_permission_decline">Забраняване</string>
+    <string name="notifications_permission_title">Разрешавате ли на приложението да ви изпраща известия?</string>
+    <string name="offline_dialog_image_description">Икона</string>
+    <string name="offline_dialog_text">Благодарим за проявения интерес.\nЩе споделим още информация, когато отново сте онлайн.</string>
+    <string name="offline_notification_title">Отново сте онлайн! Да продължим оттам, откъдето прекъснахме</string>
+    <string name="offline_notification_title_with_advertiser">Отново сте онлайн! Продължете обучението за %s</string>
+    <string name="offline_opt_in_confirm">ОК</string>
+    <string name="offline_opt_in_decline">Не</string>
+    <string name="offline_opt_in_message">Ще ви изпратим известие с връзка към сайта на рекламодателя.</string>
+    <string name="offline_opt_in_title">Отворете рекламата, когато отново сте онлайн.</string>
+    <string name="qr_code_rationale_allow">Позволяване</string>
+    <string name="qr_code_rationale_block">Блок</string>
+    <string name="qr_code_rationale_header">Разрешаване на това приложение да осъществява достъп до камерата?</string>
+    <string name="qr_code_rationale_message">След това можете да влезете с QR код.</string>
+    <string name="s1">Запазване на изображението</string>
+    <string name="s2">Да се разреши ли на рекламата да съхрани изображение в галерията със снимки?</string>
+    <string name="s3">Приемам</string>
+    <string name="s4">Отхвърлям</string>
+    <string name="s5">Създаване на събитие в календара</string>
+    <string name="s6">Да се разреши ли на рекламата да създаде събитие в календара?</string>
+    <string name="s7">Тестова реклама</string>
     <string msgid="6264217191555673260" name="search_menu_title">"Търсене"</string>
+    <string name="smartcard_cert_dialog_negative_button">Отказ</string>
+    <string name="smartcard_cert_dialog_positive_button">Продължи</string>
+    <string name="smartcard_cert_dialog_title">Изберете сертификат за влизане</string>
+    <string name="smartcard_early_unplug_dialog_message">Устройството със смарт карта е премахнато. Поставете повторно устройството, преди да се опитате да влезете отново.</string>
+    <string name="smartcard_early_unplug_dialog_title">Повторен опит</string>
+    <string name="smartcard_error_dialog_positive_button">OK</string>
+    <string name="smartcard_general_error_dialog_message">Възникна неочаквана грешка. Опитайте отново по-късно.</string>
+    <string name="smartcard_general_error_dialog_title">Опитайте отново по-късно</string>
+    <string name="smartcard_max_attempt_dialog_message">Твърде много неуспешни опити, опитайте отново по-късно.</string>
+    <string name="smartcard_max_attempt_dialog_title">Опитайте отново по-късно</string>
+    <string name="smartcard_nfc_diff_connected_message">Използвайте смарт картата, с която първоначално сте влезли.</string>
+    <string name="smartcard_nfc_diff_connected_positive_button">Разбрах</string>
+    <string name="smartcard_nfc_diff_connected_title">Можете да използвате само една смарт карта в даден момент</string>
+    <string name="smartcard_nfc_loading_dialog_message">Съхранявайте смарт картата на място.</string>
+    <string name="smartcard_nfc_loading_dialog_title">Четене на вашата смарт карта</string>
+    <string name="smartcard_nfc_prompt_dialog_message">Задръжте смарт карта до задната страна на телефона.</string>
+    <string name="smartcard_nfc_prompt_dialog_negative_button">Отказ</string>
+    <string name="smartcard_nfc_prompt_dialog_title">Подготовка на вашата смарт карта</string>
+    <string name="smartcard_nfc_reminder_dialog_message">За да влезете с NFC, включете NFC в настройките на устройството си. След това влезте отново.</string>
+    <string name="smartcard_nfc_reminder_dialog_positive_button">Разбрах</string>
+    <string name="smartcard_nfc_reminder_dialog_title">Включете NFC в настройките на устройството</string>
+    <string name="smartcard_no_cert_dialog_message">Потвърдете, че вашият сертификат е бил правилно осигурен на устройството ви със смарт карта.</string>
+    <string name="smartcard_no_cert_dialog_title">Не са намерени приложими сертификати.</string>
+    <string name="smartcard_pin_dialog_error_message">Въведеният ПИН е неправилен.</string>
+    <string name="smartcard_pin_dialog_message">Въведете ПИН кода на смарт картата, за да получите достъп до сертификата и да влезете</string>
+    <string name="smartcard_pin_dialog_negative_button">Отказ</string>
+    <string name="smartcard_pin_dialog_positive_button">Отключване</string>
+    <string name="smartcard_pin_dialog_title">Отключване на смарт картата</string>
+    <string name="smartcard_pin_layout_edittext_hint">ПИН</string>
+    <string name="smartcard_prompt_dialog_message">Включете или задръжте смарт карта до задната страна на телефона.</string>
+    <string name="smartcard_prompt_dialog_negative_button">Отказ</string>
+    <string name="smartcard_prompt_dialog_title">Подготовка на вашата смарт карта</string>
+    <string name="smartcard_removal_prompt_dialog_positive_button">Разбрах</string>
+    <string name="smartcard_removal_prompt_dialog_title">Сега можете да извадите вашата смарт карта</string>
     <string msgid="6277540029070332960" name="status_bar_notification_info_overflow">"999+"</string>
+    <string name="user_choice_dialog_negative_button">Отказ</string>
+    <string name="user_choice_dialog_on_device_name">Сертификат на това устройство</string>
+    <string name="user_choice_dialog_positive_button">Продължаване</string>
+    <string name="user_choice_dialog_smartcard_name">Физическа смарт карта</string>
+    <string name="user_choice_dialog_title">Как бихте искали да влезете?</string>
+    <string name="watermark_label_prefix">AdMob – </string>
 </resources>

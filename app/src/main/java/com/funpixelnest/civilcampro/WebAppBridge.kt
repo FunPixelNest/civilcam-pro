@@ -33,7 +33,8 @@ class WebAppBridge(
     private val auth: AuthHelper,
     private val billing: BillingHelper,
     private val ads: AdsManager,
-    private val importer: PhotoImporter
+    private val importer: PhotoImporter,
+    private val oneDrive: OneDriveHelper
 ) {
 
     // ----- sign-in (see AuthHelper) -----
@@ -52,6 +53,16 @@ class WebAppBridge(
     // ----- Google Drive backup (see AuthHelper.getDriveToken) -----
     @JavascriptInterface
     fun getDriveToken(requestId: String, interactive: Boolean) = auth.getDriveToken(requestId, interactive)
+
+    // ----- OneDrive photo storage (see OneDriveHelper) -----
+    @JavascriptInterface
+    fun oneDriveAvailable(): Boolean = oneDrive.available()
+
+    @JavascriptInterface
+    fun getOneDriveToken(requestId: String, interactive: Boolean, loginHint: String) = oneDrive.getToken(requestId, interactive, loginHint)
+
+    @JavascriptInterface
+    fun oneDriveSignOut() = oneDrive.signOut()
 
     /** Opens a web link (e.g. a photo's Google Drive page) in the browser or the Drive app. */
     @JavascriptInterface

@@ -29,6 +29,8 @@
     <string msgid="1656852541809559762" name="abc_toolbar_collapse_description">"Sakļaut"</string>
     <string msgid="8397015543330865059" name="android.credentials.TYPE_PASSWORD_CREDENTIAL">"Parole"</string>
     <string msgid="3929015085059320822" name="androidx.credentials.TYPE_PUBLIC_KEY_CREDENTIAL">"Piekļuves atslēga"</string>
+    <string name="app_loading">Notiek ielāde…</string>
+    <string name="broker_processing">Starpnieks veic apstrādi</string>
     <string msgid="881409763997275156" name="call_notification_answer_action">"Atbildēt"</string>
     <string msgid="8793775615905189152" name="call_notification_answer_video_action">"Video"</string>
     <string msgid="3229508546291798546" name="call_notification_decline_action">"Noraidīt"</string>
@@ -58,6 +60,77 @@
     <string msgid="4566929209979330987" name="fallback_menu_item_copy_link">"Kopēt saiti"</string>
     <string msgid="3413186855122069269" name="fallback_menu_item_open_in_browser">"Atvērt pārlūkprogrammā"</string>
     <string msgid="7145444925855055364" name="fallback_menu_item_share_link">"Kopīgot saiti"</string>
+    <string name="http_auth_dialog_cancel">Atcelt</string>
+    <string name="http_auth_dialog_login">Pieteikties</string>
+    <string name="http_auth_dialog_origin_host">Resursdators: %1$s</string>
+    <string name="http_auth_dialog_password">Parole</string>
+    <string name="http_auth_dialog_title">Ievadiet savus akreditācijas datus</string>
+    <string name="http_auth_dialog_username">Lietotājvārds</string>
+    <string name="native_body">Pamatteksts</string>
+    <string name="native_headline">Virsraksts</string>
+    <string name="native_media_view">Multivides skats</string>
+    <string name="notifications_permission_confirm">Atļaut</string>
+    <string name="notifications_permission_decline">Neatļaut</string>
+    <string name="notifications_permission_title">Vai atļaut lietotnei sūtīt paziņojumus?</string>
+    <string name="offline_dialog_image_description">Ikona</string>
+    <string name="offline_dialog_text">Paldies par izrādīto interesi!\nNosūtīsim papildu informāciju, kad būsiet tiešsaistē.</string>
+    <string name="offline_notification_title">Atkal esat tiešsaistē. Varat atsākt no vietas, kur pārtraucāt.</string>
+    <string name="offline_notification_title_with_advertiser">Atkal esat tiešsaistē. Turpiniet uzzināt vairāk par %s</string>
+    <string name="offline_opt_in_confirm">Labi</string>
+    <string name="offline_opt_in_decline">Nē, paldies</string>
+    <string name="offline_opt_in_message">Mēs nosūtīsim jums paziņojumu ar saiti uz reklāmdevēja vietni.</string>
+    <string name="offline_opt_in_title">Atveriet reklāmu, kad būsiet atkal tiešsaistē.</string>
+    <string name="qr_code_rationale_allow">Atļaut</string>
+    <string name="qr_code_rationale_block">Bloķēt</string>
+    <string name="qr_code_rationale_header">Vai atļaut šai programmai piekļūt jūsu kamerai?</string>
+    <string name="qr_code_rationale_message">Pēc tam varat pierakstīties, izmantojot QR kodu.</string>
+    <string name="s1">Attēla saglabāšana</string>
+    <string name="s2">Vai atļaut reklāmai saglabāt attēlu galerijā?</string>
+    <string name="s3">Piekrist</string>
+    <string name="s4">Noraidīt</string>
+    <string name="s5">Kalendāra pasākuma izveide</string>
+    <string name="s6">Vai atļaut reklāmai izveidot kalendāra pasākumu?</string>
+    <string name="s7">Testa reklāma</string>
     <string msgid="6264217191555673260" name="search_menu_title">"Meklēt"</string>
+    <string name="smartcard_cert_dialog_negative_button">Atcelt</string>
+    <string name="smartcard_cert_dialog_positive_button">Turpināt</string>
+    <string name="smartcard_cert_dialog_title">Atlasiet sertifikātu, lai pierakstītos</string>
+    <string name="smartcard_early_unplug_dialog_message">Viedkartes ierīce tika noņemta. Lūdzu, atkārtoti ievietojiet ierīci, pirms vēlreiz mēģināt pieteikties.</string>
+    <string name="smartcard_early_unplug_dialog_title">Mēģiniet vēlreiz</string>
+    <string name="smartcard_error_dialog_positive_button">Labi</string>
+    <string name="smartcard_general_error_dialog_message">Radās neparedzēta kļūda. Vēlāk mēģiniet vēlreiz.</string>
+    <string name="smartcard_general_error_dialog_title">Vēlāk mēģiniet vēlreiz</string>
+    <string name="smartcard_max_attempt_dialog_message">Pārāk daudz neizdevušos mēģinājumu. Vēlāk mēģiniet vēlreiz.</string>
+    <string name="smartcard_max_attempt_dialog_title">Vēlāk mēģiniet vēlreiz</string>
+    <string name="smartcard_nfc_diff_connected_message">Izmantojiet viedkarti, ar kuru sākotnēji pierakstījāties.</string>
+    <string name="smartcard_nfc_diff_connected_positive_button">Sapratu</string>
+    <string name="smartcard_nfc_diff_connected_title">Vienlaikus varat izmantot tikai vienu viedkarti</string>
+    <string name="smartcard_nfc_loading_dialog_message">Glabājiet viedkarti vietā.</string>
+    <string name="smartcard_nfc_loading_dialog_title">Viedkartes lasīšana</string>
+    <string name="smartcard_nfc_prompt_dialog_message">Turiet viedkarti tālruņa aizmugurē.</string>
+    <string name="smartcard_nfc_prompt_dialog_negative_button">Atcelt</string>
+    <string name="smartcard_nfc_prompt_dialog_title">Viedkartes sagatavošana</string>
+    <string name="smartcard_nfc_reminder_dialog_message">Lai pierakstītos, izmantojot NFC, ieslēdziet NFC ierīces iestatījumos. Pēc tam pierakstieties vēlreiz.</string>
+    <string name="smartcard_nfc_reminder_dialog_positive_button">Sapratu</string>
+    <string name="smartcard_nfc_reminder_dialog_title">Ieslēdziet NFC ierīces iestatījumos</string>
+    <string name="smartcard_no_cert_dialog_message">Pārliecinieties, vai jūsu sertifikāts ir pareizi nodrošināts viedkartes ierīcē.</string>
+    <string name="smartcard_no_cert_dialog_title">Nav atrasts neviens lietojams sertifikāts.</string>
+    <string name="smartcard_pin_dialog_error_message">Jūsu ievadītais PIN kods nav pareizs.</string>
+    <string name="smartcard_pin_dialog_message">Ievadiet viedkartes PIN kodu, lai piekļūtu sertifikātam un pierakstītos</string>
+    <string name="smartcard_pin_dialog_negative_button">Atcelt</string>
+    <string name="smartcard_pin_dialog_positive_button">Atbloķēt</string>
+    <string name="smartcard_pin_dialog_title">Atbloķēt viedkarti</string>
+    <string name="smartcard_pin_layout_edittext_hint">PIN</string>
+    <string name="smartcard_prompt_dialog_message">Pievienojiet viedkarti tālruņa aizmugurē vai turiet to.</string>
+    <string name="smartcard_prompt_dialog_negative_button">Atcelt</string>
+    <string name="smartcard_prompt_dialog_title">Viedkartes sagatavošana</string>
+    <string name="smartcard_removal_prompt_dialog_positive_button">Sapratu</string>
+    <string name="smartcard_removal_prompt_dialog_title">Tagad varat noņemt viedkarti</string>
     <string msgid="6277540029070332960" name="status_bar_notification_info_overflow">"999+"</string>
+    <string name="user_choice_dialog_negative_button">Atcelt</string>
+    <string name="user_choice_dialog_on_device_name">Sertifikāts šajā ierīcē</string>
+    <string name="user_choice_dialog_positive_button">Turpināt</string>
+    <string name="user_choice_dialog_smartcard_name">Fiziska viedkarte</string>
+    <string name="user_choice_dialog_title">Kā vēlaties pierakstīties?</string>
+    <string name="watermark_label_prefix">AdMob — </string>
 </resources>

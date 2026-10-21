@@ -3,7 +3,15 @@
     <color name="accent">#f59e0b</color>
     <color name="dark_bg">#0f172a</color>
     <color name="white">#FFFFFF</color>
+    <string name="admob_app_id" translatable="false">ca-app-pub-5089346574611451~1477640643</string>
     <string name="app_name">CivilCam Pro</string>
+    <string name="default_web_client_id" translatable="false">337660034648-5q8ap0o808g2vn33f768jjssc61jr52o.apps.googleusercontent.com</string>
+    <string name="gcm_defaultSenderId" translatable="false">337660034648</string>
+    <string name="google_api_key" translatable="false">AIzaSyCbSfE3YUHMeLSxJzrmk4rPhwapE3_36DM</string>
+    <string name="google_app_id" translatable="false">1:337660034648:android:280e1502026d023dce542d</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyCbSfE3YUHMeLSxJzrmk4rPhwapE3_36DM</string>
+    <string name="google_storage_bucket" translatable="false">civilcam-pro-fpn.firebasestorage.app</string>
+    <string name="project_id" translatable="false">civilcam-pro-fpn</string>
     <style name="Theme.CivilCamPro" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@color/dark_bg</item>
         <item name="android:statusBarColor">@color/dark_bg</item>

@@ -58,6 +58,28 @@
     <string msgid="4566929209979330987" name="fallback_menu_item_copy_link">"Nakili kiungo"</string>
     <string msgid="3413186855122069269" name="fallback_menu_item_open_in_browser">"Fungua katika kivinjari"</string>
     <string msgid="7145444925855055364" name="fallback_menu_item_share_link">"Shiriki kiungo"</string>
+    <string name="native_body">Kiini</string>
+    <string name="native_headline">Kichwa</string>
+    <string name="native_media_view">Mwonekano wa Maudhui</string>
+    <string name="notifications_permission_confirm">Ruhusu</string>
+    <string name="notifications_permission_decline">Usiruhusu</string>
+    <string name="notifications_permission_title">Ungependa kuruhusu programu ikutumie arifa?</string>
+    <string name="offline_dialog_image_description">Aikoni</string>
+    <string name="offline_dialog_text">Asante kwa kuvutiwa.\nTutakutumia maelezo zaidi pindi utakaporudi mtandaoni.</string>
+    <string name="offline_notification_title">Umerudi mtandaoni! Hebu tuendelee kuanzia mahali tulipoachia</string>
+    <string name="offline_notification_title_with_advertiser">Umerudi mtandaoni! Endelea kujifunza kuhusu %s</string>
+    <string name="offline_opt_in_confirm">Sawa</string>
+    <string name="offline_opt_in_decline">Hapana</string>
+    <string name="offline_opt_in_message">Tutakutumia arifa yenye kiungo kinachoelekeza kwenye tovuti ya mtangazaji.</string>
+    <string name="offline_opt_in_title">Fungua tangazo utakaporudi mtandaoni.</string>
+    <string name="s1">Hifadhi picha</string>
+    <string name="s2">Ungependa kuruhusu tangazo lihifadhi picha katika matunzio ya Picha?</string>
+    <string name="s3">Kubali</string>
+    <string name="s4">Kataa</string>
+    <string name="s5">Unda tukio la kalenda</string>
+    <string name="s6">Ungependa kuruhusu tangazo liunde tukio la kalenda?</string>
+    <string name="s7">Tangazo la Jaribio</string>
     <string msgid="6264217191555673260" name="search_menu_title">"Tafuta"</string>
     <string msgid="6277540029070332960" name="status_bar_notification_info_overflow">"999+"</string>
+    <string name="watermark_label_prefix">AdMob - </string>
 </resources>

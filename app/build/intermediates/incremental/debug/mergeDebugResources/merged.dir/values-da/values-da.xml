@@ -29,6 +29,8 @@
     <string msgid="1656852541809559762" name="abc_toolbar_collapse_description">"Skjul"</string>
     <string msgid="8397015543330865059" name="android.credentials.TYPE_PASSWORD_CREDENTIAL">"Adgangskode"</string>
     <string msgid="3929015085059320822" name="androidx.credentials.TYPE_PUBLIC_KEY_CREDENTIAL">"Adgangsnøgle"</string>
+    <string name="app_loading">Indlæser…</string>
+    <string name="broker_processing">Mægleren er i gang med behandling</string>
     <string msgid="881409763997275156" name="call_notification_answer_action">"Besvar"</string>
     <string msgid="8793775615905189152" name="call_notification_answer_video_action">"Video"</string>
     <string msgid="3229508546291798546" name="call_notification_decline_action">"Afvis"</string>
@@ -58,6 +60,77 @@
     <string msgid="4566929209979330987" name="fallback_menu_item_copy_link">"Kopiér link"</string>
     <string msgid="3413186855122069269" name="fallback_menu_item_open_in_browser">"Åbn i browser"</string>
     <string msgid="7145444925855055364" name="fallback_menu_item_share_link">"Del link"</string>
+    <string name="http_auth_dialog_cancel">Annuller</string>
+    <string name="http_auth_dialog_login">Logon</string>
+    <string name="http_auth_dialog_origin_host">Vært: %1$s</string>
+    <string name="http_auth_dialog_password">Adgangskode</string>
+    <string name="http_auth_dialog_title">Angiv dine legitimationsoplysninger</string>
+    <string name="http_auth_dialog_username">Brugernavn</string>
+    <string name="native_body">Brødtekst</string>
+    <string name="native_headline">Overskrift</string>
+    <string name="native_media_view">Medievisning</string>
+    <string name="notifications_permission_confirm">Tillad</string>
+    <string name="notifications_permission_decline">Tillad ikke</string>
+    <string name="notifications_permission_title">Vil du tillade, at appen sender dig notifikationer?</string>
+    <string name="offline_dialog_image_description">Ikon</string>
+    <string name="offline_dialog_text">Tak for din interesse.\nVi deler mere, når du er online igen.</string>
+    <string name="offline_notification_title">Du er online igen Lad os fortsætte, hvor vi slap</string>
+    <string name="offline_notification_title_with_advertiser">Du er online igen Fortsæt med at få flere oplysninger om %s</string>
+    <string name="offline_opt_in_confirm">OK</string>
+    <string name="offline_opt_in_decline">Nej tak</string>
+    <string name="offline_opt_in_message">Vi sender dig en notifikation med et link til annoncørens website.</string>
+    <string name="offline_opt_in_title">Åbn annoncen, når du er online igen.</string>
+    <string name="qr_code_rationale_allow">Tillad</string>
+    <string name="qr_code_rationale_block">Bloker</string>
+    <string name="qr_code_rationale_header">Vil du tillade, at denne app får adgang til dit kamera?</string>
+    <string name="qr_code_rationale_message">Du kan derefter logge på med en QR-kode.</string>
+    <string name="s1">Gem billede</string>
+    <string name="s2">Vil du tillade, at annoncen gemmer billedet i Galleri?</string>
+    <string name="s3">Acceptér</string>
+    <string name="s4">Afvis</string>
+    <string name="s5">Opret kalenderbegivenhed</string>
+    <string name="s6">Vil du tillade, at annoncen opretter en kalenderbegivenhed?</string>
+    <string name="s7">Testannonce</string>
     <string msgid="6264217191555673260" name="search_menu_title">"Søg"</string>
+    <string name="smartcard_cert_dialog_negative_button">Annuller</string>
+    <string name="smartcard_cert_dialog_positive_button">Fortsæt</string>
+    <string name="smartcard_cert_dialog_title">Vælg et certifikat for at logge på</string>
+    <string name="smartcard_early_unplug_dialog_message">Chipkortenheden blev fjernet. Indsæt enheden igen, før du forsøger at logge på igen.</string>
+    <string name="smartcard_early_unplug_dialog_title">Prøv igen</string>
+    <string name="smartcard_error_dialog_positive_button">OK</string>
+    <string name="smartcard_general_error_dialog_message">Der opstod en uventet fejl. Prøv igen senere.</string>
+    <string name="smartcard_general_error_dialog_title">Prøv igen senere</string>
+    <string name="smartcard_max_attempt_dialog_message">Der er for mange mislykkede forsøg. Prøv igen senere.</string>
+    <string name="smartcard_max_attempt_dialog_title">Prøv igen senere</string>
+    <string name="smartcard_nfc_diff_connected_message">Brug det chipkort, du oprindeligt loggede på med.</string>
+    <string name="smartcard_nfc_diff_connected_positive_button">Forstået</string>
+    <string name="smartcard_nfc_diff_connected_title">Du kan kun bruge ét chipkort ad gangen</string>
+    <string name="smartcard_nfc_loading_dialog_message">Sørg for, at chipkortet er på plads.</string>
+    <string name="smartcard_nfc_loading_dialog_title">Læser dit chipkort</string>
+    <string name="smartcard_nfc_prompt_dialog_message">Hold et chipkort på bagsiden af telefonen.</string>
+    <string name="smartcard_nfc_prompt_dialog_negative_button">Annuller</string>
+    <string name="smartcard_nfc_prompt_dialog_title">Forbered dit chipkort</string>
+    <string name="smartcard_nfc_reminder_dialog_message">Hvis du vil logge på med NFC, skal du slå NFC til i dine enhedsindstillinger. Log derefter på igen.</string>
+    <string name="smartcard_nfc_reminder_dialog_positive_button">Forstået</string>
+    <string name="smartcard_nfc_reminder_dialog_title">Slå NFC til i enhedsindstillinger</string>
+    <string name="smartcard_no_cert_dialog_message">Bekræft, at dit certifikat er blevet klargjort korrekt på din chipkortenhed.</string>
+    <string name="smartcard_no_cert_dialog_title">Der blev ikke fundet nogen relevante certifikater.</string>
+    <string name="smartcard_pin_dialog_error_message">Den pinkode, du har angivet, var forkert</string>
+    <string name="smartcard_pin_dialog_message">Angiv pinkoden til chipkortet for at få adgang til certifikatet og logge på</string>
+    <string name="smartcard_pin_dialog_negative_button">Annuller</string>
+    <string name="smartcard_pin_dialog_positive_button">Lås op</string>
+    <string name="smartcard_pin_dialog_title">Lås chipkortet op</string>
+    <string name="smartcard_pin_layout_edittext_hint">Pinkode</string>
+    <string name="smartcard_prompt_dialog_message">Tilslut eller hold et chipkort på bagsiden af telefonen.</string>
+    <string name="smartcard_prompt_dialog_negative_button">Annuller</string>
+    <string name="smartcard_prompt_dialog_title">Forbered dit chipkort</string>
+    <string name="smartcard_removal_prompt_dialog_positive_button">Forstået</string>
+    <string name="smartcard_removal_prompt_dialog_title">Du kan nu fjerne dit chipkort</string>
     <string msgid="6277540029070332960" name="status_bar_notification_info_overflow">"999+"</string>
+    <string name="user_choice_dialog_negative_button">Annuller</string>
+    <string name="user_choice_dialog_on_device_name">Certifikat på denne enhed</string>
+    <string name="user_choice_dialog_positive_button">Fortsæt</string>
+    <string name="user_choice_dialog_smartcard_name">Fysisk chipkort</string>
+    <string name="user_choice_dialog_title">Hvordan vil du logge på?</string>
+    <string name="watermark_label_prefix">AdMob – </string>
 </resources>

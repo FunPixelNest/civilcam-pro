@@ -29,6 +29,8 @@
     <string msgid="1656852541809559762" name="abc_toolbar_collapse_description">"Скупи"</string>
     <string msgid="8397015543330865059" name="android.credentials.TYPE_PASSWORD_CREDENTIAL">"Лозинка"</string>
     <string msgid="3929015085059320822" name="androidx.credentials.TYPE_PUBLIC_KEY_CREDENTIAL">"Приступни кôд"</string>
+    <string name="app_loading">Учитавање…</string>
+    <string name="broker_processing">Посредник обрађује</string>
     <string msgid="881409763997275156" name="call_notification_answer_action">"Одговори"</string>
     <string msgid="8793775615905189152" name="call_notification_answer_video_action">"Видео"</string>
     <string msgid="3229508546291798546" name="call_notification_decline_action">"Одбиј"</string>
@@ -58,6 +60,77 @@
     <string msgid="4566929209979330987" name="fallback_menu_item_copy_link">"Копирај линк"</string>
     <string msgid="3413186855122069269" name="fallback_menu_item_open_in_browser">"Отвори у прегледачу"</string>
     <string msgid="7145444925855055364" name="fallback_menu_item_share_link">"Дели линк"</string>
+    <string name="http_auth_dialog_cancel">Откажи</string>
+    <string name="http_auth_dialog_login">Пријављивање</string>
+    <string name="http_auth_dialog_origin_host">Хост: %1$s</string>
+    <string name="http_auth_dialog_password">Лозинка</string>
+    <string name="http_auth_dialog_title">Унесите акредитиве</string>
+    <string name="http_auth_dialog_username">Корисничко име</string>
+    <string name="native_body">Садржај</string>
+    <string name="native_headline">Наслов</string>
+    <string name="native_media_view">Приказ медија</string>
+    <string name="notifications_permission_confirm">Дозволи</string>
+    <string name="notifications_permission_decline">Не дозволи</string>
+    <string name="notifications_permission_title">Желите да дозволите апликацији да вам шаље обавештења?</string>
+    <string name="offline_dialog_image_description">Икона</string>
+    <string name="offline_dialog_text">Хвала вам на интересовању.\nПоделићемо више информација када поново будете онлајн.</string>
+    <string name="offline_notification_title">Поново сте онлајн! Хајде да наставимо тамо где смо стали</string>
+    <string name="offline_notification_title_with_advertiser">Поново сте онлајн! Сазнајте више о оглашивачу: %s</string>
+    <string name="offline_opt_in_confirm">Важи</string>
+    <string name="offline_opt_in_decline">Не, хвала</string>
+    <string name="offline_opt_in_message">Послаћемо вам обавештење са линком до сајта оглашавача.</string>
+    <string name="offline_opt_in_title">Отворите оглас кад поново будете онлајн.</string>
+    <string name="qr_code_rationale_allow">Дозволи</string>
+    <string name="qr_code_rationale_block">Блокирај</string>
+    <string name="qr_code_rationale_header">Желите ли да дозволите приступ камери?</string>
+    <string name="qr_code_rationale_message">Затим можете да се пријавите помоћу QR кода.</string>
+    <string name="s1">Чување слике</string>
+    <string name="s2">Желите ли да дозволите да оглас сачува слику у Галерији слика?</string>
+    <string name="s3">Прихвати</string>
+    <string name="s4">Одбиј</string>
+    <string name="s5">Прављење догађаја у календару</string>
+    <string name="s6">Желите ли да дозволите да оглас направи догађај у календару?</string>
+    <string name="s7">Пробни оглас</string>
     <string msgid="6264217191555673260" name="search_menu_title">"Претражите"</string>
+    <string name="smartcard_cert_dialog_negative_button">Откажи</string>
+    <string name="smartcard_cert_dialog_positive_button">Настави</string>
+    <string name="smartcard_cert_dialog_title">Изаберите цертификат за пријављивање</string>
+    <string name="smartcard_early_unplug_dialog_message">Уређај паметне картице је уклоњен. Поново уметните уређај пре него што поново покушате да се пријавите.</string>
+    <string name="smartcard_early_unplug_dialog_title">Покушајте поново</string>
+    <string name="smartcard_error_dialog_positive_button">У реду</string>
+    <string name="smartcard_general_error_dialog_message">Дошло је до неочекиване грешке. Покушајте поново касније.</string>
+    <string name="smartcard_general_error_dialog_title">Покушајте поново касније</string>
+    <string name="smartcard_max_attempt_dialog_message">Превише неуспелих покушаја, покушајте поново касније.</string>
+    <string name="smartcard_max_attempt_dialog_title">Покушајте поново касније</string>
+    <string name="smartcard_nfc_diff_connected_message">Користите паметну картицу помоћу које сте се првобитно пријавили.</string>
+    <string name="smartcard_nfc_diff_connected_positive_button">Разумем</string>
+    <string name="smartcard_nfc_diff_connected_title">Можете да користите само једну по једну паметну картицу</string>
+    <string name="smartcard_nfc_loading_dialog_message">Држите паметну картицу на месту.</string>
+    <string name="smartcard_nfc_loading_dialog_title">Читање паметне картице</string>
+    <string name="smartcard_nfc_prompt_dialog_message">Држите паметну картицу на задњој страни телефона.</string>
+    <string name="smartcard_nfc_prompt_dialog_negative_button">Откажи</string>
+    <string name="smartcard_nfc_prompt_dialog_title">Припремите паметну картицу</string>
+    <string name="smartcard_nfc_reminder_dialog_message">Да бисте се пријавили помоћу NFC-а, укључите NFC у поставкама уређаја. Затим се поново пријавите.</string>
+    <string name="smartcard_nfc_reminder_dialog_positive_button">Разумем</string>
+    <string name="smartcard_nfc_reminder_dialog_title">Укључите NFC у поставкама уређаја</string>
+    <string name="smartcard_no_cert_dialog_message">Потврдите да је цертификат исправно обезбеђен на уређају паметне картице.</string>
+    <string name="smartcard_no_cert_dialog_title">Нису пронађени важећи цертификати.</string>
+    <string name="smartcard_pin_dialog_error_message">PIN кôд који сте унели је нетачан</string>
+    <string name="smartcard_pin_dialog_message">Унесите PIN кôд паметне картице да бисте приступили цертификату и пријавили се</string>
+    <string name="smartcard_pin_dialog_negative_button">Откажи</string>
+    <string name="smartcard_pin_dialog_positive_button">Откључај</string>
+    <string name="smartcard_pin_dialog_title">Откључајте паметну картицу</string>
+    <string name="smartcard_pin_layout_edittext_hint">PIN</string>
+    <string name="smartcard_prompt_dialog_message">Прикључите или држите паметну картицу на задњој страни телефона.</string>
+    <string name="smartcard_prompt_dialog_negative_button">Откажи</string>
+    <string name="smartcard_prompt_dialog_title">Припремите паметну картицу</string>
+    <string name="smartcard_removal_prompt_dialog_positive_button">Разумем</string>
+    <string name="smartcard_removal_prompt_dialog_title">Сада можете уклонити паметну картицу</string>
     <string msgid="6277540029070332960" name="status_bar_notification_info_overflow">"999+"</string>
+    <string name="user_choice_dialog_negative_button">Откажи</string>
+    <string name="user_choice_dialog_on_device_name">Цертификат на овом уређају</string>
+    <string name="user_choice_dialog_positive_button">Настави</string>
+    <string name="user_choice_dialog_smartcard_name">Физичка паметна картица</string>
+    <string name="user_choice_dialog_title">Како желите да се пријавите?</string>
+    <string name="watermark_label_prefix">AdMob - </string>
 </resources>

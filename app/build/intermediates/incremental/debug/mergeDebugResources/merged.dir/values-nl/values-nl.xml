@@ -29,6 +29,8 @@
     <string msgid="1656852541809559762" name="abc_toolbar_collapse_description">"Samenvouwen"</string>
     <string msgid="8397015543330865059" name="android.credentials.TYPE_PASSWORD_CREDENTIAL">"Wachtwoord"</string>
     <string msgid="3929015085059320822" name="androidx.credentials.TYPE_PUBLIC_KEY_CREDENTIAL">"Toegangssleutel"</string>
+    <string name="app_loading">Laden…</string>
+    <string name="broker_processing">Broker wordt verwerkt</string>
     <string msgid="881409763997275156" name="call_notification_answer_action">"Beantwoorden"</string>
     <string msgid="8793775615905189152" name="call_notification_answer_video_action">"Video"</string>
     <string msgid="3229508546291798546" name="call_notification_decline_action">"Weigeren"</string>
@@ -58,6 +60,77 @@
     <string msgid="4566929209979330987" name="fallback_menu_item_copy_link">"Link kopiëren"</string>
     <string msgid="3413186855122069269" name="fallback_menu_item_open_in_browser">"Openen in browser"</string>
     <string msgid="7145444925855055364" name="fallback_menu_item_share_link">"Link delen"</string>
+    <string name="http_auth_dialog_cancel">Annuleren</string>
+    <string name="http_auth_dialog_login">Aanmelden</string>
+    <string name="http_auth_dialog_origin_host">Host: %1$s</string>
+    <string name="http_auth_dialog_password">Wachtwoord</string>
+    <string name="http_auth_dialog_title">Voer uw inloggegevens in</string>
+    <string name="http_auth_dialog_username">Gebruikersnaam</string>
+    <string name="native_body">Tekstgedeelte</string>
+    <string name="native_headline">Kop</string>
+    <string name="native_media_view">Mediacontent</string>
+    <string name="notifications_permission_confirm">Toestaan</string>
+    <string name="notifications_permission_decline">Niet toestaan</string>
+    <string name="notifications_permission_title">App toestaan om je meldingen te sturen?</string>
+    <string name="offline_dialog_image_description">Icoon</string>
+    <string name="offline_dialog_text">Bedankt voor je interesse.\nWe delen meer zodra je weer online bent.</string>
+    <string name="offline_notification_title">Je bent weer online. Laten we verder gaan waar we waren gebleven.</string>
+    <string name="offline_notification_title_with_advertiser">Je bent weer online. Ga verder met leren over %s.</string>
+    <string name="offline_opt_in_confirm">OK</string>
+    <string name="offline_opt_in_decline">Nee, bedankt</string>
+    <string name="offline_opt_in_message">We sturen je een melding met een link naar de site van de adverteerder.</string>
+    <string name="offline_opt_in_title">Advertentie openen als je weer online bent</string>
+    <string name="qr_code_rationale_allow">Toestaan</string>
+    <string name="qr_code_rationale_block">Blokkeren</string>
+    <string name="qr_code_rationale_header">Deze app toegang geven tot uw camera?</string>
+    <string name="qr_code_rationale_message">U kunt zich vervolgens aanmelden met een QR-code.</string>
+    <string name="s1">Afbeelding opslaan</string>
+    <string name="s2">Advertentie toestaan om afbeelding op te slaan in fotogalerij?</string>
+    <string name="s3">Accepteren</string>
+    <string name="s4">Weigeren</string>
+    <string name="s5">Agenda-afspraak maken</string>
+    <string name="s6">Advertentie toestaan om een agenda-afspraak te maken?</string>
+    <string name="s7">Testadvertentie</string>
     <string msgid="6264217191555673260" name="search_menu_title">"Zoeken"</string>
+    <string name="smartcard_cert_dialog_negative_button">Annuleren</string>
+    <string name="smartcard_cert_dialog_positive_button">Doorgaan</string>
+    <string name="smartcard_cert_dialog_title">Selecteer een certificaat om u aan te melden</string>
+    <string name="smartcard_early_unplug_dialog_message">Smartcardapparaat is verwijderd. Plaats het apparaat opnieuw voordat u zich opnieuw probeert aan te melden.</string>
+    <string name="smartcard_early_unplug_dialog_title">Opnieuw proberen</string>
+    <string name="smartcard_error_dialog_positive_button">OK</string>
+    <string name="smartcard_general_error_dialog_message">Er is een onverwachte fout opgetreden. Probeer het later opnieuw.</string>
+    <string name="smartcard_general_error_dialog_title">Probeer het later opnieuw</string>
+    <string name="smartcard_max_attempt_dialog_message">Te veel mislukte pogingen. Probeer het later opnieuw.</string>
+    <string name="smartcard_max_attempt_dialog_title">Probeer het later opnieuw</string>
+    <string name="smartcard_nfc_diff_connected_message">Gebruik de smartcard waarmee u zich oorspronkelijk hebt aangemeld.</string>
+    <string name="smartcard_nfc_diff_connected_positive_button">Begrepen</string>
+    <string name="smartcard_nfc_diff_connected_title">U kunt slechts één smartcard tegelijk gebruiken</string>
+    <string name="smartcard_nfc_loading_dialog_message">Houd uw smartcard op zijn plaats.</string>
+    <string name="smartcard_nfc_loading_dialog_title">Uw smartcard lezen</string>
+    <string name="smartcard_nfc_prompt_dialog_message">Houd een smartcard vast aan de achterkant van uw telefoon.</string>
+    <string name="smartcard_nfc_prompt_dialog_negative_button">Annuleren</string>
+    <string name="smartcard_nfc_prompt_dialog_title">Uw smartcard voorbereiden</string>
+    <string name="smartcard_nfc_reminder_dialog_message">Als u zich wilt aanmelden met NFC, schakelt u NFC in de apparaatinstellingen in. Meld u vervolgens opnieuw aan.</string>
+    <string name="smartcard_nfc_reminder_dialog_positive_button">OK</string>
+    <string name="smartcard_nfc_reminder_dialog_title">NFC inschakelen in apparaatinstellingen</string>
+    <string name="smartcard_no_cert_dialog_message">Controleer of uw certificaat correct is ingericht op uw smartcardapparaat.</string>
+    <string name="smartcard_no_cert_dialog_title">Er zijn geen toepasselijke certificaten gevonden.</string>
+    <string name="smartcard_pin_dialog_error_message">De ingevoerde pincode is onjuist</string>
+    <string name="smartcard_pin_dialog_message">Voer de pincode van de smartcard in voor toegang tot het certificaat en meld u aan</string>
+    <string name="smartcard_pin_dialog_negative_button">Annuleren</string>
+    <string name="smartcard_pin_dialog_positive_button">Ontgrendelen</string>
+    <string name="smartcard_pin_dialog_title">Smartcard ontgrendelen</string>
+    <string name="smartcard_pin_layout_edittext_hint">Pincode</string>
+    <string name="smartcard_prompt_dialog_message">Sluit een smartcard aan op de achterkant van uw telefoon of houd deze vast.</string>
+    <string name="smartcard_prompt_dialog_negative_button">Annuleren</string>
+    <string name="smartcard_prompt_dialog_title">Uw smartcard voorbereiden</string>
+    <string name="smartcard_removal_prompt_dialog_positive_button">Begrepen</string>
+    <string name="smartcard_removal_prompt_dialog_title">U kunt nu uw smartcard verwijderen</string>
     <string msgid="6277540029070332960" name="status_bar_notification_info_overflow">"999+"</string>
+    <string name="user_choice_dialog_negative_button">Annuleren</string>
+    <string name="user_choice_dialog_on_device_name">Certificaat op dit apparaat</string>
+    <string name="user_choice_dialog_positive_button">Doorgaan</string>
+    <string name="user_choice_dialog_smartcard_name">Fysieke smartcard</string>
+    <string name="user_choice_dialog_title">Hoe wilt u zich aanmelden?</string>
+    <string name="watermark_label_prefix">AdMob - </string>
 </resources>

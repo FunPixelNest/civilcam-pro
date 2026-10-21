@@ -110,7 +110,8 @@ const Drive = (() => {
   }
 
   // A colleague's full photo, shared by link: no sign-in needed
-  async function fetchShared(fileId) {
+  async function fetchShared(p) {
+    const fileId = typeof p === 'string' ? p : p.driveId;
     const r = await fetch(`https://drive.google.com/uc?export=download&id=${encodeURIComponent(fileId)}`);
     if (!r.ok) throw new Error('Drive ' + r.status);
     const blob = await r.blob();
@@ -129,6 +130,7 @@ const Drive = (() => {
       token = null;
       await getToken(true);
       saveJSON('driveBackup', true);
+      saveJSON('photoStore', 'drive');
       showToast('Photos will be backed up to your Google Drive, folder CivilCam', 'success');
       photos.filter(p => !p.driveId && p.imageData && !p.previewOnly).forEach(p => { p.uploaded = false; p.synced = false; });
       refreshDriveRow();
@@ -145,24 +147,29 @@ const Drive = (() => {
     refreshDriveRow();
   }
 
-  return { supported, enabled, upload, download, shareByLink, fetchShared, connect, disconnect };
+  return { key: 'drive', label: 'Google Drive', folder: 'Google Drive › CivilCam',
+    supported, enabled, upload, download, shareByLink, fetchShared, connect, disconnect, describe };
 })();
 
-// The Drive row on the Account sheet
+// The photo storage rows on the Account sheet: Google Drive and OneDrive
 function refreshDriveRow() {
   const btn = document.getElementById('ac-drive'), note = document.getElementById('ac-drive-note');
+  const obtn = document.getElementById('ac-onedrive');
   if (!btn) return;
-  const google = /google/i.test(profile.provider || '');
-  btn.style.display = Drive.supported() && Account.isSignedIn() ? '' : 'none';
-  note.style.display = btn.style.display;
-  if (Drive.enabled()) {
-    const left = photos.filter(p => p.imageData && !p.previewOnly && !p.driveId).length;
-    btn.innerHTML = ic('cloud', 18) + 'Stop backing up to Google Drive';
-    note.textContent = left ? `${left} photos waiting to upload to Drive › CivilCam.` : 'All photos are in your Google Drive › CivilCam.';
+  const signed = Account.isSignedIn();
+  const ms = /microsoft/i.test(profile.provider || '');
+  btn.style.display = Drive.supported() && signed ? '' : 'none';
+  if (obtn) obtn.style.display = typeof OneDrive !== 'undefined' && OneDrive.supported() && signed ? '' : 'none';
+  note.style.display = signed ? '' : 'none';
+  const store = typeof PhotoStore !== 'undefined' ? PhotoStore.active() : (Drive.enabled() ? Drive : null);
+  const left = photos.filter(p => p.imageData && !p.previewOnly && !p.driveId).length;
+  btn.innerHTML = ic('cloud', 18) + (Drive.enabled() ? 'Stop keeping photos in Google Drive' : 'Keep full photos in my Google Drive');
+  if (obtn) obtn.innerHTML = ic('cloud', 18) + (OneDrive.enabled() ? 'Stop keeping photos in OneDrive' : 'Keep full photos in my OneDrive');
+  if (store) {
+    note.textContent = left ? `${left} photos waiting to upload to ${store.folder}.` : `All photos are in your ${store.folder}.`;
   } else {
-    btn.innerHTML = ic('cloud', 18) + 'Back up photos to my Google Drive';
-    note.textContent = (google ? '' : 'You can use any Google account for this, even though you signed in with ' + (/microsoft/i.test(profile.provider) ? 'Microsoft' : /apple/i.test(profile.provider) ? 'Apple' : 'another account') + '. ') +
-      'Full photos go to your own Drive (free 15 GB). The company database keeps only details and a small preview.';
+    note.textContent = (ms ? 'You signed in with Microsoft: OneDrive is the natural choice. ' : '') +
+      'Choose where your full photos are kept: your own Google Drive (free 15 GB) or OneDrive (free 5 GB, more with Microsoft 365). The company database keeps only details and a small preview.';
   }
 }
 

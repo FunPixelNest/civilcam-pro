@@ -65,8 +65,7 @@
       <div class="header-project-sub" id="header-project-sub"></div>
     </div>
     <button class="sync-pill local" id="sync-pill" onclick="openSyncSheet()" aria-label="Sync status"><span>On phone</span></button>
-    <button class="icon-btn team-head-btn" onclick="openTeam()" aria-label="Team: engineers on this project"><i data-ic="users"></i></button>
-    <button class="icon-btn" onclick="openProjectSheet(currentProject)" aria-label="Edit project"><i data-ic="edit"></i></button>
+    <button class="head-btn" onclick="openProjectMenu()" aria-label="Project options"><i data-ic="menu" data-size="16"></i>Project</button>
   </div>
 
   <!-- CAMERA -->
@@ -77,7 +76,7 @@
     <div class="capture-flash" id="capture-flash"></div>
 
     <div class="cam-top">
-      <button class="cam-pill project-pill" onclick="showProjects()" aria-label="Change project">
+      <button class="cam-pill project-pill" onclick="openProjectMenu()" aria-label="Project options">
         <i data-ic="folder" data-size="16"></i><span id="cam-project-name">Project</span><i data-ic="chevronDown" data-size="14"></i>
       </button>
       <div class="cam-top-right">
@@ -127,8 +126,8 @@
       <input type="text" id="gallery-search-input" placeholder="Search, e.g. culvert near 14 km last month" oninput="onGallerySearch()" onkeydown="if(event.key==='Enter')runSmartSearch()">
       <button class="ai-chip" id="smart-search-btn" onclick="runSmartSearch()" style="display:none"><i data-ic="sparkles" data-size="14"></i>AI</button>
     </div>
-    <button class="import-btn" onclick="openImportSheet()" aria-label="Import photos from other camera apps"><i data-ic="import" data-size="20"></i></button>
     </div>
+    <button class="import-wide" onclick="openImportSheet()"><i data-ic="import" data-size="18"></i><span><b>Add photos from other camera apps</b><small>GPS Map Camera, Timestamp Camera, phone camera…</small></span></button>
     <div class="chip-scroll" id="gallery-period"></div>
     <div class="chip-scroll filters" id="gallery-filters"></div>
     <div class="gallery-action-bar" id="gallery-action-bar">
@@ -214,9 +213,9 @@
   </div>
 
   <div class="tab-bar">
-    <button class="tab-btn active" data-tab="camera" onclick="switchTab('camera')"><i data-ic="camera" data-size="22"></i><span>Camera</span></button>
     <button class="tab-btn" data-tab="gallery" onclick="switchTab('gallery')"><i data-ic="image" data-size="22"></i><span>Gallery</span></button>
     <button class="tab-btn" data-tab="chainage" id="tab-chainage" onclick="switchTab('chainage')"><i data-ic="strip" data-size="22"></i><span>Chainage</span></button>
+    <button class="tab-btn tab-cam active" data-tab="camera" onclick="switchTab('camera')"><span class="cam-circle"><i data-ic="camera" data-size="24"></i></span><span>Camera</span></button>
     <button class="tab-btn" data-tab="hindrance" onclick="switchTab('hindrance')"><span class="tab-ic"><i data-ic="alert" data-size="22"></i><b class="tab-badge" id="hind-badge" style="display:none">0</b></span><span>Hindrance</span></button>
     <button class="tab-btn" data-tab="export" onclick="switchTab('export')"><i data-ic="file" data-size="22"></i><span>Reports</span></button>
   </div>
@@ -379,6 +378,7 @@
     <label class="field"><span>Company</span><input class="input" id="ac-company"></label>
     <button class="btn primary block" onclick="saveProfileFromAccount()">Save</button>
     <button class="btn block" id="ac-sync" onclick="Sync.now(true)"><i data-ic="cloud" data-size="18"></i>Sync now</button>
+    <button class="btn block" id="ac-onedrive" onclick="OneDrive.enabled() ? OneDrive.disconnect() : OneDrive.connect()"></button>
     <button class="btn block" id="ac-drive" onclick="Drive.enabled() ? Drive.disconnect() : Drive.connect()"></button>
     <div class="note" id="ac-drive-note"></div>
     <button class="btn block" id="ac-signin" onclick="closeSheet('account-sheet');showAuth()">Sign in to back up and share</button>
@@ -487,6 +487,22 @@
 </div>
 
 <!-- Support and suggestions -->
+<div class="sheet-backdrop" id="project-menu" onclick="if (event.target === this) closeSheet('project-menu')">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title" id="pm-title">Project</div>
+    <div class="sheet-hint" id="pm-sub"></div>
+    <div class="menu-list">
+      <button class="menu-item" onclick="closeSheet('project-menu');openProjectSheet(currentProject)"><span class="menu-ic"><i data-ic="edit" data-size="18"></i></span><span><b>Edit project</b><small>Name, type, chainage, client, contractor</small></span></button>
+      <button class="menu-item" onclick="closeSheet('project-menu');openTeam()"><span class="menu-ic"><i data-ic="users" data-size="18"></i></span><span><b>Team: add engineers</b><small id="pm-team">Share this project with other engineers by e-mail</small></span></button>
+      <button class="menu-item" onclick="closeSheet('project-menu');switchTab('gallery');openImportSheet()"><span class="menu-ic"><i data-ic="import" data-size="18"></i></span><span><b>Add photos from other camera apps</b><small>Keeps their date, time and GPS</small></span></button>
+      <button class="menu-item" onclick="closeSheet('project-menu');switchTab('export')"><span class="menu-ic"><i data-ic="file" data-size="18"></i></span><span><b>Make a report</b><small>PDF, Word, Excel, PowerPoint, Google Earth</small></span></button>
+      <button class="menu-item" onclick="closeSheet('project-menu');showProjects()"><span class="menu-ic"><i data-ic="folder" data-size="18"></i></span><span><b>Change project / new project</b><small>All your projects</small></span></button>
+      <button class="menu-item" onclick="closeSheet('project-menu');openHelp()"><span class="menu-ic"><i data-ic="help" data-size="18"></i></span><span><b>How it works</b><small>A short guide to every option</small></span></button>
+    </div>
+  </div>
+</div>
+
 <div class="sheet-backdrop" id="help-sheet" onclick="if (event.target === this) closeSheet('help-sheet')">
   <div class="sheet tall">
     <div class="sheet-handle"></div>
@@ -596,6 +612,7 @@
 <script src="js/ui.js"></script>
 <script src="js/account.js"></script>
 <script src="js/drive.js"></script>
+<script src="js/onedrive.js"></script>
 <script src="js/hindrance.js"></script>
 <script src="js/repeat.js"></script>
 <script src="js/import.js"></script>

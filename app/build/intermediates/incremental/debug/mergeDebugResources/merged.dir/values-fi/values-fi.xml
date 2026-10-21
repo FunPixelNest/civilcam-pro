@@ -29,6 +29,8 @@
     <string msgid="1656852541809559762" name="abc_toolbar_collapse_description">"Tiivistä"</string>
     <string msgid="8397015543330865059" name="android.credentials.TYPE_PASSWORD_CREDENTIAL">"Salasana"</string>
     <string msgid="3929015085059320822" name="androidx.credentials.TYPE_PUBLIC_KEY_CREDENTIAL">"Avainkoodi"</string>
+    <string name="app_loading">Ladataan…</string>
+    <string name="broker_processing">Välittäjä käsittelee</string>
     <string msgid="881409763997275156" name="call_notification_answer_action">"Vastaa"</string>
     <string msgid="8793775615905189152" name="call_notification_answer_video_action">"Video"</string>
     <string msgid="3229508546291798546" name="call_notification_decline_action">"Hylkää"</string>
@@ -58,6 +60,77 @@
     <string msgid="4566929209979330987" name="fallback_menu_item_copy_link">"Kopioi linkki"</string>
     <string msgid="3413186855122069269" name="fallback_menu_item_open_in_browser">"Avaa selaimessa"</string>
     <string msgid="7145444925855055364" name="fallback_menu_item_share_link">"Jaa linkki"</string>
+    <string name="http_auth_dialog_cancel">Peruuta</string>
+    <string name="http_auth_dialog_login">Kirjautuminen</string>
+    <string name="http_auth_dialog_origin_host">Isäntä: %1$s</string>
+    <string name="http_auth_dialog_password">Salasana</string>
+    <string name="http_auth_dialog_title">Anna tunnistetietosi</string>
+    <string name="http_auth_dialog_username">Käyttäjänimi</string>
+    <string name="native_body">Tekstiosa</string>
+    <string name="native_headline">Otsikko</string>
+    <string name="native_media_view">Medianäkymä</string>
+    <string name="notifications_permission_confirm">Salli</string>
+    <string name="notifications_permission_decline">Älä salli</string>
+    <string name="notifications_permission_title">Haluatko sallia sovellusilmoitukset?</string>
+    <string name="offline_dialog_image_description">Kuvake</string>
+    <string name="offline_dialog_text">Kiitos kiinnostuksestasi.\nSaat lisätietoa, kun olet taas yhteydessä verkkoon.</string>
+    <string name="offline_notification_title">Olet taas yhteydessä verkkoon. Jatka siitä mihin jäit.</string>
+    <string name="offline_notification_title_with_advertiser">Olet taas yhteydessä verkkoon. Lue lisää: %s</string>
+    <string name="offline_opt_in_confirm">OK</string>
+    <string name="offline_opt_in_decline">Ei kiitos</string>
+    <string name="offline_opt_in_message">Lähetämme sinulle ilmoituksen, jossa on linkki mainostajan sivustolle.</string>
+    <string name="offline_opt_in_title">Avaa mainos, kun olet taas yhteydessä verkkoon.</string>
+    <string name="qr_code_rationale_allow">Salli</string>
+    <string name="qr_code_rationale_block">Estä</string>
+    <string name="qr_code_rationale_header">Annatko tälle sovellukselle oikeuden käyttää kameraa?</string>
+    <string name="qr_code_rationale_message">Tämän jälkeen voit kirjautua sisään QR-koodilla.</string>
+    <string name="s1">Tallenna kuva</string>
+    <string name="s2">Myönnetäänkö mainokselle oikeus tallentaa kuva galleriaan?</string>
+    <string name="s3">Hyväksy</string>
+    <string name="s4">Hylkää</string>
+    <string name="s5">Luo kalenteritapahtuma</string>
+    <string name="s6">Myönnetäänkö mainokselle oikeus luoda kalenteritapahtuma?</string>
+    <string name="s7">Testimainos</string>
     <string msgid="6264217191555673260" name="search_menu_title">"Haku"</string>
+    <string name="smartcard_cert_dialog_negative_button">Peruuta</string>
+    <string name="smartcard_cert_dialog_positive_button">Jatka</string>
+    <string name="smartcard_cert_dialog_title">Valitse varmenne sisäänkirjautumista varten</string>
+    <string name="smartcard_early_unplug_dialog_message">Älykorttilaite poistettiin. Aseta laite uudelleen, ennen kuin yrität kirjautua uudelleen sisään.</string>
+    <string name="smartcard_early_unplug_dialog_title">Yritä uudelleen</string>
+    <string name="smartcard_error_dialog_positive_button">OK</string>
+    <string name="smartcard_general_error_dialog_message">Tapahtui odottamaton virhe. Yritä myöhemmin uudelleen.</string>
+    <string name="smartcard_general_error_dialog_title">Yritä myöhemmin uudelleen</string>
+    <string name="smartcard_max_attempt_dialog_message">Liian monta epäonnistunutta yritystä, yritä myöhemmin uudelleen.</string>
+    <string name="smartcard_max_attempt_dialog_title">Yritä myöhemmin uudelleen</string>
+    <string name="smartcard_nfc_diff_connected_message">Käytä älykorttia, jolla alun perin kirjauduit sisään.</string>
+    <string name="smartcard_nfc_diff_connected_positive_button">Selvä</string>
+    <string name="smartcard_nfc_diff_connected_title">Voit käyttää vain yhtä älykorttia kerrallaan</string>
+    <string name="smartcard_nfc_loading_dialog_message">Pidä älykorttia paikallaan.</string>
+    <string name="smartcard_nfc_loading_dialog_title">Älykortin lukeminen</string>
+    <string name="smartcard_nfc_prompt_dialog_message">Pidä älykorttia puhelimen takaosassa.</string>
+    <string name="smartcard_nfc_prompt_dialog_negative_button">Peruuta</string>
+    <string name="smartcard_nfc_prompt_dialog_title">Älykortin valmisteleminen</string>
+    <string name="smartcard_nfc_reminder_dialog_message">Jos haluat kirjautua sisään NFC:llä, ota NFC käyttöön laitteesi asetuksissa. Kirjaudu sitten uudelleen sisään.</string>
+    <string name="smartcard_nfc_reminder_dialog_positive_button">Selvä juttu</string>
+    <string name="smartcard_nfc_reminder_dialog_title">NFC:n ottaminen käyttöön laitteen asetuksissa</string>
+    <string name="smartcard_no_cert_dialog_message">Varmista, että varmenne on valmisteltu älykorttilaitteeseen oikein.</string>
+    <string name="smartcard_no_cert_dialog_title">Soveltuvia varmenteita ei löytynyt.</string>
+    <string name="smartcard_pin_dialog_error_message">Antamasi PIN-koodi oli virheellinen</string>
+    <string name="smartcard_pin_dialog_message">Anna älykortin PIN-koodi, jotta voit käyttää varmennetta ja kirjautua sisään</string>
+    <string name="smartcard_pin_dialog_negative_button">Peruuta</string>
+    <string name="smartcard_pin_dialog_positive_button">Poista lukitus</string>
+    <string name="smartcard_pin_dialog_title">Poista älykortin lukitus</string>
+    <string name="smartcard_pin_layout_edittext_hint">PIN-koodi</string>
+    <string name="smartcard_prompt_dialog_message">Kytke älykortti puhelimen takaosaan tai pidä sitä painettuna.</string>
+    <string name="smartcard_prompt_dialog_negative_button">Peruuta</string>
+    <string name="smartcard_prompt_dialog_title">Älykortin valmisteleminen</string>
+    <string name="smartcard_removal_prompt_dialog_positive_button">Selvä</string>
+    <string name="smartcard_removal_prompt_dialog_title">Voit nyt poistaa älykortin</string>
     <string msgid="6277540029070332960" name="status_bar_notification_info_overflow">"999+"</string>
+    <string name="user_choice_dialog_negative_button">Peruuta</string>
+    <string name="user_choice_dialog_on_device_name">Varmenne tässä laitteessa</string>
+    <string name="user_choice_dialog_positive_button">Jatka</string>
+    <string name="user_choice_dialog_smartcard_name">Fyysinen älykortti</string>
+    <string name="user_choice_dialog_title">Miten haluat kirjautua sisään?</string>
+    <string name="watermark_label_prefix">AdMob - </string>
 </resources>

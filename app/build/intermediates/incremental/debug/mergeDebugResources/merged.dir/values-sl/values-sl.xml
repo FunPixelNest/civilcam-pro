@@ -29,6 +29,8 @@
     <string msgid="1656852541809559762" name="abc_toolbar_collapse_description">"Strnitev"</string>
     <string msgid="8397015543330865059" name="android.credentials.TYPE_PASSWORD_CREDENTIAL">"Geslo"</string>
     <string msgid="3929015085059320822" name="androidx.credentials.TYPE_PUBLIC_KEY_CREDENTIAL">"Ključ za dostop"</string>
+    <string name="app_loading">Nalaganje …</string>
+    <string name="broker_processing">Posrednik obdeluje</string>
     <string msgid="881409763997275156" name="call_notification_answer_action">"Sprejmi"</string>
     <string msgid="8793775615905189152" name="call_notification_answer_video_action">"Video"</string>
     <string msgid="3229508546291798546" name="call_notification_decline_action">"Zavrni"</string>
@@ -58,6 +60,77 @@
     <string msgid="4566929209979330987" name="fallback_menu_item_copy_link">"Kopiraj povezavo"</string>
     <string msgid="3413186855122069269" name="fallback_menu_item_open_in_browser">"Odpri v brskalniku"</string>
     <string msgid="7145444925855055364" name="fallback_menu_item_share_link">"Deli povezavo"</string>
+    <string name="http_auth_dialog_cancel">Prekliči</string>
+    <string name="http_auth_dialog_login">Prijava</string>
+    <string name="http_auth_dialog_origin_host">Gostitelj: %1$s</string>
+    <string name="http_auth_dialog_password">Geslo</string>
+    <string name="http_auth_dialog_title">Vnesite poverilnice</string>
+    <string name="http_auth_dialog_username">Uporabniško ime</string>
+    <string name="native_body">Telo</string>
+    <string name="native_headline">Naslov</string>
+    <string name="native_media_view">Ogled predstavnosti</string>
+    <string name="notifications_permission_confirm">Dovoli</string>
+    <string name="notifications_permission_decline">Ne dovoli</string>
+    <string name="notifications_permission_title">Želite aplikaciji dovoliti, da vam pošilja obvestila?</string>
+    <string name="offline_dialog_image_description">Ikona</string>
+    <string name="offline_dialog_text">Zahvaljujemo se vam za zanimanje.\nVeč boste izvedeli, ko bo povezava znova vzpostavljena.</string>
+    <string name="offline_notification_title">Povezava je znova vzpostavljena. Nadaljujmo, kjer smo končali</string>
+    <string name="offline_notification_title_with_advertiser">Povezava je znova vzpostavljena. Nadaljujte s pridobivanjem informacij o oglaševalcu %s</string>
+    <string name="offline_opt_in_confirm">V redu</string>
+    <string name="offline_opt_in_decline">Ne, hvala</string>
+    <string name="offline_opt_in_message">Poslali vam bomo obvestilo s povezavo na spletno mesto oglaševalca.</string>
+    <string name="offline_opt_in_title">Odprite oglas, ko bo povezava znova vzpostavljena.</string>
+    <string name="qr_code_rationale_allow">Dovoli</string>
+    <string name="qr_code_rationale_block">Blokiraj</string>
+    <string name="qr_code_rationale_header">Ali želite tej aplikaciji dovoliti dostop do kamere?</string>
+    <string name="qr_code_rationale_message">Nato se lahko vpišete s kodo QR.</string>
+    <string name="s1">Shranjevanje slike</string>
+    <string name="s2">Ali dovolite, da oglas shrani sliko v galerijo slik?</string>
+    <string name="s3">Sprejmi</string>
+    <string name="s4">Zavrni</string>
+    <string name="s5">Ustvarjanje koledarskega dogodka</string>
+    <string name="s6">Ali dovolite, da oglas ustvari koledarski dogodek?</string>
+    <string name="s7">Preizkusni oglas</string>
     <string msgid="6264217191555673260" name="search_menu_title">"Iskanje"</string>
+    <string name="smartcard_cert_dialog_negative_button">Prekliči</string>
+    <string name="smartcard_cert_dialog_positive_button">Nadaljuj</string>
+    <string name="smartcard_cert_dialog_title">Izberite potrdilo za vpis</string>
+    <string name="smartcard_early_unplug_dialog_message">Naprava s pametno kartico je bila odstranjena. Preden se poskusite znova prijaviti, znova vstavite napravo.</string>
+    <string name="smartcard_early_unplug_dialog_title">Poskusi znova</string>
+    <string name="smartcard_error_dialog_positive_button">V redu</string>
+    <string name="smartcard_general_error_dialog_message">Prišlo je do nepričakovane napake. Poskusite znova pozneje.</string>
+    <string name="smartcard_general_error_dialog_title">Poskusite znova pozneje</string>
+    <string name="smartcard_max_attempt_dialog_message">Preveč neuspelih poskusov. Poskusite znova pozneje.</string>
+    <string name="smartcard_max_attempt_dialog_title">Poskusite znova pozneje</string>
+    <string name="smartcard_nfc_diff_connected_message">Uporabite pametno kartico, s katero ste se prvotno vpisali.</string>
+    <string name="smartcard_nfc_diff_connected_positive_button">Razumem</string>
+    <string name="smartcard_nfc_diff_connected_title">Hkrati lahko uporabljate le eno pametno kartico</string>
+    <string name="smartcard_nfc_loading_dialog_message">Pridržite pametno kartico na mestu.</string>
+    <string name="smartcard_nfc_loading_dialog_title">Branje pametne kartice</string>
+    <string name="smartcard_nfc_prompt_dialog_message">Pridržite pametno kartico na zadnji strani telefona.</string>
+    <string name="smartcard_nfc_prompt_dialog_negative_button">Prekliči</string>
+    <string name="smartcard_nfc_prompt_dialog_title">Pripravite pametno kartico</string>
+    <string name="smartcard_nfc_reminder_dialog_message">Če se želite vpisati s tehnologijo NFC, v nastavitvah naprave vklopite NFC. Nato se znova vpišite.</string>
+    <string name="smartcard_nfc_reminder_dialog_positive_button">Razumem</string>
+    <string name="smartcard_nfc_reminder_dialog_title">Vklopite NFC v nastavitvah naprave</string>
+    <string name="smartcard_no_cert_dialog_message">Preverite, ali je bilo potrdilo pravilno nastavljeno in omogočeno v napravi s pametno kartico.</string>
+    <string name="smartcard_no_cert_dialog_title">Ustreznih potrdil ni bilo mogoče najti.</string>
+    <string name="smartcard_pin_dialog_error_message">Vnesena koda PIN ni pravilna</string>
+    <string name="smartcard_pin_dialog_message">Če želite dostopati do potrdila in se vpisati, vnesite kodo PIN pametne kartice</string>
+    <string name="smartcard_pin_dialog_negative_button">Prekliči</string>
+    <string name="smartcard_pin_dialog_positive_button">Odkleni</string>
+    <string name="smartcard_pin_dialog_title">Odklenite pametno kartico</string>
+    <string name="smartcard_pin_layout_edittext_hint">Koda PIN</string>
+    <string name="smartcard_prompt_dialog_message">Vstavite ali pridržite pametno kartico na zadnji strani telefona.</string>
+    <string name="smartcard_prompt_dialog_negative_button">Prekliči</string>
+    <string name="smartcard_prompt_dialog_title">Pripravite pametno kartico</string>
+    <string name="smartcard_removal_prompt_dialog_positive_button">Razumem</string>
+    <string name="smartcard_removal_prompt_dialog_title">Zdaj lahko odstranite pametno kartico</string>
     <string msgid="6277540029070332960" name="status_bar_notification_info_overflow">"999+"</string>
+    <string name="user_choice_dialog_negative_button">Prekliči</string>
+    <string name="user_choice_dialog_on_device_name">Potrdilo v tej napravi</string>
+    <string name="user_choice_dialog_positive_button">Nadaljuj</string>
+    <string name="user_choice_dialog_smartcard_name">Fizična pametna kartica</string>
+    <string name="user_choice_dialog_title">Kako se želite vpisati?</string>
+    <string name="watermark_label_prefix">AdMob – </string>
 </resources>

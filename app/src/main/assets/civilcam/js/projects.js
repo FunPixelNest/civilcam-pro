@@ -68,15 +68,20 @@ function renderProjectList() {
     const ps = projectPhotos(p.id);
     const last = ps.reduce((m, x) => Math.max(m, new Date(x.timestamp).getTime()), 0);
     const thumbs = ps.slice(0, 3).map(x => `<img src="${x.imageData || ''}" alt="">`).join('');
-    return `<button class="project-card" onclick="openProject('${p.id}')">
+    return `<div class="project-wrap"><button class="project-card" onclick="openProject('${p.id}')">
       <div class="pc-thumbs">${thumbs || `<div class="pc-thumb-empty">${ic('camera', 22)}</div>`}</div>
       <div class="pc-body">
         <div class="pc-name">${esc(p.name)}</div>
         <div class="pc-full">${esc(p.fullName)}</div>
         <div class="pc-meta"><span>${ps.length} photo${ps.length === 1 ? '' : 's'}</span>${isLinearProject(p) ? `<span>${projectChText(p)}</span>` : ''}${teamCount(p) > 1 ? `<span class="pc-team">${ic('users', 13)}${teamCount(p)} engineers</span>` : ''}${last ? `<span>Last ${fmtDate(last)}</span>` : ''}</div>
       </div>
-      <span class="pc-team-btn" role="button" aria-label="Team" onclick="event.stopPropagation();openProject('${p.id}');openTeam()">${ic('users', 18)}</span>
-    </button>`;
+      ${ic('chevronRight', 18)}
+    </button>
+    <div class="pc-actions">
+      <button onclick="openProject('${p.id}')">${ic('camera', 15)}Open</button>
+      <button onclick="openProjectSheet(projects.find(x => x.id === '${p.id}'))">${ic('edit', 15)}Edit</button>
+      <button onclick="currentProject = projects.find(x => x.id === '${p.id}'); openTeam(currentProject)">${ic('users', 15)}Team${teamCount(p) > 1 ? ' (' + teamCount(p) + ')' : ''}</button>
+    </div></div>`;
   }).join('');
 }
 

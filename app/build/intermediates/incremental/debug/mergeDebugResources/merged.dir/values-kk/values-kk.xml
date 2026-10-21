@@ -29,6 +29,8 @@
     <string msgid="1656852541809559762" name="abc_toolbar_collapse_description">"Жию"</string>
     <string msgid="8397015543330865059" name="android.credentials.TYPE_PASSWORD_CREDENTIAL">"Құпия сөз"</string>
     <string msgid="3929015085059320822" name="androidx.credentials.TYPE_PUBLIC_KEY_CREDENTIAL">"Кіру кілті"</string>
+    <string name="app_loading">Жүктелуде…</string>
+    <string name="broker_processing">Брокер өңдеуді орындауда</string>
     <string msgid="881409763997275156" name="call_notification_answer_action">"Жауап"</string>
     <string msgid="8793775615905189152" name="call_notification_answer_video_action">"Бейне"</string>
     <string msgid="3229508546291798546" name="call_notification_decline_action">"Қабылдамау"</string>
@@ -58,6 +60,77 @@
     <string msgid="4566929209979330987" name="fallback_menu_item_copy_link">"Сілтемені көшіру"</string>
     <string msgid="3413186855122069269" name="fallback_menu_item_open_in_browser">"Браузерден ашу"</string>
     <string msgid="7145444925855055364" name="fallback_menu_item_share_link">"Сілтемені бөлісу"</string>
+    <string name="http_auth_dialog_cancel">Бас тарту</string>
+    <string name="http_auth_dialog_login">Кіру</string>
+    <string name="http_auth_dialog_origin_host">Басты компьютер: %1$s</string>
+    <string name="http_auth_dialog_password">Құпиясөз</string>
+    <string name="http_auth_dialog_title">Тіркелгі деректерін енгізіңіз</string>
+    <string name="http_auth_dialog_username">Пайдаланушы аты</string>
+    <string name="native_body">Негізгі мәтіні</string>
+    <string name="native_headline">Тақырыбы</string>
+    <string name="native_media_view">Медиа көрінісі</string>
+    <string name="notifications_permission_confirm">Рұқсат беру</string>
+    <string name="notifications_permission_decline">Рұқсат бермеу</string>
+    <string name="notifications_permission_title">Қолданбаның хабарландырулар жіберуіне рұқсат берілсін бе?</string>
+    <string name="offline_dialog_image_description">Белгіше</string>
+    <string name="offline_dialog_text">Қызығушылық танытқаныңыз үшін рақмет.\nСіз желіге қайта қосылған кезде, қосымша ақпарат жібереміз.</string>
+    <string name="offline_notification_title">Желіге қайта қосылдыңыз. Тоқтаған жеріңізден қайта жалғастырайық.</string>
+    <string name="offline_notification_title_with_advertiser">Желіге қайта қосылдыңыз. %s туралы ақпарат алуды жалғастырыңыз.</string>
+    <string name="offline_opt_in_confirm">Жарайды</string>
+    <string name="offline_opt_in_decline">Жоқ, рақмет</string>
+    <string name="offline_opt_in_message">Сізге жарнама беруші сайтына сілтемесі бар хабарландыру жібереміз.</string>
+    <string name="offline_opt_in_title">Онлайн режимге оралғанда, жарнаманы ашыңыз</string>
+    <string name="qr_code_rationale_allow">Рұқсат ету</string>
+    <string name="qr_code_rationale_block">Блоктау</string>
+    <string name="qr_code_rationale_header">Бұл бағдарламаға камераға қатынасуға рұқсат етесіз бе?</string>
+    <string name="qr_code_rationale_message">Содан кейін QR кодымен кіруге болады.</string>
+    <string name="s1">Кескінді сақтау</string>
+    <string name="s2">Жарнамаға кескінді сурет галереясында сақтауға рұқсат берілсін бе?</string>
+    <string name="s3">Қабылдау</string>
+    <string name="s4">Қабылдамау</string>
+    <string name="s5">Күнтізбе оқиғасын жасау</string>
+    <string name="s6">Жарнамаға күнтізбе оқиғасын жасауға рұқсат берілсін бе?</string>
+    <string name="s7">Сынақ жарнама</string>
     <string msgid="6264217191555673260" name="search_menu_title">"Іздеу"</string>
+    <string name="smartcard_cert_dialog_negative_button">Бас тарту</string>
+    <string name="smartcard_cert_dialog_positive_button">Жалғастыру</string>
+    <string name="smartcard_cert_dialog_title">Кіру үшін сертификатты таңдаңыз</string>
+    <string name="smartcard_early_unplug_dialog_message">Смарт карта құрылғысы жойылды. Қайта кіруге әрекет жасамас бұрын құрылғыны қайта кірістіріңіз.</string>
+    <string name="smartcard_early_unplug_dialog_title">Әрекетті қайталау</string>
+    <string name="smartcard_error_dialog_positive_button">OK</string>
+    <string name="smartcard_general_error_dialog_message">Күтпеген қате пайда болды. Кейінірек қайталап көріңіз.</string>
+    <string name="smartcard_general_error_dialog_title">Әрекетті кейінірек қайталаңыз</string>
+    <string name="smartcard_max_attempt_dialog_message">Сәтсіз әрекеттер тым көп. Кейінірек қайталап көріңіз.</string>
+    <string name="smartcard_max_attempt_dialog_title">Әрекетті кейінірек қайталаңыз</string>
+    <string name="smartcard_nfc_diff_connected_message">Бастапқыда кіру үшін пайдаланған смарт картаны пайдаланыңыз.</string>
+    <string name="smartcard_nfc_diff_connected_positive_button">Түсінікті</string>
+    <string name="smartcard_nfc_diff_connected_title">Бір уақытта тек бір смарт картаны пайдалануға болады</string>
+    <string name="smartcard_nfc_loading_dialog_message">Смарт картаны пайдалануға дайындаңыз.</string>
+    <string name="smartcard_nfc_loading_dialog_title">Смарт карта оқылуда</string>
+    <string name="smartcard_nfc_prompt_dialog_message">Смарт картаны қосыңыз немесе оны телефоныңыздың артқы жағына тіркеп ұстап тұрыңыз.</string>
+    <string name="smartcard_nfc_prompt_dialog_negative_button">Бас тарту</string>
+    <string name="smartcard_nfc_prompt_dialog_title">Смарт картаны дайындау</string>
+    <string name="smartcard_nfc_reminder_dialog_message">NFC көмегімен кіру үшін, құрылғы параметрлерінде NFC функциясын қосыңыз. Содан кейін қайта кіріңіз.</string>
+    <string name="smartcard_nfc_reminder_dialog_positive_button">Түсінікті</string>
+    <string name="smartcard_nfc_reminder_dialog_title">Құрылғы параметрлерінде NFC функциясын қосу</string>
+    <string name="smartcard_no_cert_dialog_message">Сертификат смарт карта құрылғысында дұрыс дайындалғанын тексеріңіз.</string>
+    <string name="smartcard_no_cert_dialog_title">Жарамды сертификаттар табылмады.</string>
+    <string name="smartcard_pin_dialog_error_message">Сіз енгізген PIN код дұрыс емес</string>
+    <string name="smartcard_pin_dialog_message">Сертификатқа қол жеткізу және жүйеге кіру үшін смарт карта PIN кодын енгізіңіз</string>
+    <string name="smartcard_pin_dialog_negative_button">Бас тарту</string>
+    <string name="smartcard_pin_dialog_positive_button">Құлыпты ашу</string>
+    <string name="smartcard_pin_dialog_title">Смарт картаның құлпын ашу</string>
+    <string name="smartcard_pin_layout_edittext_hint">PIN коды</string>
+    <string name="smartcard_prompt_dialog_message">Смарт картаны қосыңыз немесе оны телефоныңыздың артқы жағына жалғаңыз немесе ұстап тұрыңыз.</string>
+    <string name="smartcard_prompt_dialog_negative_button">Бас тарту</string>
+    <string name="smartcard_prompt_dialog_title">Смарт картаны дайындау</string>
+    <string name="smartcard_removal_prompt_dialog_positive_button">Түсінікті</string>
+    <string name="smartcard_removal_prompt_dialog_title">Енді смарт картаны шығаруға болады</string>
     <string msgid="6277540029070332960" name="status_bar_notification_info_overflow">"999+"</string>
+    <string name="user_choice_dialog_negative_button">Бас тарту</string>
+    <string name="user_choice_dialog_on_device_name">Осы құрылғыдағы сертификат</string>
+    <string name="user_choice_dialog_positive_button">Жалғастыру</string>
+    <string name="user_choice_dialog_smartcard_name">Физикалық смарт карта</string>
+    <string name="user_choice_dialog_title">Қалау кіргіңіз келеді?</string>
+    <string name="watermark_label_prefix">AdMob – </string>
 </resources>

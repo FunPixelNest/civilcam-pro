@@ -21,7 +21,7 @@
     <string msgid="7208076849092622260" name="abc_search_hint">"Pretražite..."</string>
     <string msgid="3741173234950517107" name="abc_searchview_description_clear">"Obriši upit"</string>
     <string msgid="693312494995508443" name="abc_searchview_description_query">"Pretraži upit"</string>
-    <string msgid="3417662926640357176" name="abc_searchview_description_search">"Pretraži"</string>
+    <string msgid="3417662926640357176" name="abc_searchview_description_search">"Pretraživanje"</string>
     <string msgid="1486535517437947103" name="abc_searchview_description_submit">"Pošalji upit"</string>
     <string msgid="2293578557972875415" name="abc_searchview_description_voice">"Glasovno pretraživanje"</string>
     <string msgid="8875138169939072951" name="abc_shareactionprovider_share_with">"Dijeli sa"</string>
@@ -58,6 +58,28 @@
     <string msgid="4566929209979330987" name="fallback_menu_item_copy_link">"Kopiraj link"</string>
     <string msgid="3413186855122069269" name="fallback_menu_item_open_in_browser">"Otvori u pregledniku"</string>
     <string msgid="7145444925855055364" name="fallback_menu_item_share_link">"Dijeli link"</string>
+    <string name="native_body">Tekst</string>
+    <string name="native_headline">Naslov</string>
+    <string name="native_media_view">Prikaz medija</string>
+    <string name="notifications_permission_confirm">Dozvoli</string>
+    <string name="notifications_permission_decline">Nemoj dozvoliti</string>
+    <string name="notifications_permission_title">Dozvoliti aplikaciji da vam šalje obavještenja?</string>
+    <string name="offline_dialog_image_description">Ikona</string>
+    <string name="offline_dialog_text">Hvala vam na interesovanju.\nPodijelit ćemo više informacija s vama kada ponovo budete online.</string>
+    <string name="offline_notification_title">Ponovo ste online! Nastavimo gdje smo stali</string>
+    <string name="offline_notification_title_with_advertiser">Ponovo ste online! Saznajte više o oglašivaču %s</string>
+    <string name="offline_opt_in_confirm">UREDU</string>
+    <string name="offline_opt_in_decline">Ne, hvala</string>
+    <string name="offline_opt_in_message">Poslat ćemo vam obavještenje s linkom na web lokaciju oglašivača.</string>
+    <string name="offline_opt_in_title">Otvorite oglas kada ponovo budete online.</string>
+    <string name="s1">Sačuvaj sliku</string>
+    <string name="s2">Želite li dozvoliti oglasu da pohrani sliku u Galeriju slika?</string>
+    <string name="s3">Prihvatam</string>
+    <string name="s4">Odbij</string>
+    <string name="s5">Kreiranje događaja u kalendaru</string>
+    <string name="s6">Želite li dozvoliti oglasu da kreira događaj u kalendaru?</string>
+    <string name="s7">Probni oglas</string>
     <string msgid="6264217191555673260" name="search_menu_title">"Pretražite"</string>
     <string msgid="6277540029070332960" name="status_bar_notification_info_overflow">"999+"</string>
+    <string name="watermark_label_prefix">AdMob – </string>
 </resources>

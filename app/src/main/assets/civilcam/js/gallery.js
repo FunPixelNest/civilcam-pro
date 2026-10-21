@@ -176,7 +176,8 @@ function renderGallery() {
     grid.innerHTML = `<div class="empty">
       <div class="empty-ic">${ic('image', 40)}</div>
       <div class="empty-title">${total ? 'No photos match' : 'No photos yet'}</div>
-      <div class="empty-sub">${total ? 'Try another filter or period.' : 'Photos you take in this project appear here.'}</div></div>`;
+      <div class="empty-sub">${total ? 'Try another filter or period.' : 'Photos you take in this project appear here.'}</div>
+      ${total ? '' : `<button class="btn" onclick="openImportSheet()">${ic('import', 18)}Add photos from other camera apps</button>`}</div>`;
     return;
   }
 
@@ -299,14 +300,14 @@ function openPhotoModal(id) {
     item('Side', p.side) +
     item('Type', p.photoType !== 'General' ? p.photoType : '') +
     item('Hindrance', p.hind ? `${p.hind.ref} · ${p.hind.status === 'cleared' ? 'Cleared ' + fmtDate(p.hind.clearedAt) : 'Open, ' + hindDays(p) + ' days'}` : '') +
-    item('Backup', !Sync.enabled() ? '' : p.synced ? (p.driveId ? 'In Google Drive' : 'Backed up') : 'Waiting to upload') +
+    item('Backup', !Sync.enabled() ? '' : p.synced ? (p.driveId ? 'In ' + PhotoStore.of(p).label : 'Backed up') : 'Waiting to upload') +
     item('Engineer', p.engineer && p.engineer.name ? [p.engineer.name, p.engineer.designation].filter(Boolean).join(', ') : '') +
     (p.fields || []).map(f => item(f.label, f.value, true)).join('') +
     item('Place', p.address || '', true) +
     item('Facing', p.heading != null ? headingText(p.heading) : '') +
     item('GPS', loc ? `${loc.lat}, ${loc.lng}${loc.accuracy != null ? ` (±${loc.accuracy} m)` : ''}${loc.altitude != null ? ` · altitude ${loc.altitude} m` : ''}` : '', true) +
     (p.imported ? item('Imported from', [p.imported.from, p.imported.camera].filter(Boolean).join(' · '), true) : '') +
-    (p.previewOnly ? item('Photo', `Small preview. The full photo is in ${takenByOther(p) ? (p.engineer.name || p.driveOwner || 'a colleague') + "'s" : 'your'} Google Drive: tap Full photo to save it to this phone or to your Drive.`, true) : '');
+    (p.previewOnly ? item('Photo', `Small preview. The full photo is in ${PhotoStore.where(p, takenByOther(p) ? (p.engineer.name || p.driveOwner || 'a colleague') + "'s" : 'your')}: tap Full photo to save it to this phone or to your own cloud.`, true) : '');
   document.getElementById('modal-desc').value = p.description || '';
   document.getElementById('ai-caption-btn').style.display = AI.available() ? '' : 'none';
   document.getElementById('photo-modal').classList.add('visible');

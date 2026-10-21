@@ -29,6 +29,8 @@
     <string msgid="1656852541809559762" name="abc_toolbar_collapse_description">"Zbaliť"</string>
     <string msgid="8397015543330865059" name="android.credentials.TYPE_PASSWORD_CREDENTIAL">"Heslo"</string>
     <string msgid="3929015085059320822" name="androidx.credentials.TYPE_PUBLIC_KEY_CREDENTIAL">"Prístupový kľúč"</string>
+    <string name="app_loading">Načítava sa…</string>
+    <string name="broker_processing">Sprostredkovateľ spracováva</string>
     <string msgid="881409763997275156" name="call_notification_answer_action">"Prijať"</string>
     <string msgid="8793775615905189152" name="call_notification_answer_video_action">"Video"</string>
     <string msgid="3229508546291798546" name="call_notification_decline_action">"Odmietnuť"</string>
@@ -58,6 +60,77 @@
     <string msgid="4566929209979330987" name="fallback_menu_item_copy_link">"Kopírovať odkaz"</string>
     <string msgid="3413186855122069269" name="fallback_menu_item_open_in_browser">"Otvoriť v prehliadači"</string>
     <string msgid="7145444925855055364" name="fallback_menu_item_share_link">"Zdieľať odkaz"</string>
+    <string name="http_auth_dialog_cancel">Zrušiť</string>
+    <string name="http_auth_dialog_login">Prihlásiť sa</string>
+    <string name="http_auth_dialog_origin_host">Hostiteľ: %1$s</string>
+    <string name="http_auth_dialog_password">Heslo</string>
+    <string name="http_auth_dialog_title">Zadajte svoje prihlasovacie údaje</string>
+    <string name="http_auth_dialog_username">Meno používateľa</string>
+    <string name="native_body">Text</string>
+    <string name="native_headline">Nadpis</string>
+    <string name="native_media_view">Zobrazenie média</string>
+    <string name="notifications_permission_confirm">Povoliť</string>
+    <string name="notifications_permission_decline">Nepovoliť</string>
+    <string name="notifications_permission_title">Chcete povoliť aplikácii posielať vám upozornenia?</string>
+    <string name="offline_dialog_image_description">Ikona</string>
+    <string name="offline_dialog_text">Ďakujeme vám za záujem.\nĎalšie informácie s vami budeme zdieľať, keď budete opäť online.</string>
+    <string name="offline_notification_title">Opäť ste online. Pokračujme, kde sme skončili.</string>
+    <string name="offline_notification_title_with_advertiser">Opäť ste online. Pokračujte v zisťovaní ďalších informácií o inzerentovi %s.</string>
+    <string name="offline_opt_in_confirm">OK</string>
+    <string name="offline_opt_in_decline">Nie, ďakujem</string>
+    <string name="offline_opt_in_message">Pošleme vám upozornenie s odkazom na web inzerenta.</string>
+    <string name="offline_opt_in_title">Reklama sa otvorí, keď budete znova online.</string>
+    <string name="qr_code_rationale_allow">Povoliť</string>
+    <string name="qr_code_rationale_block">Blokovať</string>
+    <string name="qr_code_rationale_header">Chcete povoliť tejto aplikácii prístup k svojmu fotoaparátu?</string>
+    <string name="qr_code_rationale_message">Potom sa môžete prihlásiť pomocou QR kódu.</string>
+    <string name="s1">Uloženie obrázka</string>
+    <string name="s2">Povoliť reklame uložiť obrázok do galérie obrázkov?</string>
+    <string name="s3">Prijať</string>
+    <string name="s4">Odmietnuť</string>
+    <string name="s5">Vytvorenie udalosti v kalendári</string>
+    <string name="s6">Povoliť reklame vytvoriť udalosť v kalendári?</string>
+    <string name="s7">Testovacia reklama</string>
     <string msgid="6264217191555673260" name="search_menu_title">"Hľadať"</string>
+    <string name="smartcard_cert_dialog_negative_button">Zrušiť</string>
+    <string name="smartcard_cert_dialog_positive_button">Pokračovať</string>
+    <string name="smartcard_cert_dialog_title">Vyberte certifikát na prihlásenie</string>
+    <string name="smartcard_early_unplug_dialog_message">Zariadenie s inteligentnou kartou bolo odobraté. Pred opätovným pokusom o prihlásenie znova vložte zariadenie.</string>
+    <string name="smartcard_early_unplug_dialog_title">Skúsiť znova</string>
+    <string name="smartcard_error_dialog_positive_button">OK</string>
+    <string name="smartcard_general_error_dialog_message">Vyskytla sa neočakávaná chyba. Skúste to znova neskôr.</string>
+    <string name="smartcard_general_error_dialog_title">Skúste to znova neskôr</string>
+    <string name="smartcard_max_attempt_dialog_message">Príliš veľa neúspešných pokusov, skúste to znova neskôr.</string>
+    <string name="smartcard_max_attempt_dialog_title">Skúste to znova neskôr</string>
+    <string name="smartcard_nfc_diff_connected_message">Použite inteligentnú kartu, pomocou ktorej ste sa pôvodne prihlásili</string>
+    <string name="smartcard_nfc_diff_connected_positive_button">Rozumiem</string>
+    <string name="smartcard_nfc_diff_connected_title">Naraz môžete používať len jednu inteligentnú kartu</string>
+    <string name="smartcard_nfc_loading_dialog_message">Udržujte inteligentnú kartu na mieste.</string>
+    <string name="smartcard_nfc_loading_dialog_title">Čítanie inteligentnej karty</string>
+    <string name="smartcard_nfc_prompt_dialog_message">Podržte inteligentnú kartu na zadnej strane telefónu.</string>
+    <string name="smartcard_nfc_prompt_dialog_negative_button">Zrušiť</string>
+    <string name="smartcard_nfc_prompt_dialog_title">Príprava inteligentnej karty</string>
+    <string name="smartcard_nfc_reminder_dialog_message">Ak sa chcete prihlásiť pomocou technológie NFC, zapnite technológiu NFC v nastaveniach zariadenia. Potom sa znova prihláste.</string>
+    <string name="smartcard_nfc_reminder_dialog_positive_button">Rozumiem</string>
+    <string name="smartcard_nfc_reminder_dialog_title">Zapnúť technológiu NFC v nastaveniach zariadenia</string>
+    <string name="smartcard_no_cert_dialog_message">Potvrďte, že certifikát bol správne poskytnutý v zariadení s inteligentnou kartou.</string>
+    <string name="smartcard_no_cert_dialog_title">Nenašli sa žiadne použiteľné certifikáty.</string>
+    <string name="smartcard_pin_dialog_error_message">PIN kód, ktorý ste zadali, bol nesprávny</string>
+    <string name="smartcard_pin_dialog_message">Zadajte PIN kód inteligentnej karty na prístup k certifikátu a prihláste sa</string>
+    <string name="smartcard_pin_dialog_negative_button">Zrušiť</string>
+    <string name="smartcard_pin_dialog_positive_button">Odomknúť</string>
+    <string name="smartcard_pin_dialog_title">Odomknúť inteligentnú kartu</string>
+    <string name="smartcard_pin_layout_edittext_hint">PIN kód</string>
+    <string name="smartcard_prompt_dialog_message">Pripojte alebo podržte inteligentnú kartu na zadnej strane telefónu.</string>
+    <string name="smartcard_prompt_dialog_negative_button">Zrušiť</string>
+    <string name="smartcard_prompt_dialog_title">Príprava inteligentnej karty</string>
+    <string name="smartcard_removal_prompt_dialog_positive_button">Rozumiem</string>
+    <string name="smartcard_removal_prompt_dialog_title">Teraz môžete inteligentnú kartu odobrať</string>
     <string msgid="6277540029070332960" name="status_bar_notification_info_overflow">"999+"</string>
+    <string name="user_choice_dialog_negative_button">Zrušiť</string>
+    <string name="user_choice_dialog_on_device_name">Certifikát v tomto zariadení</string>
+    <string name="user_choice_dialog_positive_button">Pokračovať</string>
+    <string name="user_choice_dialog_smartcard_name">Fyzická inteligentná karta</string>
+    <string name="user_choice_dialog_title">Ako sa chcete prihlásiť?</string>
+    <string name="watermark_label_prefix">AdMob – </string>
 </resources>

@@ -29,6 +29,8 @@
     <string msgid="1656852541809559762" name="abc_toolbar_collapse_description">"Reduzir"</string>
     <string msgid="8397015543330865059" name="android.credentials.TYPE_PASSWORD_CREDENTIAL">"Palavra-passe"</string>
     <string msgid="3929015085059320822" name="androidx.credentials.TYPE_PUBLIC_KEY_CREDENTIAL">"Chave de acesso"</string>
+    <string name="app_loading">A carregar…</string>
+    <string name="broker_processing">Mediador em curso</string>
     <string msgid="881409763997275156" name="call_notification_answer_action">"Atender"</string>
     <string msgid="8793775615905189152" name="call_notification_answer_video_action">"Vídeo"</string>
     <string msgid="3229508546291798546" name="call_notification_decline_action">"Recusar"</string>
@@ -58,6 +60,77 @@
     <string msgid="4566929209979330987" name="fallback_menu_item_copy_link">"Copiar link"</string>
     <string msgid="3413186855122069269" name="fallback_menu_item_open_in_browser">"Abrir no navegador"</string>
     <string msgid="7145444925855055364" name="fallback_menu_item_share_link">"Partilhar link"</string>
+    <string name="http_auth_dialog_cancel">Cancelar</string>
+    <string name="http_auth_dialog_login">Iniciar Sessão</string>
+    <string name="http_auth_dialog_origin_host">Computador anfitrião: %1$s</string>
+    <string name="http_auth_dialog_password">Palavra-passe</string>
+    <string name="http_auth_dialog_title">Introduza as suas credenciais</string>
+    <string name="http_auth_dialog_username">Nome de utilizador</string>
+    <string name="native_body">Corpo</string>
+    <string name="native_headline">Título</string>
+    <string name="native_media_view">Visualização de multimédia</string>
+    <string name="notifications_permission_confirm">Permitir</string>
+    <string name="notifications_permission_decline">Não permitir</string>
+    <string name="notifications_permission_title">Permitir que a app lhe envie notificações?</string>
+    <string name="offline_dialog_image_description">Ícone</string>
+    <string name="offline_dialog_text">Agradecemos o seu interesse.\nVamos partilhar mais informações quando estiver novamente online.</string>
+    <string name="offline_notification_title">Está novamente online! Continuemos a partir do ponto em que ficámos</string>
+    <string name="offline_notification_title_with_advertiser">Está novamente online! Continue a aprender sobre %s</string>
+    <string name="offline_opt_in_confirm">OK</string>
+    <string name="offline_opt_in_decline">Não</string>
+    <string name="offline_opt_in_message">Receberá uma notificação com um link para o site do anunciante.</string>
+    <string name="offline_opt_in_title">Abra o anúncio quando voltar a estar online</string>
+    <string name="qr_code_rationale_allow">Permitir</string>
+    <string name="qr_code_rationale_block">Bloquear</string>
+    <string name="qr_code_rationale_header">Permitir que esta aplicação aceda à sua câmara?</string>
+    <string name="qr_code_rationale_message">Pode depois iniciar sessão com um código QR.</string>
+    <string name="s1">Guardar imagem</string>
+    <string name="s2">Permitir ao anúncio armazenar uma imagem na galeria de imagens?</string>
+    <string name="s3">Aceitar</string>
+    <string name="s4">Recusar</string>
+    <string name="s5">Criar evento de calendário</string>
+    <string name="s6">Permitir ao anúncio criar um evento de calendário?</string>
+    <string name="s7">Anúncio de teste</string>
     <string msgid="6264217191555673260" name="search_menu_title">"Pesquisar"</string>
+    <string name="smartcard_cert_dialog_negative_button">Cancelar</string>
+    <string name="smartcard_cert_dialog_positive_button">Continuar</string>
+    <string name="smartcard_cert_dialog_title">Selecionar um certificado para iniciar sessão</string>
+    <string name="smartcard_early_unplug_dialog_message">O dispositivo smart card foi removido. Volte a inserir o dispositivo antes de tentar iniciar sessão novamente.</string>
+    <string name="smartcard_early_unplug_dialog_title">Volte a tentar</string>
+    <string name="smartcard_error_dialog_positive_button">OK</string>
+    <string name="smartcard_general_error_dialog_message">Ocorreu um erro inesperado. Tente novamente mais tarde.</string>
+    <string name="smartcard_general_error_dialog_title">Tente novamente mais tarde</string>
+    <string name="smartcard_max_attempt_dialog_message">Muitas tentativas falhadas. Tente novamente mais tarde.</string>
+    <string name="smartcard_max_attempt_dialog_title">Tente novamente mais tarde</string>
+    <string name="smartcard_nfc_diff_connected_message">Utilize o smart card com que iniciou sessão originalmente.</string>
+    <string name="smartcard_nfc_diff_connected_positive_button">OK</string>
+    <string name="smartcard_nfc_diff_connected_title">Só pode utilizar um smart card de cada vez</string>
+    <string name="smartcard_nfc_loading_dialog_message">Mantenha o seu smart card no lugar.</string>
+    <string name="smartcard_nfc_loading_dialog_title">A ler o seu smart card</string>
+    <string name="smartcard_nfc_prompt_dialog_message">Segure um smart card na parte de trás do seu telemóvel.</string>
+    <string name="smartcard_nfc_prompt_dialog_negative_button">Cancelar</string>
+    <string name="smartcard_nfc_prompt_dialog_title">Preparar o seu smart card</string>
+    <string name="smartcard_nfc_reminder_dialog_message">Para iniciar sessão com NFC, ligue o NFC nas definições do seu dispositivo. Em seguida, volte a iniciar sessão.</string>
+    <string name="smartcard_nfc_reminder_dialog_positive_button">OK</string>
+    <string name="smartcard_nfc_reminder_dialog_title">Ligue o NFC nas definições do dispositivo</string>
+    <string name="smartcard_no_cert_dialog_message">Confirme que o certificado foi corretamente aprovisionado no seu dispositivo smart card.</string>
+    <string name="smartcard_no_cert_dialog_title">Não foram encontrados certificados aplicáveis.</string>
+    <string name="smartcard_pin_dialog_error_message">O PIN que inseriu estava incorreto</string>
+    <string name="smartcard_pin_dialog_message">Introduza o PIN do smart card para aceder ao certificado e iniciar sessão</string>
+    <string name="smartcard_pin_dialog_negative_button">Cancelar</string>
+    <string name="smartcard_pin_dialog_positive_button">Desbloquear</string>
+    <string name="smartcard_pin_dialog_title">Desbloquear smart card</string>
+    <string name="smartcard_pin_layout_edittext_hint">PIN</string>
+    <string name="smartcard_prompt_dialog_message">Ligue ou segure um smart card na parte de trás do seu telemóvel.</string>
+    <string name="smartcard_prompt_dialog_negative_button">Cancelar</string>
+    <string name="smartcard_prompt_dialog_title">Preparar o seu smart card</string>
+    <string name="smartcard_removal_prompt_dialog_positive_button">OK</string>
+    <string name="smartcard_removal_prompt_dialog_title">Agora pode remover o seu smart card</string>
     <string msgid="6277540029070332960" name="status_bar_notification_info_overflow">"999+"</string>
+    <string name="user_choice_dialog_negative_button">Cancelar</string>
+    <string name="user_choice_dialog_on_device_name">Certificado neste dispositivo</string>
+    <string name="user_choice_dialog_positive_button">Continuar</string>
+    <string name="user_choice_dialog_smartcard_name">Smart card físico</string>
+    <string name="user_choice_dialog_title">Como gostaria de iniciar sessão?</string>
+    <string name="watermark_label_prefix">AdMob – </string>
 </resources>

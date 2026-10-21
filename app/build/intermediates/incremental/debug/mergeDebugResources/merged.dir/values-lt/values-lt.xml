@@ -29,6 +29,8 @@
     <string msgid="1656852541809559762" name="abc_toolbar_collapse_description">"Sutraukti"</string>
     <string msgid="8397015543330865059" name="android.credentials.TYPE_PASSWORD_CREDENTIAL">"Slaptažodis"</string>
     <string msgid="3929015085059320822" name="androidx.credentials.TYPE_PUBLIC_KEY_CREDENTIAL">"Passkey"</string>
+    <string name="app_loading">Įkeliama…</string>
+    <string name="broker_processing">„Broker“ vykdo apdorojimą</string>
     <string msgid="881409763997275156" name="call_notification_answer_action">"Atsakyti"</string>
     <string msgid="8793775615905189152" name="call_notification_answer_video_action">"Vaizdo įrašas"</string>
     <string msgid="3229508546291798546" name="call_notification_decline_action">"Atmesti"</string>
@@ -58,6 +60,77 @@
     <string msgid="4566929209979330987" name="fallback_menu_item_copy_link">"Kopijuoti nuorodą"</string>
     <string msgid="3413186855122069269" name="fallback_menu_item_open_in_browser">"Atidaryti naršyklėje"</string>
     <string msgid="7145444925855055364" name="fallback_menu_item_share_link">"Bendrinti nuorodą"</string>
+    <string name="http_auth_dialog_cancel">Atšaukti</string>
+    <string name="http_auth_dialog_login">Prisijungimas</string>
+    <string name="http_auth_dialog_origin_host">Pagrindinis kompiuteris: %1$s</string>
+    <string name="http_auth_dialog_password">Slaptažodis</string>
+    <string name="http_auth_dialog_title">Įveskite savo kredencialus</string>
+    <string name="http_auth_dialog_username">Vartotojo vardas</string>
+    <string name="native_body">Tekstas</string>
+    <string name="native_headline">Antraštė</string>
+    <string name="native_media_view">Medijos rodinys</string>
+    <string name="notifications_permission_confirm">Leisti</string>
+    <string name="notifications_permission_decline">Neleisti</string>
+    <string name="notifications_permission_title">Leisti programai siųsti jums pranešimus?</string>
+    <string name="offline_dialog_image_description">Piktograma</string>
+    <string name="offline_dialog_text">Dėkojame, kad domitės.\nPasidalysime daugiau informacijos, kai vėl prisijungsite.</string>
+    <string name="offline_notification_title">Vėl esate prisijungę! Tęskime nuo ten, kur baigėme</string>
+    <string name="offline_notification_title_with_advertiser">Vėl esate prisijungę! Toliau mokykitės apie „%s“</string>
+    <string name="offline_opt_in_confirm">Gerai</string>
+    <string name="offline_opt_in_decline">Ne, ačiū</string>
+    <string name="offline_opt_in_message">Atsiųsime jums pranešimą su nuoroda į reklamuotojo svetainę.</string>
+    <string name="offline_opt_in_title">Atidarykite skelbimą, kai vėl prisijungsite.</string>
+    <string name="qr_code_rationale_allow">Leisti</string>
+    <string name="qr_code_rationale_block">Blokuoti</string>
+    <string name="qr_code_rationale_header">Leisti šiai programėlei pasiekti jūsų fotoaparatą?</string>
+    <string name="qr_code_rationale_message">Tada galėsite prisijungti naudodami QR kodą.</string>
+    <string name="s1">Išsaugoti vaizdą</string>
+    <string name="s2">Leisti skelbimui išsaugoti vaizdą nuotraukų galerijoje?</string>
+    <string name="s3">Sutikti</string>
+    <string name="s4">Atmesti</string>
+    <string name="s5">Sukurti kalendoriaus įvykį</string>
+    <string name="s6">Leisti skelbimui sukurti kalendoriaus įvykį?</string>
+    <string name="s7">Bandomasis skelbimas</string>
     <string msgid="6264217191555673260" name="search_menu_title">"Ieškoti"</string>
+    <string name="smartcard_cert_dialog_negative_button">Atšaukti</string>
+    <string name="smartcard_cert_dialog_positive_button">Tęsti</string>
+    <string name="smartcard_cert_dialog_title">Pasirinkite sertifikatą, kad galėtumėte prisijungti.</string>
+    <string name="smartcard_early_unplug_dialog_message">Intelektualiosios kortelės įrenginys buvo pašalintas. Prieš bandydami prisijungti dar kartą, iš naujo įdėkite įrenginį.</string>
+    <string name="smartcard_early_unplug_dialog_title">Bandykite dar kartą</string>
+    <string name="smartcard_error_dialog_positive_button">Gerai</string>
+    <string name="smartcard_general_error_dialog_message">Įvyko nenumatyta klaida. Bandykite dar kartą vėliau.</string>
+    <string name="smartcard_general_error_dialog_title">Bandykite dar kartą vėliau</string>
+    <string name="smartcard_max_attempt_dialog_message">Per daug nesėkmingų bandymų, bandykite dar kartą vėliau.</string>
+    <string name="smartcard_max_attempt_dialog_title">Bandykite dar kartą vėliau</string>
+    <string name="smartcard_nfc_diff_connected_message">Naudokite intelektualiąją kortelę, su kuria iš pradžių prisijungėte.</string>
+    <string name="smartcard_nfc_diff_connected_positive_button">Supratau</string>
+    <string name="smartcard_nfc_diff_connected_title">Vienu metu galite naudoti tik vieną intelektualiąją kortelę</string>
+    <string name="smartcard_nfc_loading_dialog_message">Laikykite intelektualiąją kortelę vietoje.</string>
+    <string name="smartcard_nfc_loading_dialog_title">Skaitoma jūsų intelektualioji kortelė</string>
+    <string name="smartcard_nfc_prompt_dialog_message">Laikykite intelektualiąją kortelę prie telefono galinės dalies.</string>
+    <string name="smartcard_nfc_prompt_dialog_negative_button">Atšaukti</string>
+    <string name="smartcard_nfc_prompt_dialog_title">Paruoškite savo intelektualiąją kortelę</string>
+    <string name="smartcard_nfc_reminder_dialog_message">Norėdami prisijungti naudodami NFC, įrenginio parametruose įjunkite NFC. Tada prisijunkite dar kartą.</string>
+    <string name="smartcard_nfc_reminder_dialog_positive_button">Supratau</string>
+    <string name="smartcard_nfc_reminder_dialog_title">Įjungti NFC įrenginio parametruose</string>
+    <string name="smartcard_no_cert_dialog_message">Patvirtinkite, kad jūsų sertifikatas tinkamai parengtas intelektualiosios kortelės įrenginyje.</string>
+    <string name="smartcard_no_cert_dialog_title">Tinkamų sertifikatų nerasta.</string>
+    <string name="smartcard_pin_dialog_error_message">Įvestas PIN kodas yra neteisingas.</string>
+    <string name="smartcard_pin_dialog_message">Įveskite intelektualiosios kortelės PIN kodą, kad pasiektumėte sertifikatą ir prisijungtumėte</string>
+    <string name="smartcard_pin_dialog_negative_button">Atšaukti</string>
+    <string name="smartcard_pin_dialog_positive_button">Atrakinti</string>
+    <string name="smartcard_pin_dialog_title">Atrakinti intelektualiąją kortelę</string>
+    <string name="smartcard_pin_layout_edittext_hint">PIN kodas</string>
+    <string name="smartcard_prompt_dialog_message">Prijunkite arba laikykite intelektualiąją kortelę prie telefono galinės dalies.</string>
+    <string name="smartcard_prompt_dialog_negative_button">Atšaukti</string>
+    <string name="smartcard_prompt_dialog_title">Paruoškite savo intelektualiąją kortelę</string>
+    <string name="smartcard_removal_prompt_dialog_positive_button">Supratau</string>
+    <string name="smartcard_removal_prompt_dialog_title">Dabar galite pašalinti savo intelektualiąją kortelę</string>
     <string msgid="6277540029070332960" name="status_bar_notification_info_overflow">"999+"</string>
+    <string name="user_choice_dialog_negative_button">Atšaukti</string>
+    <string name="user_choice_dialog_on_device_name">Sertifikatas šiame įrenginyje</string>
+    <string name="user_choice_dialog_positive_button">Tęsti</string>
+    <string name="user_choice_dialog_smartcard_name">Fizinė intelektualioji kortelė</string>
+    <string name="user_choice_dialog_title">Kaip norėtumėte prisijungti?</string>
+    <string name="watermark_label_prefix">„AdMob“ – </string>
 </resources>

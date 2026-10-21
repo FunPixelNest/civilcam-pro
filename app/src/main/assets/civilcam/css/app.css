@@ -583,3 +583,26 @@ select.input{appearance:auto;padding:10px 12px}
 .team-head-btn{color:var(--accent)}
 .pc-team-btn{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--accent);background:var(--accent-soft);flex-shrink:0}
 #pj-team-block{border-top:1px solid var(--line);margin-top:16px;padding-top:4px}
+
+/* project options menu, text buttons */
+.head-btn{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 12px;border-radius:17px;background:var(--accent-soft);color:var(--accent);font-weight:700;font-size:13px;flex-shrink:0;margin-right:4px}
+.menu-list{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.menu-item{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:12px;border-radius:var(--r2);background:var(--s2);border:1px solid var(--line)}
+.menu-item:active{background:var(--s3)}
+.menu-item b{display:block;font-size:15px}
+.menu-item small{display:block;color:var(--text3);font-size:12px;margin-top:2px}
+.menu-ic{width:36px;height:36px;border-radius:10px;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.import-wide{display:flex;align-items:center;gap:12px;margin:8px 12px 0;width:calc(100% - 24px);text-align:left;padding:10px 12px;border-radius:12px;background:var(--accent-soft);border:1px solid rgba(245,165,36,.4);color:var(--accent)}
+.import-wide b{display:block;font-size:14px;color:var(--text)}
+.import-wide small{display:block;font-size:11px;color:var(--text3)}
+.project-wrap{background:var(--s1);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.project-wrap .project-card{border:none;border-radius:0}
+.pc-actions{display:flex;border-top:1px solid var(--line)}
+.pc-actions button{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;height:40px;font-weight:700;font-size:13px;color:var(--accent)}
+.pc-actions button+button{border-left:1px solid var(--line)}
+.pc-actions button:active{background:var(--s2)}
+
+/* Camera in the middle of the tab bar, raised */
+.tab-cam{position:relative}
+.tab-cam .cam-circle{width:50px;height:50px;margin-top:-22px;border-radius:50%;background:var(--accent);color:var(--on-accent);display:flex;align-items:center;justify-content:center;border:4px solid var(--s1);box-shadow:0 4px 14px rgba(0,0,0,.4)}
+.tab-cam.active .cam-circle{background:var(--accent2)}

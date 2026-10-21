@@ -57,6 +57,18 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
 
+        <!-- Microsoft sign-in for OneDrive returns here (msauth://<package>/<key hash>) -->
+        <activity
+            android:name="com.microsoft.identity.client.BrowserTabActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="msauth" android:host="com.funpixelnest.civilcampro" />
+            </intent-filter>
+        </activity>
+
         <!-- Lets the share sheet read photos the app hands over -->
         <provider
             android:name="androidx.core.content.FileProvider"

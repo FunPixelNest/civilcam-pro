@@ -6,8 +6,8 @@ const HELP = [
   { ic: 'folder', t: 'Projects', s: [
     'Tap <b>New project</b>. Give a short name (shown on photos) and the full name (shown on reports).',
     'Pick the project type. Roads, canals, rail and pipelines use chainage (e.g. 0+000 to 25+000); bridges use piers; buildings use floors; plants use zones.',
-    'Every photo you take goes into the open project. Tap the project name at the top of the camera to change project.',
-    'Tap the pencil at the top to edit the project, add your team or delete it.'] },
+    'Every photo you take goes into the open project.',
+    'To <b>edit</b> a project, add your <b>team</b> or <b>add photos from other apps</b>: tap the project name at the top of the camera (or the <b>Project</b> button on the other screens). On the Projects list, each project also has <b>Open</b>, <b>Edit</b> and <b>Team</b> buttons.'] },
   { ic: 'camera', t: 'Taking photos', s: [
     'Set the details once with the <b>details</b> panel: type, activity, chainage, side, description. They stay for every photo until you change them.',
     'Each photo is stamped with your name, project, chainage, date, time, GPS, height above sea level, place name and the compass direction.',
@@ -16,7 +16,7 @@ const HELP = [
   { ic: 'image', t: 'Gallery', s: [
     'All photos of the project, newest first. Use the filters (period, activity, side, type, chainage) or type in the search box.',
     '<b>Select photos</b>: press and hold a photo until the phone vibrates, then tap more photos. The bar at the bottom lets you <b>Share</b> (WhatsApp or any app), <b>Save</b> to the phone, make a report or delete.',
-    'Tap a photo to open it full screen, edit its details, share it, or open it in Google Drive.',
+    'Tap a photo to open it full screen, edit its details, share it, or open it in Google Drive / OneDrive.',
     'Photos from other engineers in your team show a name badge. They arrive as small previews to save data; tap <b>Full</b> to get the full photo only when you need it.'] },
   { ic: 'strip', t: 'Chainage strip and site map', s: [
     'Every photo is placed on a drawing of the site: along the chainage for roads, by pier for bridges, by floor for buildings.',
@@ -31,19 +31,20 @@ const HELP = [
     '<b>PDF</b> to submit, <b>Word</b> to edit, <b>Excel</b> photo register, <b>PowerPoint</b> for meetings, <b>Client view</b> (one file that opens in any browser, no app) and <b>Google Earth</b> (photo spots on a map).',
     'When the report is ready: WhatsApp, Share, Open or Save. Reports are kept in Download / CivilCam.'] },
   { ic: 'download', t: 'Photos from other camera apps', s: [
-    'Photos taken with GPS Map Camera, Timestamp Camera, the phone camera or any app can be added: in the Gallery, tap the <b>import</b> button next to the search box.',
+    'Photos taken with GPS Map Camera, Timestamp Camera, the phone camera or any app can be added: tap <b>Add photos from other camera apps</b> at the top of the Gallery (or in the project menu).',
     '<b>Pick photos</b> once, or add a <b>synced camera folder</b>; new photos in that folder are offered every time you open the app.',
     'Date, time and GPS saved inside the photos are kept. Chainage is suggested from your nearby photos. You can check each photo before it is added, and add the CivilCam stamp if you want.'] },
   { ic: 'users', t: 'Team: engineers on the same project', s: [
     'Everyone must <b>sign in</b> first (Account › Sign in). Use the same e-mail you will give your team.',
-    'Open the project, tap the <b>Team</b> button (or the pencil) and type each engineer\'s sign-in e-mail under <b>Team</b>, tap <b>Add</b>, then <b>Save project</b>.',
+    'On the Projects list tap <b>Team</b> under the project (or, inside a project, tap the project name › <b>Team: add engineers</b>). Type each engineer\'s sign-in e-mail under <b>Team</b>, tap <b>Add</b>, then <b>Save project</b>.',
     'Tap <b>Tell them on WhatsApp</b> to send them the invitation. When they sign in with that e-mail, the project and all its photos appear on their phone.',
     'Everyone sees everyone\'s photos. Only the owner can add or remove engineers; a member can leave the team.',
-    'Full photos are never downloaded by themselves. Each engineer chooses: save to the phone, save to their own Google Drive, or keep in the app.'] },
+    'Full photos are never downloaded by themselves. Each engineer chooses: save to the phone, save to their own Google Drive or OneDrive, or keep in the app.'] },
   { ic: 'cloud', t: 'Sign-in and backup', s: [
     'Without signing in, everything stays on this phone only.',
     'Sign in with Google, Microsoft or Apple to back up and to share projects. The top-right pill shows <b>On phone</b>, <b>Syncing</b> or <b>Backed up</b>.',
-    'Full photos are kept in <b>your own Google Drive</b> (folder CivilCam). The app can only see the files it made. The cloud keeps just the details and a small preview.'] },
+    'Full photos are kept in <b>your own cloud</b>: <b>Google Drive</b> (folder CivilCam) if you sign in with Google, <b>OneDrive</b> (Apps › CivilCam Pro) if you sign in with Microsoft. You can change it in Account. The app can only see the files it made. The company database keeps just the details and a small preview.',
+    'In a team, everyone can use a different cloud: one engineer on Google Drive, another on OneDrive. Photos still show for everyone.'] },
   { ic: 'crown', t: 'Free and Pro', s: [
     'The app is free with ads. There are never ads on the camera.',
     'Free reports carry a small "Made with CivilCam Pro" line. Watch a short video to remove it from one report.',
@@ -90,4 +91,14 @@ function openTeam(p) {
     const input = document.getElementById('pj-team-email');
     if (input && input.offsetParent) input.focus();
   }, 250);
+}
+
+// Project options: one place for Edit, Team, Import, Reports, Change project, Help
+function openProjectMenu() {
+  if (!currentProject) { showProjects(); return; }
+  document.getElementById('pm-title').textContent = currentProject.name;
+  document.getElementById('pm-sub').textContent = currentProject.fullName || '';
+  const n = teamCount(currentProject);
+  document.getElementById('pm-team').textContent = n > 1 ? `${n} engineers share this project` : 'Share this project with other engineers by e-mail';
+  openSheet('project-menu');
 }

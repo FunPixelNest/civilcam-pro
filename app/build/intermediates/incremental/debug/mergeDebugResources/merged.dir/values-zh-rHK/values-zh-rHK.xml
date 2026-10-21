@@ -58,6 +58,28 @@
     <string msgid="4566929209979330987" name="fallback_menu_item_copy_link">"複製連結"</string>
     <string msgid="3413186855122069269" name="fallback_menu_item_open_in_browser">"在瀏覽器中開啟"</string>
     <string msgid="7145444925855055364" name="fallback_menu_item_share_link">"分享連結"</string>
+    <string name="native_body">內文</string>
+    <string name="native_headline">標題</string>
+    <string name="native_media_view">影音媒體檢視</string>
+    <string name="notifications_permission_confirm">允許</string>
+    <string name="notifications_permission_decline">不允許</string>
+    <string name="notifications_permission_title">允許應用程式傳送通知給你嗎？</string>
+    <string name="offline_dialog_image_description">圖示</string>
+    <string name="offline_dialog_text">感謝你的支持。\n我們會在你重新上網後提供更多資訊。</string>
+    <string name="offline_notification_title">你已重新上網！在上次暫停的位置繼續</string>
+    <string name="offline_notification_title_with_advertiser">你已重新上網！請繼續瞭解「%s」的相關資訊</string>
+    <string name="offline_opt_in_confirm">確定</string>
+    <string name="offline_opt_in_decline">不用了，謝謝</string>
+    <string name="offline_opt_in_message">我們會向你傳送通知，當中包含廣告客戶網站的連結。</string>
+    <string name="offline_opt_in_title">恢復連線後開啟廣告。</string>
+    <string name="s1">儲存圖片</string>
+    <string name="s2">允許廣告將圖片儲存至相片集嗎？</string>
+    <string name="s3">接受</string>
+    <string name="s4">拒絕</string>
+    <string name="s5">建立日曆活動</string>
+    <string name="s6">允許廣告建立日曆活動嗎？</string>
+    <string name="s7">測試廣告</string>
     <string msgid="6264217191555673260" name="search_menu_title">"搜尋"</string>
     <string msgid="6277540029070332960" name="status_bar_notification_info_overflow">"999+"</string>
+    <string name="watermark_label_prefix">AdMob - </string>
 </resources>

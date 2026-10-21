@@ -10,6 +10,11 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        // One small library used by Microsoft sign-in (MSAL) is only published here
+        maven {
+            url 'https://pkgs.dev.azure.com/MicrosoftDeviceSDK/DuoSDK-Public/_packaging/Duo-SDK-Feed/maven/v1'
+            content { includeGroup 'com.microsoft.device.display' }
+        }
     }
 }
 

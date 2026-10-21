@@ -58,6 +58,28 @@
     <string msgid="4566929209979330987" name="fallback_menu_item_copy_link">"አገናኝ ቅዳ"</string>
     <string msgid="3413186855122069269" name="fallback_menu_item_open_in_browser">"በአሳሽ ውስጥ ክፈት"</string>
     <string msgid="7145444925855055364" name="fallback_menu_item_share_link">"አገናኝ አጋራ"</string>
+    <string name="native_body">አካል</string>
+    <string name="native_headline">ዋና ርዕስ</string>
+    <string name="native_media_view">የሚዲያ ዕይታ</string>
+    <string name="notifications_permission_confirm">ፍቀድ</string>
+    <string name="notifications_permission_decline">አትፍቀድ</string>
+    <string name="notifications_permission_title">መተግበሪያ ማሳወቂያዎችን እንዲልክልዎ ይፈቀድ?</string>
+    <string name="offline_dialog_image_description">አዶ</string>
+    <string name="offline_dialog_text">ለፍላጎትዎ እናመሰግናለን።\nወደ መስመር ሲመለሱ ተጨማሪ እናጋራዎታለን።</string>
+    <string name="offline_notification_title">መስመር ላይ ተመልሰዋል! ከቋምንበት እንቀጥል</string>
+    <string name="offline_notification_title_with_advertiser">መስመር ላይ ተመልሰዋል! ስለ %s መማርዎን ይቀጥሉ</string>
+    <string name="offline_opt_in_confirm">እሺ</string>
+    <string name="offline_opt_in_decline">አይ አመሰግናለሁ</string>
+    <string name="offline_opt_in_message">ወደ ማስታወቂያ አስነጋሪ ጣቢያው ከሚወስድ አገናኝ ጋር አንድ ማሳወቂያ እንልክልዎታለን።</string>
+    <string name="offline_opt_in_title">መስመር ላይ ሲመለሱ ማስታወቂያ ይክፈቱ።</string>
+    <string name="s1">ምስል አስቀምጥ</string>
+    <string name="s2">ማስታወቂያ ምስሉን በስዕል ማእከለ-ሥዕላት ውስጥ እንዲያከማች ይፈቀድለት?</string>
+    <string name="s3">ተቀበል</string>
+    <string name="s4">ውድቅ አድርግ</string>
+    <string name="s5">የቀን መቁጠሪያ ክስተት ፍጠር</string>
+    <string name="s6">ማስታወቂያ የቀን መቁጠሪያ ክስተት እንዲፈጥር ይፈቀድለት?</string>
+    <string name="s7">የሙከራ ማስታወቂያ</string>
     <string msgid="6264217191555673260" name="search_menu_title">"ፍለጋ"</string>
     <string msgid="6277540029070332960" name="status_bar_notification_info_overflow">"999+"</string>
+    <string name="watermark_label_prefix">AdMob - </string>
 </resources>

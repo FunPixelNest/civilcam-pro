@@ -29,6 +29,8 @@
     <string msgid="1656852541809559762" name="abc_toolbar_collapse_description">"Runtuhkan"</string>
     <string msgid="8397015543330865059" name="android.credentials.TYPE_PASSWORD_CREDENTIAL">"Kata Laluan"</string>
     <string msgid="3929015085059320822" name="androidx.credentials.TYPE_PUBLIC_KEY_CREDENTIAL">"Kunci laluan"</string>
+    <string name="app_loading">Memuatkan…</string>
+    <string name="broker_processing">Broker sedang memproses</string>
     <string msgid="881409763997275156" name="call_notification_answer_action">"Jawab"</string>
     <string msgid="8793775615905189152" name="call_notification_answer_video_action">"Video"</string>
     <string msgid="3229508546291798546" name="call_notification_decline_action">"Tolak"</string>
@@ -58,6 +60,77 @@
     <string msgid="4566929209979330987" name="fallback_menu_item_copy_link">"Salin pautan"</string>
     <string msgid="3413186855122069269" name="fallback_menu_item_open_in_browser">"Buka dalam penyemak imbas"</string>
     <string msgid="7145444925855055364" name="fallback_menu_item_share_link">"Kongsi pautan"</string>
+    <string name="http_auth_dialog_cancel">Batal</string>
+    <string name="http_auth_dialog_login">Log Masuk</string>
+    <string name="http_auth_dialog_origin_host">Hos: %1$s</string>
+    <string name="http_auth_dialog_password">Kata Laluan</string>
+    <string name="http_auth_dialog_title">Masukkan kelayakan anda</string>
+    <string name="http_auth_dialog_username">Nama pengguna</string>
+    <string name="native_body">Kandungan</string>
+    <string name="native_headline">Tajuk</string>
+    <string name="native_media_view">Paparan Media</string>
+    <string name="notifications_permission_confirm">Benarkan</string>
+    <string name="notifications_permission_decline">Jangan benarkan</string>
+    <string name="notifications_permission_title">Benarkan apl menghantar pemberitahuan kepada anda?</string>
+    <string name="offline_dialog_image_description">Ikon</string>
+    <string name="offline_dialog_text">Terima kasih atas minat anda.\nKami akan berkongsi lagi setelah anda kembali dalam talian.</string>
+    <string name="offline_notification_title">Anda sudah kembali dalam talian! Mari menyambung dari tempat kita berhenti</string>
+    <string name="offline_notification_title_with_advertiser">Anda sudah kembali dalam talian! Teruskan pembelajaran tentang %s</string>
+    <string name="offline_opt_in_confirm">OK</string>
+    <string name="offline_opt_in_decline">Tidak</string>
+    <string name="offline_opt_in_message">Kami akan menghantar pemberitahuan dengan pautan ke tapak pengiklan kepada anda.</string>
+    <string name="offline_opt_in_title">Buka iklan apabila anda kembali ke dalam talian.</string>
+    <string name="qr_code_rationale_allow">Benarkan</string>
+    <string name="qr_code_rationale_block">Sekat</string>
+    <string name="qr_code_rationale_header">Benarkan aplikasi ini mencapai kamera anda?</string>
+    <string name="qr_code_rationale_message">Anda kemudiannya boleh mendaftar masuk dengan kod QR.</string>
+    <string name="s1">Simpan imej</string>
+    <string name="s2">Benarkan Iklan menyimpan imej dalam galeri Gambar?</string>
+    <string name="s3">Terima</string>
+    <string name="s4">Tolak</string>
+    <string name="s5">Buat acara kalendar</string>
+    <string name="s6">Benarkan Iklan membuat acara kalendar?</string>
+    <string name="s7">Iklan Ujian</string>
     <string msgid="6264217191555673260" name="search_menu_title">"Cari"</string>
+    <string name="smartcard_cert_dialog_negative_button">Batalkan</string>
+    <string name="smartcard_cert_dialog_positive_button">Teruskan</string>
+    <string name="smartcard_cert_dialog_title">Pilih sijil untuk mendaftar masuk</string>
+    <string name="smartcard_early_unplug_dialog_message">Peranti kad pintar telah dialih keluar. Sila sisip semula peranti sebelum cuba melog masuk sekali lagi.</string>
+    <string name="smartcard_early_unplug_dialog_title">Cuba lagi</string>
+    <string name="smartcard_error_dialog_positive_button">OK</string>
+    <string name="smartcard_general_error_dialog_message">Ralat tidak dijangka telah berlaku. Sila cuba semula sebentar lagi.</string>
+    <string name="smartcard_general_error_dialog_title">Cuba lagi kemudian</string>
+    <string name="smartcard_max_attempt_dialog_message">Terlalu banyak percubaan gagal, cuba lagi kemudian.</string>
+    <string name="smartcard_max_attempt_dialog_title">Cuba lagi kemudian</string>
+    <string name="smartcard_nfc_diff_connected_message">Gunakan kad pintar yang anda telah daftar masuk pada asalnya.</string>
+    <string name="smartcard_nfc_diff_connected_positive_button">Faham</string>
+    <string name="smartcard_nfc_diff_connected_title">Anda hanya boleh menggunakan satu kad pintar pada satu masa</string>
+    <string name="smartcard_nfc_loading_dialog_message">Kekalkan kad pintar anda pada tempatnya.</string>
+    <string name="smartcard_nfc_loading_dialog_title">Membaca kad pintar anda</string>
+    <string name="smartcard_nfc_prompt_dialog_message">Tahan kad pintar ke belakang telefon anda.</string>
+    <string name="smartcard_nfc_prompt_dialog_negative_button">Batal</string>
+    <string name="smartcard_nfc_prompt_dialog_title">Sediakan kad pintar anda</string>
+    <string name="smartcard_nfc_reminder_dialog_message">Untuk mendaftar masuk dengan NFC, hidupkan NFC dalam seting peranti anda. Kemudian daftar masuk sekali lagi.</string>
+    <string name="smartcard_nfc_reminder_dialog_positive_button">Faham</string>
+    <string name="smartcard_nfc_reminder_dialog_title">Hidupkan NFC dalam seting peranti</string>
+    <string name="smartcard_no_cert_dialog_message">Sila sahkan bahawa sijil anda telah diperuntukkan dengan betul pada peranti kad pintar anda.</string>
+    <string name="smartcard_no_cert_dialog_title">Tiada sijil yang berkenaan ditemui.</string>
+    <string name="smartcard_pin_dialog_error_message">PIN yang anda masukkan tidak betul</string>
+    <string name="smartcard_pin_dialog_message">Masukkan PIN kad pintar untuk mencapai sijil dan mendaftar masuk</string>
+    <string name="smartcard_pin_dialog_negative_button">Batalkan</string>
+    <string name="smartcard_pin_dialog_positive_button">Buka kunci</string>
+    <string name="smartcard_pin_dialog_title">Buka kunci kad pintar</string>
+    <string name="smartcard_pin_layout_edittext_hint">PIN</string>
+    <string name="smartcard_prompt_dialog_message">Pasang masuk atau tahan kad pintar ke belakang telefon anda.</string>
+    <string name="smartcard_prompt_dialog_negative_button">Batal</string>
+    <string name="smartcard_prompt_dialog_title">Sediakan kad pintar anda</string>
+    <string name="smartcard_removal_prompt_dialog_positive_button">Faham</string>
+    <string name="smartcard_removal_prompt_dialog_title">Anda kini boleh mengalih keluar kad pintar anda</string>
     <string msgid="6277540029070332960" name="status_bar_notification_info_overflow">"999+"</string>
+    <string name="user_choice_dialog_negative_button">Batal</string>
+    <string name="user_choice_dialog_on_device_name">Sijil pada peranti ini</string>
+    <string name="user_choice_dialog_positive_button">Teruskan</string>
+    <string name="user_choice_dialog_smartcard_name">Kad pintar fizikal</string>
+    <string name="user_choice_dialog_title">Bagaimanakah cara anda ingin mendaftar masuk?</string>
+    <string name="watermark_label_prefix">AdMob - </string>
 </resources>
