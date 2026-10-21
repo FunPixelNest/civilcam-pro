@@ -92,6 +92,7 @@ class WebAppBridge(
     @JavascriptInterface fun setBannerVisible(visible: Boolean) = ads.setBannerVisible(visible)
     @JavascriptInterface fun showInterstitial(id: String) = ads.showInterstitial(id)
     @JavascriptInterface fun rewardedReady(): Boolean = ads.rewardedReady()
+    @JavascriptInterface fun adsConfig(): String = ads.configJson()
     @JavascriptInterface fun showRewarded(id: String) = ads.showRewarded(id)
     @JavascriptInterface fun adPrivacyRequired(): Boolean = ads.privacyOptionsRequired()
     @JavascriptInterface fun showAdPrivacy() = ads.showPrivacyOptions()

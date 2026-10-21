@@ -347,6 +347,36 @@ async function aiCaption() {
   } finally { hideLoading(); }
 }
 
+// Turn a photo a quarter turn clockwise (for photos that came out sideways)
+async function rotateModalPhoto() {
+  const p = currentModalPhoto;
+  if (!p || !p.imageData) return;
+  if (p.previewOnly) { showToast('Get the full photo first (Full), then turn it', 'danger'); return; }
+  try {
+    showLoading('Turning the photo…');
+    const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = p.imageData; });
+    const src = document.createElement('canvas'); src.width = img.naturalWidth; src.height = img.naturalHeight;
+    src.getContext('2d').drawImage(img, 0, 0);
+    const out = rotateCanvas(src, 90);
+    let data = out.toDataURL('image/jpeg', 0.9);
+    try { data = writeExif(data, p); } catch (e) {}
+    p.imageData = data;
+    p.orientation = out.width > out.height ? 'landscape' : 'portrait';
+    p.thumb = '';                       // new preview for the team
+    p.uploaded = false; p.synced = false; p.driveId = p.driveId || '';
+    p.updatedAt = Date.now();
+    await DB.save(p);
+    hideLoading();
+    document.getElementById('modal-img').src = p.imageData;
+    if (currentTab === 'gallery') renderGallery();
+    updateLastThumb();
+    Sync.schedule();
+  } catch (e) {
+    hideLoading();
+    showToast('Could not turn the photo: ' + e.message, 'danger');
+  }
+}
+
 async function deletePhotoFromModal() {
   if (!currentModalPhoto) return;
   const id = currentModalPhoto.id;

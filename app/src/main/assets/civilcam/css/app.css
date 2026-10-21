@@ -616,3 +616,5 @@ select.input{appearance:auto;padding:10px 12px}
 .hb-x{font-size:12px;font-weight:700;color:var(--text3);padding:6px 4px}
 
 .danger-link{display:block;width:100%;text-align:center;margin:14px auto 4px;color:var(--danger);font-size:13px;font-weight:600;text-decoration:underline}
+/* keep the shutter clear of the raised Camera button in the tab bar */
+.cam-bottom{padding-bottom:40px}

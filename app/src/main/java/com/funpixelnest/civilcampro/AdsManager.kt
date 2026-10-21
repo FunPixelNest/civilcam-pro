@@ -23,6 +23,9 @@ import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.google.android.ump.ConsentInformation
 import com.google.android.ump.ConsentRequestParameters
 import com.google.android.ump.UserMessagingPlatform
+import com.google.firebase.FirebaseApp
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import org.json.JSONObject
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -73,6 +76,59 @@ class AdsManager(
     private val Ids = Units()
 
     private val prefs = activity.getSharedPreferences("civilcam_ads", Context.MODE_PRIVATE)
+
+    /**
+     * Switches in Firebase Remote Config (Firebase console › Remote Config). Change them there and
+     * every phone picks them up within an hour, without an app update. If Firebase can't be
+     * reached, the last values (or these defaults) are used.
+     */
+    private object Rc {
+        const val ADS = "ads_enabled"                       // master switch for all ads
+        const val BANNER = "ads_banner"
+        const val INTERSTITIAL = "ads_interstitial"
+        const val REWARDED = "ads_rewarded"
+        const val APP_OPEN = "ads_app_open"
+        const val GAP_MIN = "interstitial_min_gap_minutes"
+        const val MAX_DAY = "interstitial_max_per_day"
+        const val APP_OPEN_HOURS = "app_open_min_hours"
+        val DEFAULTS: Map<String, Any> = mapOf(
+            ADS to true, BANNER to true, INTERSTITIAL to true, REWARDED to true, APP_OPEN to true,
+            GAP_MIN to 3L, MAX_DAY to 6L, APP_OPEN_HOURS to 4L)
+    }
+    private val rc: FirebaseRemoteConfig? = try {
+        if (FirebaseApp.getApps(activity).isEmpty()) FirebaseApp.initializeApp(activity)
+        if (FirebaseApp.getApps(activity).isEmpty()) null else FirebaseRemoteConfig.getInstance().also {
+            it.setConfigSettingsAsync(FirebaseRemoteConfigSettings.Builder().setMinimumFetchIntervalInSeconds(3600).build())
+            it.setDefaultsAsync(Rc.DEFAULTS)
+        }
+    } catch (e: Exception) { Log.w("CivilCam", "Remote Config not available", e); null }
+
+    private fun flag(key: String): Boolean = rc?.getBoolean(key) ?: (Rc.DEFAULTS[key] as Boolean)
+    private fun num(key: String): Long = rc?.getLong(key)?.takeIf { it > 0 } ?: (Rc.DEFAULTS[key] as Long)
+    private fun on(kind: String): Boolean = !isPro() && flag(Rc.ADS) && flag(kind)
+
+    /** For the page: which ad kinds are switched on right now. */
+    fun configJson(): String = JSONObject()
+        .put("ads", !isPro() && flag(Rc.ADS)).put("banner", on(Rc.BANNER)).put("interstitial", on(Rc.INTERSTITIAL))
+        .put("rewarded", on(Rc.REWARDED)).put("appOpen", on(Rc.APP_OPEN)).toString()
+
+    /** Fetches the latest switches; turns off anything that was switched off. */
+    private fun refreshRemoteConfig() {
+        rc?.fetchAndActivate()?.addOnCompleteListener {
+            activity.runOnUiThread {
+                applyRemoteSwitches()
+                js("window.onNativeAdsConfig && window.onNativeAdsConfig(${JSONObject.quote(configJson())})")
+            }
+        }
+    }
+
+    private fun applyRemoteSwitches() {
+        if (!on(Rc.BANNER)) { container.visibility = View.GONE; banner?.destroy(); banner = null }
+        else if (ready && bannerWanted) showBanner()
+        if (!on(Rc.INTERSTITIAL)) interstitial = null else if (ready) loadInterstitial()
+        if (!on(Rc.REWARDED)) rewarded = null else if (ready) loadRewarded()
+        if (!on(Rc.APP_OPEN)) appOpen = null else if (ready) loadAppOpen()
+    }
     private val consent: ConsentInformation = UserMessagingPlatform.getConsentInformation(activity)
     private val started = AtomicBoolean(false)
     private var ready = false
@@ -89,6 +145,7 @@ class AdsManager(
 
     // ---------- start: consent first, then the SDK ----------
     fun start() {
+        refreshRemoteConfig()
         val params = ConsentRequestParameters.Builder().build()
         consent.requestConsentInfoUpdate(activity, params, {
             UserMessagingPlatform.loadAndShowConsentFormIfRequired(activity) { error ->
@@ -111,7 +168,7 @@ class AdsManager(
                 ready = true
                 if (!isPro()) {
                     loadInterstitial(); loadRewarded(); loadAppOpen()
-                    if (bannerWanted) showBanner()
+                    if (bannerWanted && on(Rc.BANNER)) showBanner()
                 }
             }
         }.start()
@@ -130,7 +187,7 @@ class AdsManager(
     // ---------- banner ----------
     fun setBannerVisible(visible: Boolean) = activity.runOnUiThread {
         bannerWanted = visible
-        if (visible && ready && !isPro()) {
+        if (visible && ready && on(Rc.BANNER)) {
             showBanner()
         } else {
             container.visibility = View.GONE
@@ -148,7 +205,7 @@ class AdsManager(
                     container.visibility = View.GONE
                 }
                 override fun onAdLoaded() {
-                    if (bannerWanted && !isPro()) container.visibility = View.VISIBLE
+                    if (bannerWanted && on(Rc.BANNER)) container.visibility = View.VISIBLE
                 }
             }
             container.removeAllViews()
@@ -169,7 +226,7 @@ class AdsManager(
 
     // ---------- interstitial: a natural break, e.g. after a report is created ----------
     private fun loadInterstitial() {
-        if (interstitial != null || isPro()) return
+        if (interstitial != null || !on(Rc.INTERSTITIAL)) return
         InterstitialAd.load(activity, Ids.INTERSTITIAL, AdRequest.Builder().build(), object : InterstitialAdLoadCallback() {
             override fun onAdLoaded(ad: InterstitialAd) { interstitial = ad }
             override fun onAdFailedToLoad(error: LoadAdError) { interstitial = null }
@@ -180,10 +237,10 @@ class AdsManager(
         val now = System.currentTimeMillis()
         val day = now / 86_400_000L
         if (prefs.getLong("day", -1) != day) prefs.edit().putLong("day", day).putInt("countToday", 0).apply()
-        return !isPro() &&
-            now - sessionStart > 60_000 &&                          // not in the first minute
-            now - prefs.getLong("lastInterstitial", 0) > 180_000 &&  // 3 minutes apart
-            prefs.getInt("countToday", 0) < 6
+        return on(Rc.INTERSTITIAL) &&
+            now - sessionStart > 60_000 &&                                          // not in the first minute
+            now - prefs.getLong("lastInterstitial", 0) > num(Rc.GAP_MIN) * 60_000 && // minutes apart (Remote Config)
+            prefs.getInt("countToday", 0) < num(Rc.MAX_DAY)
     }
 
     /** Shows an interstitial if one is ready and allowed; always calls back window.onNativeAdDone(id, shown). */
@@ -208,14 +265,14 @@ class AdsManager(
 
     // ---------- rewarded: only when the engineer asks for it ----------
     private fun loadRewarded() {
-        if (rewarded != null || isPro()) return
+        if (rewarded != null || !on(Rc.REWARDED)) return
         RewardedAd.load(activity, Ids.REWARDED, AdRequest.Builder().build(), object : RewardedAdLoadCallback() {
             override fun onAdLoaded(ad: RewardedAd) { rewarded = ad }
             override fun onAdFailedToLoad(error: LoadAdError) { rewarded = null }
         })
     }
 
-    fun rewardedReady(): Boolean = rewarded != null
+    fun rewardedReady(): Boolean = rewarded != null && on(Rc.REWARDED)
 
     /** Calls back window.onNativeReward(id, earned, reason): reason is "" or "notready". */
     fun showRewarded(id: String) = activity.runOnUiThread {
@@ -236,7 +293,7 @@ class AdsManager(
 
     // ---------- app open: returning after a long break ----------
     private fun loadAppOpen() {
-        if (appOpen != null || isPro()) return
+        if (appOpen != null || !on(Rc.APP_OPEN)) return
         AppOpenAd.load(activity, Ids.APP_OPEN, AdRequest.Builder().build(), object : AppOpenAd.AppOpenAdLoadCallback() {
             override fun onAdLoaded(ad: AppOpenAd) { appOpen = ad; appOpenLoadedAt = System.currentTimeMillis() }
             override fun onAdFailedToLoad(error: LoadAdError) { appOpen = null }
@@ -249,8 +306,9 @@ class AdsManager(
         val now = System.currentTimeMillis()
         val away = if (backgroundAt == 0L) 0L else now - backgroundAt
         backgroundAt = 0L
-        if (!ready || isPro() || showingFullScreen || away < 30 * 60_000L) return
-        if (now - prefs.getLong("lastAppOpen", 0) < 4 * 3_600_000L) return
+        if (away > 10 * 60_000L) refreshRemoteConfig()        // pick up new switches after a break
+        if (!ready || !on(Rc.APP_OPEN) || showingFullScreen || away < 30 * 60_000L) return
+        if (now - prefs.getLong("lastAppOpen", 0) < num(Rc.APP_OPEN_HOURS) * 3_600_000L) return
         val ad = appOpen ?: run { loadAppOpen(); return }
         if (now - appOpenLoadedAt > 4 * 3_600_000L) { appOpen = null; loadAppOpen(); return }   // ads expire after 4 h
         ad.fullScreenContentCallback = object : FullScreenContentCallback() {

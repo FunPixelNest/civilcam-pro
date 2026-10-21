@@ -219,6 +219,35 @@ window.addEventListener('deviceorientationabsolute', e => {
   if (currentHeading == null || Math.abs(h - currentHeading) > 4) { currentHeading = h; updateGpsLine(); }
 }, true);
 
+// How the phone is held. The app screen is locked to portrait, so the camera picture always
+// comes in portrait; when the phone is turned sideways the picture is turned upright here.
+// 0 = upright, 90 = top of the phone to the right, -90 = top to the left, 180 = upside down.
+let phoneTilt = 0;
+window.addEventListener('devicemotion', e => {
+  const g = e.accelerationIncludingGravity;
+  if (!g || g.x == null || g.y == null) return;
+  const ax = Math.abs(g.x), ay = Math.abs(g.y);
+  if (ax < 3 && ay < 3) return;                 // flat on a table: keep the last answer
+  let t = phoneTilt;
+  if (ax > ay * 1.4) t = g.x > 0 ? -90 : 90;    // clearly sideways
+  else if (ay > ax * 1.4) t = g.y > 0 ? 0 : 180;
+  if (t !== phoneTilt) { phoneTilt = t; document.body.dataset.tilt = String(t); }
+}, true);
+
+// Turns a canvas by 90 / -90 / 180 degrees (clockwise is positive)
+function rotateCanvas(src, deg) {
+  if (!deg) return src;
+  const out = document.createElement('canvas');
+  const side = Math.abs(deg) === 90;
+  out.width = side ? src.height : src.width;
+  out.height = side ? src.width : src.height;
+  const g = out.getContext('2d');
+  g.translate(out.width / 2, out.height / 2);
+  g.rotate(deg * Math.PI / 180);
+  g.drawImage(src, -src.width / 2, -src.height / 2);
+  return out;
+}
+
 function startClock() {
   if (clockInterval) clearInterval(clockInterval);
   const tick = () => {
@@ -262,11 +291,16 @@ async function capturePhoto() {
   flash.style.opacity = '1';
   setTimeout(() => { flash.style.opacity = '0'; }, 120);
 
-  const canvas = document.getElementById('camera-canvas');
-  canvas.width = video.videoWidth || 1280;
-  canvas.height = video.videoHeight || 720;
+  const raw = document.getElementById('camera-canvas');
+  raw.width = video.videoWidth || 1280;
+  raw.height = video.videoHeight || 720;
+  raw.getContext('2d').drawImage(video, 0, 0, raw.width, raw.height);
+  // Phone held sideways (or upside down): turn the picture so it is upright, then stamp it
+  // along its real bottom edge. Without this, landscape photos showed up turned in reports.
+  // Top of the phone to the left: the sky is at the picture's right edge, so it is turned
+  // 90 degrees anticlockwise (-90); top to the right: clockwise (+90).
+  const canvas = rotateCanvas(raw, phoneTilt);
   const ctx = canvas.getContext('2d');
-  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
   const sharpness = measureSharpness(canvas);   // before the stamp is drawn
 
   const now = new Date();
@@ -289,6 +323,7 @@ async function capturePhoto() {
     heading: currentHeading != null ? Math.round(currentHeading) : null,
     engineer: { name: profile.name, designation: profile.designation, email: profile.email },
     hasMetadata: metadataEnabled,
+    orientation: canvas.width > canvas.height ? 'landscape' : 'portrait',
     sharpness,
     updatedAt: now.getTime(),
     synced: false
