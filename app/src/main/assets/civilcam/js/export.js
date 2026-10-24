@@ -40,6 +40,8 @@ function defaultReportTitle(list) {
 
 function renderExportScreen() {
   if (!currentProject) return;
+  // A format remembered from Pro days (or a lapsed trial) falls back to PDF
+  if (formatNeedsPro(exportState.format) && !isPro()) exportState.format = 'pdf';
   const list = exportPhotos();
 
   // Which photos
@@ -80,18 +82,30 @@ function renderExportScreen() {
       <button class="toggle ${exportState.caption[k] ? 'on' : ''}" onclick="exportState.caption['${k}']=!exportState.caption['${k}'];saveJSON('exportCaption',exportState.caption);renderExportScreen()">
         <span>${exportState.caption[k] ? ic('check', 16) : ''}</span>${label}</button>`).join('');
 
-  // Formats
-  document.getElementById('format-grid').innerHTML = Object.entries(FORMATS).map(([k, F]) => `
-    <button class="format-btn ${exportState.format === k ? 'active' : ''}" onclick="exportState.format='${k}';saveJSON('exportFormat','${k}');renderExportScreen()">
+  // Formats: free users get PDF; the others show a lock and open Go Pro
+  const pro = isPro();
+  document.getElementById('format-grid').innerHTML = Object.entries(FORMATS).map(([k, F]) => {
+    const locked = !pro && formatNeedsPro(k);
+    return `
+    <button class="format-btn ${exportState.format === k ? 'active' : ''} ${locked ? 'locked' : ''}" onclick="pickFormat('${k}')"${locked ? ` aria-label="${F.name}, needs CivilCam Pro"` : ''}>
+      ${locked ? `<span class="pro-lock">${ic('lock', 11)}PRO</span>` : ''}
       <div class="format-badge f-${k}">${F.ext.toUpperCase()}</div>
       <div class="format-name">${F.name}</div>
       <div class="format-ext">${F.note}</div>
-    </button>`).join('');
+    </button>`;
+  }).join('');
 
   const btn = document.getElementById('export-generate-btn');
   btn.disabled = list.length === 0;
   btn.innerHTML = ic('file') + (exportState.format === 'html' ? 'Create client view' : exportState.format === 'kml' ? 'Create Google Earth file' : `Create ${FORMATS[exportState.format].name} report`);
   if (typeof renderBrandSection === 'function') renderBrandSection();
+}
+
+function pickFormat(k) {
+  if (formatNeedsPro(k) && !isPro()) { openPaywall('format-' + k); return; }
+  exportState.format = k;
+  saveJSON('exportFormat', k);
+  renderExportScreen();
 }
 
 function layoutPreviewHTML(k) {
@@ -107,6 +121,7 @@ function layoutPreviewHTML(k) {
 // CREATE
 // ============================================================
 async function generateExport(format = exportState.format) {
+  if (formatNeedsPro(format) && !isPro()) { openPaywall('format-' + format); return; }
   let list = exportPhotos();
   if (!list.length) { showToast('No photos to put in the report', 'danger'); return; }
   // Colleagues' photos are previews on this phone: fetch the full ones for the report
@@ -118,7 +133,8 @@ async function generateExport(format = exportState.format) {
     title: document.getElementById('report-heading').value.trim() || defaultReportTitle(list),
     preparedBy: document.getElementById('report-prepared-by').value.trim(),
     layout,
-    brand: reportBrandLine()
+    brand: format === 'pdf' ? reportBrandLine() : '',
+    watermark: format === 'pdf' ? await reportWatermark() : null
   };
   const opts = Object.assign({}, exportState.caption);
   showLoading(`Creating ${F.name} report…`, `Preparing ${list.length} photos`);
@@ -143,7 +159,6 @@ async function generateExport(format = exportState.format) {
     setLoadingSub('Saving');
     const uri = await saveFile(blob, name, F.mime);
     exportState.last = { blob, name, mime: F.mime, uri, format, count: list.length };
-    exportState.noBrandOnce = false;
     hideLoading();
     await adBreak('report');           // free version: an ad between finishing the report and showing it
     showResultSheet();
@@ -162,8 +177,11 @@ function showResultSheet() {
   document.getElementById('result-icon').className = 'result-icon f-' + r.format;
   document.getElementById('result-title').textContent = `${F.name} report ready`;
   document.getElementById('result-sub').textContent = `${r.count} photos · ${hasAndroidBridge() ? 'saved in Download/CivilCam' : 'downloaded'} · ${r.name}`;
-  document.getElementById('also-row').innerHTML = Object.entries(FORMATS).filter(([k]) => k !== r.format).map(([k, f]) =>
-    `<button class="also-btn" onclick="closeSheet('result-sheet');generateExport('${k}')"><span class="format-badge small f-${k}">${f.ext.toUpperCase()}</span>${f.name}</button>`).join('');
+  const pro = isPro();
+  document.getElementById('also-row').innerHTML = Object.entries(FORMATS).filter(([k]) => k !== r.format).map(([k, f]) => {
+    const locked = !pro && formatNeedsPro(k);
+    return `<button class="also-btn${locked ? ' locked' : ''}" onclick="closeSheet('result-sheet');generateExport('${k}')"><span class="format-badge small f-${k}">${f.ext.toUpperCase()}</span>${f.name}${locked ? `<span class="pro-lock inline">${ic('lock', 11)}PRO</span>` : ''}</button>`;
+  }).join('');
   openSheet('result-sheet');
 }
 

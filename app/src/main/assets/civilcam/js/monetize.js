@@ -1,10 +1,11 @@
 // ============================================================
 // FREE VERSION WITH ADS · CIVILCAM PRO SUBSCRIPTION
-// Free: everything works; a banner sits under Gallery / Strip / Hindrance / Reports (never on the
-//       camera), a short ad may show after a report is created (at most every 3 minutes), and
-//       reports carry one small "free version" line. Watching a rewarded ad removes that line
-//       from one report.
-// Pro:  no ads, no line on reports, priority support. Bought through Google Play.
+// Free: camera, gallery, chainage, hindrance and PDF reports. A banner sits under Gallery / Strip /
+//       Hindrance / Reports (never on the camera), a short ad may show after a report is created,
+//       and free PDF reports carry the CivilCam Pro logo (large and faded on every page, plus a
+//       small logo in the footer).
+// Pro:  no ads, PDF without the logo, and Word, Excel, PowerPoint, Client view and Google Earth
+//       reports. Bought through Google Play (product civilcam_pro: monthly / yearly, 7-day trial).
 // The ads and the purchase run natively (AdsManager.kt, BillingHelper.kt).
 // ============================================================
 const Pro = { plans: [], webPreview: false };
@@ -34,10 +35,38 @@ function applyPro() {
   if (currentTab === 'export' && currentProject) renderExportScreen();
 }
 
-// ---------- the line on free reports ----------
+// ---------- what free users can make ----------
+const FREE_FORMATS = ['pdf'];            // everything else in FORMATS needs Pro
+function formatNeedsPro(f) { return !FREE_FORMATS.includes(f); }
+
+// Free PDFs carry the CivilCam Pro logo; Pro reports carry nothing
 function reportBrandLine() {
-  if (isPro() || exportState.noBrandOnce) return '';
-  return 'Made with CivilCam Pro (free version)';
+  return isPro() ? '' : 'Made with CivilCam Pro · Free version';
+}
+
+// The logo for free PDFs: a large faded copy for the middle of the page and a small one for the
+// footer. Built once from img/logo.png and kept for the session.
+let watermarkCache = null;
+function reportWatermark() {
+  if (isPro()) return Promise.resolve(null);
+  if (watermarkCache) return watermarkCache;
+  watermarkCache = new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => {
+      const big = document.createElement('canvas');
+      big.width = big.height = 600;
+      const b = big.getContext('2d');
+      b.globalAlpha = 0.16;
+      b.drawImage(img, 0, 0, 600, 600);
+      const small = document.createElement('canvas');
+      small.width = small.height = 96;
+      small.getContext('2d').drawImage(img, 0, 0, 96, 96);
+      resolve({ faded: big.toDataURL('image/png'), small: small.toDataURL('image/png') });
+    };
+    img.onerror = () => { watermarkCache = null; resolve(null); };
+    img.src = 'img/logo.png';
+  });
+  return watermarkCache;
 }
 
 function renderBrandSection() {
@@ -45,22 +74,10 @@ function renderBrandSection() {
   if (!box) return;
   if (isPro()) { box.innerHTML = ''; box.style.display = 'none'; return; }
   box.style.display = '';
-  box.innerHTML = exportState.noBrandOnce
-    ? `<div class="brand-note ok">${ic('check', 16)}<span>This report will be made without the "free version" line.</span></div>`
-    : `<div class="brand-note"><span>Free version: reports end with a small line <i>"Made with CivilCam Pro (free version)"</i>.</span>
-        <div class="btn-row"><button class="btn small" onclick="removeBrandWithAd()">${ic('play', 16)}Remove for this report</button>
-        <button class="btn small primary" onclick="openPaywall('report')">${ic('crown', 16)}Go Pro</button></div></div>`;
-}
-
-async function removeBrandWithAd() {
-  const r = await watchRewarded('report-brand');
-  if (r === 'earned' || r === 'notready') {
-    exportState.noBrandOnce = true;
-    if (r === 'notready') showToast('No ad available right now, so this one is on us', 'success');
-    renderBrandSection();
-  } else {
-    showToast('The line stays unless the ad is watched to the end');
-  }
+  box.innerHTML = `<div class="brand-note">
+      <span><b>Free version:</b> PDF reports carry the CivilCam Pro logo on every page. Word, Excel, PowerPoint, Client view and Google Earth need Pro.</span>
+      <div class="btn-row"><button class="btn small primary" onclick="openPaywall('report')">${ic('crown', 16)}Go Pro: reports without the logo</button></div>
+    </div>`;
 }
 
 // ---------- ads ----------
@@ -130,20 +147,21 @@ function renderPaywall() {
   if (bridgeHas('proPlans') && !Pro.plans.length) { try { Pro.plans = JSON.parse(window.AndroidBridge.proPlans()) || []; } catch (e) { /* none yet */ } }
   const plans = Pro.plans.slice().sort((a, b) => (a.plan === 'yearly' ? -1 : 1));
   document.getElementById('pro-body').innerHTML = `
-    <div class="pro-hero">${ic('crown', 34)}<div><b>CivilCam Pro</b><span>${pro ? 'Active on this Google account. Thank you!' : 'Support the app and work without interruptions.'}</span></div></div>
+    <div class="pro-hero">${ic('crown', 34)}<div><b>CivilCam Pro</b><span>${pro ? 'Active on this Google account. Thank you!' : Pro.from && Pro.from.startsWith('format-') ? `${esc((FORMATS[Pro.from.slice(7)] || {}).name || 'This')} reports are part of Pro.` : 'Client-ready reports in every format.'}</span></div></div>
     <ul class="pro-list">
+      <li>${ic('check', 16)}PDF reports without the CivilCam logo, ready for your client</li>
+      <li>${ic('check', 16)}Word, Excel and PowerPoint reports</li>
+      <li>${ic('check', 16)}Client view and Google Earth files</li>
       <li>${ic('check', 16)}No ads anywhere in the app</li>
-      <li>${ic('check', 16)}Reports without the "free version" line</li>
       <li>${ic('check', 16)}Priority help from the CivilCam team</li>
-      <li>${ic('check', 16)}New Pro features as they arrive (company logo on reports, more templates)</li>
     </ul>
     ${pro ? `<button class="btn block" onclick="managePro()">Manage subscription in Google Play</button>` :
       !hasAndroidBridge() ? `<div class="note">Subscriptions are bought in the Android app through Google Play.</div>` :
       plans.length ? plans.map(p => { const l = planLabel(p); return `<button class="btn block lg ${p.plan === 'yearly' ? 'primary' : ''} pro-plan" onclick="buyPro('${esc(p.plan)}')">
-          <span><b>${esc(l.name)}</b>${l.trial ? '<em>free trial first</em>' : ''}</span><span>${esc(l.price)}</span></button>`; }).join('') :
+          <span><b>${esc(l.name)}</b>${l.trial ? '<em>7 days free, then</em>' : ''}</span><span>${esc(l.price)}</span></button>`; }).join('') :
       `<div class="note">Prices load from Google Play. If nothing shows, check the internet connection and open this again.</div>`}
     ${!pro && hasAndroidBridge() ? `<button class="link-btn" onclick="restorePro()">Already bought? Restore purchase</button>` : ''}
-    <div class="note">Payment and renewals are handled by Google Play. Cancel any time in Play Store → Payments &amp; subscriptions.</div>`;
+    <div class="note">${plans.some(p => p.trial) && !pro ? 'Nothing is charged during the 7-day trial. ' : ''}Payment and renewals are handled by Google Play. Cancel any time in Play Store → Payments &amp; subscriptions.</div>`;
 }
 
 function buyPro(plan) { if (bridgeHas('buyPro')) window.AndroidBridge.buyPro(plan); }

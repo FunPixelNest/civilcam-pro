@@ -132,7 +132,18 @@ async function buildPDF(pages, imgs, meta, opts) {
     doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5); doc.setTextColor(...pdfRGB(RC.muted));
     if (meta.preparedBy) doc.text('Prepared by: ' + meta.preparedBy, M, PH - 7.5);
     doc.text(`Page ${i} of ${total}`, PW - M, PH - 7.5, { align: 'right' });
-    if (meta.brand) { doc.setFontSize(7); doc.text(meta.brand, PW / 2, PH - 4, { align: 'center' }); }
+    if (meta.watermark) {
+      // Free version: the CivilCam Pro logo, large and faded across the page, over the photos
+      const S = 130;
+      doc.addImage(meta.watermark.faded, 'PNG', (PW - S) / 2, (PH - S) / 2, S, S, 'cc-watermark', 'FAST');
+      // and a small full-colour logo with the line in the footer
+      const label = meta.brand || 'Made with CivilCam Pro';
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(7.5); doc.setTextColor(...pdfRGB(RC.muted));
+      const tw = doc.getTextWidth(label), logo = 5;
+      const lx = PW / 2 - (logo + 1.5 + tw) / 2;
+      doc.addImage(meta.watermark.small, 'PNG', lx, PH - 10.6, logo, logo, 'cc-logo-small', 'FAST');
+      doc.text(label, lx + logo + 1.5, PH - 7.2);
+    } else if (meta.brand) { doc.setFontSize(7); doc.text(meta.brand, PW / 2, PH - 4, { align: 'center' }); }
   }
 
   doc.setProperties({ title: `${meta.fullName} — ${meta.title}`, author: meta.preparedBy || '', creator: 'CivilCam Pro' });
