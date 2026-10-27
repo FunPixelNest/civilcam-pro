@@ -99,6 +99,8 @@ class WebAppBridge(
 
     // ---------- CivilCam Pro ----------
     @JavascriptInterface fun isPro(): Boolean = billing.isPro
+    /** "Pro free for everyone" period set in Firebase Remote Config: {active, until, adsOff, message} */
+    @JavascriptInterface fun promo(): String = ads.promoJson()
     @JavascriptInterface fun proPlans(): String = billing.plansJson()
     @JavascriptInterface fun buyPro(plan: String) = billing.buy(plan)
     @JavascriptInterface fun restorePro() = billing.refreshPurchases()

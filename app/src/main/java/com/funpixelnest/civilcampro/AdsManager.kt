@@ -27,6 +27,9 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import org.json.JSONObject
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 import java.util.concurrent.atomic.AtomicBoolean
 
 /**
@@ -91,9 +94,17 @@ class AdsManager(
         const val GAP_MIN = "interstitial_min_gap_minutes"
         const val MAX_DAY = "interstitial_max_per_day"
         const val APP_OPEN_HOURS = "app_open_min_hours"
+        // Free Pro for everyone, for a limited time:
+        //   free_pro_until    last free day as YYYY-MM-DD (e.g. 2026-11-15); empty = off
+        //   free_pro_ads_off  true = no ads during the free period
+        //   free_pro_message  optional line shown in the app (empty = a standard message)
+        const val PROMO_UNTIL = "free_pro_until"
+        const val PROMO_ADS_OFF = "free_pro_ads_off"
+        const val PROMO_MESSAGE = "free_pro_message"
         val DEFAULTS: Map<String, Any> = mapOf(
             ADS to true, BANNER to true, INTERSTITIAL to true, REWARDED to true, APP_OPEN to true,
-            GAP_MIN to 3L, MAX_DAY to 6L, APP_OPEN_HOURS to 4L)
+            GAP_MIN to 3L, MAX_DAY to 6L, APP_OPEN_HOURS to 4L,
+            PROMO_UNTIL to "", PROMO_ADS_OFF to true, PROMO_MESSAGE to "")
     }
     private val rc: FirebaseRemoteConfig? = try {
         if (FirebaseApp.getApps(activity).isEmpty()) FirebaseApp.initializeApp(activity)
@@ -105,11 +116,35 @@ class AdsManager(
 
     private fun flag(key: String): Boolean = rc?.getBoolean(key) ?: (Rc.DEFAULTS[key] as Boolean)
     private fun num(key: String): Long = rc?.getLong(key)?.takeIf { it > 0 } ?: (Rc.DEFAULTS[key] as Long)
-    private fun on(kind: String): Boolean = !isPro() && flag(Rc.ADS) && flag(kind)
+    private fun text(key: String): String = rc?.getString(key)?.trim() ?: (Rc.DEFAULTS[key] as String)
+
+    /** Last free day of a "Pro free for everyone" period, or null when none is set. */
+    private fun promoUntil(): Calendar? {
+        val raw = text(Rc.PROMO_UNTIL)
+        if (raw.isEmpty()) return null
+        return try {
+            val f = SimpleDateFormat("yyyy-MM-dd", Locale.US).apply { isLenient = false }
+            Calendar.getInstance().apply {
+                time = f.parse(raw) ?: return null
+                set(Calendar.HOUR_OF_DAY, 23); set(Calendar.MINUTE, 59); set(Calendar.SECOND, 59)
+            }
+        } catch (e: Exception) { Log.w("CivilCam", "free_pro_until should look like 2026-11-15, got '$raw'"); null }
+    }
+
+    /** True while the free period runs (to the end of the last free day, phone's own clock). */
+    fun promoActive(): Boolean = promoUntil()?.let { Calendar.getInstance().before(it) } ?: false
+
+    /** For the page: {active, until, adsOff, message}. */
+    fun promoJson(): String = JSONObject()
+        .put("active", promoActive()).put("until", text(Rc.PROMO_UNTIL))
+        .put("adsOff", flag(Rc.PROMO_ADS_OFF)).put("message", text(Rc.PROMO_MESSAGE)).toString()
+
+    private fun adsOffForPromo(): Boolean = promoActive() && flag(Rc.PROMO_ADS_OFF)
+    private fun on(kind: String): Boolean = !isPro() && !adsOffForPromo() && flag(Rc.ADS) && flag(kind)
 
     /** For the page: which ad kinds are switched on right now. */
     fun configJson(): String = JSONObject()
-        .put("ads", !isPro() && flag(Rc.ADS)).put("banner", on(Rc.BANNER)).put("interstitial", on(Rc.INTERSTITIAL))
+        .put("ads", !isPro() && !adsOffForPromo() && flag(Rc.ADS)).put("banner", on(Rc.BANNER)).put("interstitial", on(Rc.INTERSTITIAL))
         .put("rewarded", on(Rc.REWARDED)).put("appOpen", on(Rc.APP_OPEN)).toString()
 
     /** Fetches the latest switches; turns off anything that was switched off. */
@@ -118,6 +153,7 @@ class AdsManager(
             activity.runOnUiThread {
                 applyRemoteSwitches()
                 js("window.onNativeAdsConfig && window.onNativeAdsConfig(${JSONObject.quote(configJson())})")
+                js("window.onNativePromo && window.onNativePromo(${JSONObject.quote(promoJson())})")
             }
         }
     }

@@ -12,11 +12,50 @@ const Pro = { plans: [], webPreview: false };
 
 function bridgeHas(fn) { return hasAndroidBridge() && typeof window.AndroidBridge[fn] === 'function'; }
 
-function isPro() {
+// A paid subscription on this Google account (Play's own check on the phone)
+function isPaidPro() {
   if (bridgeHas('isPro')) { try { return !!window.AndroidBridge.isPro(); } catch (e) { return false; } }
   return !!loadJSON('proPreview', false);           // browser preview only
 }
 
+// ---------- "Pro free for everyone" period ----------
+// Switched on in Firebase console › Remote Config: free_pro_until = last free day (YYYY-MM-DD),
+// free_pro_ads_off = no ads meanwhile, free_pro_message = optional line. Ends by itself on that date.
+function promoInfo() {
+  let p = null;
+  if (bridgeHas('promo')) { try { p = JSON.parse(window.AndroidBridge.promo()); } catch (e) { p = null; } }
+  else p = loadJSON('promoPreview', null);          // browser preview only
+  if (!p || !p.until) return { active: false, until: '', adsOff: true, message: '' };
+  if (!bridgeHas('promo')) p.active = localDateKey(new Date()) <= p.until;
+  return { active: !!p.active, until: p.until, adsOff: p.adsOff !== false, message: p.message || '' };
+}
+function promoActive() { return promoInfo().active; }
+function promoUntilText() {
+  const u = promoInfo().until;
+  return u ? new Date(u + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+}
+
+// Everything Pro unlocks: a paid subscription, or the free period
+function isPro() { return isPaidPro() || promoActive(); }
+// Ads stay off for subscribers, and during the free period unless free_pro_ads_off is false
+function adsHidden() { return isPaidPro() || (promoActive() && promoInfo().adsOff); }
+
+// Tells the engineer once when a free period starts, and once when it ends
+function announcePromo() {
+  if (isPaidPro()) return;
+  const info = promoInfo();
+  const seen = loadJSON('promoSeen', null);
+  if (info.active && (!seen || seen.until !== info.until || !seen.active)) {
+    saveJSON('promoSeen', { until: info.until, active: true });
+    showToast(info.message || `All Pro features are free until ${promoUntilText()}`, 'success',
+      { label: 'SEE WHAT', onClick: () => openPaywall('promo') });
+  } else if (!info.active && seen && seen.active) {
+    saveJSON('promoSeen', { until: seen.until, active: false });
+    showToast('The free Pro period has ended. Thank you for trying it!', '', { label: 'GO PRO', onClick: () => openPaywall('promo-ended') });
+  }
+}
+
+window.onNativePromo = function () { applyPro(); announcePromo(); };
 window.onNativePro = function () { applyPro(); };
 window.onNativePlans = function (json) {
   try { Pro.plans = JSON.parse(json) || []; } catch (e) { Pro.plans = []; }
@@ -25,12 +64,17 @@ window.onNativePlans = function (json) {
 window.onNativeProError = function (msg) { showToast(msg, 'danger'); };
 
 function applyPro() {
-  const pro = isPro();
-  document.querySelectorAll('.pro-chip').forEach(el => { el.style.display = pro ? 'none' : ''; });
+  const pro = isPro(), paid = isPaidPro(), promo = !paid && promoActive();
+  // During the free period the PRO chip stays, saying it is free, and opens the details
+  document.querySelectorAll('.pro-chip').forEach(el => {
+    el.style.display = paid ? 'none' : '';
+    el.innerHTML = promo ? `${ic('crown', 14)}PRO FREE` : `${ic('crown', 14)}PRO`;
+  });
   document.querySelectorAll('.pro-badge').forEach(el => { el.style.display = pro ? '' : 'none'; });
   const row = document.getElementById('ac-pro');
-  if (row) row.innerHTML = pro ? `${ic('crown', 18)}CivilCam Pro · active` : `${ic('crown', 18)}Go Pro: no ads`;
-  if (pro && document.getElementById('pro-sheet').classList.contains('open')) renderPaywall();
+  if (row) row.innerHTML = paid ? `${ic('crown', 18)}CivilCam Pro · active`
+    : promo ? `${ic('crown', 18)}CivilCam Pro · free until ${esc(promoUntilText())}` : `${ic('crown', 18)}Go Pro: no ads`;
+  if (document.getElementById('pro-sheet').classList.contains('open')) renderPaywall();
   Ads.refresh(true);
   if (currentTab === 'export' && currentProject) renderExportScreen();
 }
@@ -92,7 +136,7 @@ const Ads = {
       document.getElementById('compare-modal').classList.contains('visible') ||
       document.getElementById('loading-overlay').classList.contains('visible');
     const projectsOn = document.getElementById('projects-screen').style.display !== 'none' && !appOn;
-    const want = !isPro() && !covered && ((appOn && Ads.BANNER_TABS.includes(currentTab)) || projectsOn);
+    const want = !adsHidden() && !covered && ((appOn && Ads.BANNER_TABS.includes(currentTab)) || projectsOn);
     if (force || want !== Ads.last) { Ads.last = want; window.AndroidBridge.setBannerVisible(want); }
   }
 };
@@ -100,7 +144,7 @@ setInterval(() => Ads.refresh(false), 700);
 
 // An interstitial at a natural break. Resolves when the ad is closed (or straight away).
 function adBreak(placement) {
-  if (isPro() || !bridgeHas('showInterstitial')) return Promise.resolve(false);
+  if (adsHidden() || !bridgeHas('showInterstitial')) return Promise.resolve(false);
   return new Promise(resolve => {
     const id = placement + Date.now();
     Ads.pending[id] = resolve;
@@ -143,18 +187,20 @@ function planLabel(p) {
 }
 
 function renderPaywall() {
-  const pro = isPro();
+  const pro = isPaidPro();
+  const promo = !pro && promoActive(), pi = promoInfo();
   if (bridgeHas('proPlans') && !Pro.plans.length) { try { Pro.plans = JSON.parse(window.AndroidBridge.proPlans()) || []; } catch (e) { /* none yet */ } }
   const plans = Pro.plans.slice().sort((a, b) => (a.plan === 'yearly' ? -1 : 1));
   document.getElementById('pro-body').innerHTML = `
-    <div class="pro-hero">${ic('crown', 34)}<div><b>CivilCam Pro</b><span>${pro ? 'Active on this Google account. Thank you!' : Pro.from && Pro.from.startsWith('format-') ? `${esc((FORMATS[Pro.from.slice(7)] || {}).name || 'This')} reports are part of Pro.` : 'Client-ready reports in every format.'}</span></div></div>
+    <div class="pro-hero">${ic('crown', 34)}<div><b>CivilCam Pro</b><span>${pro ? 'Active on this Google account. Thank you!' : promo ? esc(pi.message || `Free for everyone until ${promoUntilText()}. Enjoy every Pro feature.`) : Pro.from === 'promo-ended' ? 'The free period has ended. Keep every Pro feature with a subscription.' : Pro.from && Pro.from.startsWith('format-') ? `${esc((FORMATS[Pro.from.slice(7)] || {}).name || 'This')} reports are part of Pro.` : 'Client-ready reports in every format.'}</span></div></div>
     <ul class="pro-list">
       <li>${ic('check', 16)}PDF reports without the CivilCam logo, ready for your client</li>
       <li>${ic('check', 16)}Word, Excel and PowerPoint reports</li>
       <li>${ic('check', 16)}Client view and Google Earth files</li>
-      <li>${ic('check', 16)}No ads anywhere in the app</li>
+      ${promo && !pi.adsOff ? '' : `<li>${ic('check', 16)}No ads anywhere in the app</li>`}
       <li>${ic('check', 16)}Priority help from the CivilCam team</li>
     </ul>
+    ${promo ? `<div class="note">After ${esc(promoUntilText())}, Word, Excel and PowerPoint need Pro again and free PDFs get the CivilCam logo. Subscribe now to keep everything:</div>` : ''}
     ${pro ? `<button class="btn block" onclick="managePro()">Manage subscription in Google Play</button>` :
       !hasAndroidBridge() ? `<div class="note">Subscriptions are bought in the Android app through Google Play.</div>` :
       plans.length ? plans.map(p => { const l = planLabel(p); return `<button class="btn block lg ${p.plan === 'yearly' ? 'primary' : ''} pro-plan" onclick="buyPro('${esc(p.plan)}')">
@@ -168,4 +214,6 @@ function buyPro(plan) { if (bridgeHas('buyPro')) window.AndroidBridge.buyPro(pla
 function restorePro() { if (bridgeHas('restorePro')) { window.AndroidBridge.restorePro(); showToast('Checking Google Play…'); } }
 function managePro() { if (bridgeHas('managePro')) window.AndroidBridge.managePro(); }
 
-document.addEventListener('DOMContentLoaded', () => setTimeout(applyPro, 300));
+document.addEventListener('DOMContentLoaded', () => setTimeout(() => { applyPro(); announcePromo(); }, 300));
+// The free period can end while the app stays open: check again when it comes back to the front
+document.addEventListener('visibilitychange', () => { if (!document.hidden) { applyPro(); announcePromo(); } });

@@ -75,3 +75,32 @@ Rebuild the app. On first start you'll now see the sign-in buttons.
 - **Personal e-mail** (Gmail, Outlook.com, iCloud…): your data is private to you, and syncs between your own phones.
 - Photos are uploaded in the background when there is internet. Until then they stay safe on the phone.
 - Full photos live in the engineer's own Google Drive. Colleagues see the details and a small preview, and **Drive** in the photo viewer opens the full photo if the owner has shared the folder with them. To share a whole project, the engineer shares **My Drive → CivilCam → <project>** with the team, or with the company domain on Google Workspace.
+
+## Free Pro for everyone, for a limited time
+
+You can make every Pro feature free for all users for a few days without releasing an app update.
+This needs version 1.4 (version code 5) or later on the phones.
+
+**Turn it on**
+1. Open the Firebase console, choose the CivilCam Pro project, then **Remote Config**.
+2. Add these parameters (or edit them if they are already there):
+
+   | Parameter | Type | Value |
+   |---|---|---|
+   | `free_pro_until` | String | The **last free day**, written `YYYY-MM-DD`, e.g. `2026-11-15` |
+   | `free_pro_ads_off` | Boolean | `true` = no ads during the free period (default), `false` = keep ads |
+   | `free_pro_message` | String | Optional, e.g. `Diwali offer: all Pro features free till 15 Nov!` Leave empty for the standard message. |
+
+3. Click **Publish changes**.
+
+**What happens**
+- Phones pick the change up the next time the app is opened with internet, within about an hour.
+- While it runs:
+  - everyone can make Word, Excel, PowerPoint, Client view and Google Earth reports;
+  - PDFs have no CivilCam logo;
+  - ads stay off, unless `free_pro_ads_off` is `false`.
+- Users see a message once when it starts. The PRO button says "PRO FREE", and the Go Pro sheet shows the end date with the subscribe buttons.
+- It ends by itself at the end of the `free_pro_until` day, on each phone's own clock, even if the phone is offline. Users see a short "free period has ended" message.
+- Paying subscribers are not affected.
+
+**Turn it off early:** set `free_pro_until` to an empty value (or a past date) and publish.
