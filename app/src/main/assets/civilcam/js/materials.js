@@ -84,7 +84,9 @@ const RebarAI = (() => {
         ort.env.wasm.numThreads = 1;
         ort.env.wasm.simd = true;
         ort.env.wasm.proxy = false;
-        ort.env.wasm.wasmPaths = 'lib/ort/';
+        // Full file:// address: the runtime then reads its engine with XHR. The Android WebView
+        // refuses fetch() for app files ("TypeError: Failed to fetch"), and a relative path makes it use fetch.
+        ort.env.wasm.wasmPaths = new URL('lib/ort/', location.href).href;
         session = await ort.InferenceSession.create(await bytes('ai/rebar-count.onnx'), { executionProviders: ['wasm'] });
         return session;
       })().catch(e => { loading = null; throw e; });
