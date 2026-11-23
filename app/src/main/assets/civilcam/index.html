@@ -502,18 +502,18 @@
     <div class="mat-head">
       <div class="sheet-title" id="mat-title">Material receipt</div>
       <div class="seg" id="mat-zoom">
-        <button data-z="1" onclick="setMatZoom(1)">Fit</button><button data-z="2" onclick="setMatZoom(2)">2×</button><button data-z="3" onclick="setMatZoom(3)">3×</button>
+        <button data-z="1" onclick="setMatZoom(1)">Fit</button><button data-z="2" onclick="setMatZoom(2)">2×</button><button data-z="4" onclick="setMatZoom(4)">4×</button>
       </div>
     </div>
     <div class="mat-view" id="mat-view">
-      <div class="mat-zoom-inner" id="mat-zoom-inner" onclick="matTap(event)">
-        <img id="mat-img" alt="Photo of the bundle" onload="drawMatDots()">
+      <div class="mat-zoom-inner" id="mat-zoom-inner">
+        <img id="mat-img" alt="Photo of the bundle" onload="matImageReady()">
         <canvas id="mat-dots"></canvas>
       </div>
     </div>
     <div class="mat-status" id="mat-ai-status"></div>
     <div class="mat-total" id="mat-total"></div>
-    <div class="mat-legend"><span class="dot g"></span>found by AI <span class="dot b"></span>added by you <button class="link-btn" onclick="matUndoAll()">Clear all dots</button></div>
+    <div class="mat-legend"><span class="dot g"></span>found by AI <span class="dot b"></span>added by you <button class="link-btn" onclick="matUndoAll()">Clear all dots</button><span class="mat-num-hint" id="mat-num-hint"></span></div>
 
     <div class="sheet-label">Material</div>
     <div class="chip-wrap" id="mat-material"></div>

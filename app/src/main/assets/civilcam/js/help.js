@@ -28,7 +28,7 @@ const HELP = [
     'The register goes into reports, so the client sees what is still holding up work.'] },
   { ic: 'sparkles', t: 'Material receipts: AI count of bars', s: [
     'When steel arrives, tap <b>AI count</b> at the top of the camera and photograph the <b>cut ends</b> of the bundle: square on, in good light, with the bundle filling the frame.',
-    'The AI puts a green dot on every bar it finds, right on the phone (works offline). <b>Check the dots</b>: tap a missed bar to add it (blue dot), tap a wrong dot to remove it. Use 2× or 3× zoom for big bundles.',
+    'The AI puts a green dot on every bar it finds, right on the phone (works offline). <b>Check the dots</b>: tap a missed bar to add it (blue dot), tap a wrong dot to remove it. Pinch to zoom in on big bundles and drag to move around; a drag or pinch never adds a dot.',
     'Pick the diameter and bar length: the weight is worked out as count × d²/162 × length. Add the supplier, challan, vehicle and the quantity on the challan to see the difference straight away.',
     'Each receipt gets a number like MR-001 and the photo is stamped with the count. The <b>Material receipts</b> register (project menu or Reports) gives totals by diameter and a PDF or Excel register with the counted photos.',
     'AI count is in beta and the count saved is always the one you checked. Free version: 3 AI counts to try; Pro: unlimited.'] },

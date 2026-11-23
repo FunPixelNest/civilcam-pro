@@ -206,7 +206,7 @@ async function runMatAI() {
     MC.ai = { model: 'rebar-count-1', ms, thr: MAT_AI_THR };
     if (!isPro()) saveJSON('matAiUsed', (loadJSON('matAiUsed', 0) || 0) + 1);
     status.innerHTML = dots.length
-      ? `${ic('sparkles', 14)} AI found <b>${dots.length}</b>. Check the dots: tap a missed bar to add it, tap a wrong dot to remove it.`
+      ? `${ic('sparkles', 14)} AI found <b>${dots.length}</b>. Check the dots: pinch to zoom and drag to move, tap a missed bar to add it, tap a wrong dot to remove it.`
       : `${ic('sparkles', 14)} The AI found no bar ends. Take the photo square to the cut ends, or tap each bar to count by hand.`;
     if (!isPro()) {
       const left = MAT_FREE_AI - loadJSON('matAiUsed', 0);
@@ -225,7 +225,7 @@ function renderMatSheet() {
   document.getElementById('mat-title').textContent = MC.mode === 'new' ? 'Material receipt' : `Material receipt ${MC.photo.mat.ref || ''}`;
   document.getElementById('mat-img').src = src;
   document.getElementById('mat-ai-status').innerHTML = MC.mode === 'edit'
-    ? (MC.aiCount != null ? `${ic('sparkles', 14)} AI counted ${MC.aiCount}; checked count ${MC.pts.length}. Tap to add or remove a bar.` : 'Tap to add or remove a bar.')
+    ? (MC.aiCount != null ? `${ic('sparkles', 14)} AI counted ${MC.aiCount}; checked count ${MC.pts.length}. Pinch to zoom; tap to add or remove a bar.` : 'Pinch to zoom; tap to add or remove a bar.')
     : '';
   // fill the inputs first: rendering reads them back into the form
   ['supplier', 'challanNo', 'vehicleNo', 'challanQty'].forEach(k => { document.getElementById('mat-' + k).value = f[k] ?? ''; });
@@ -233,6 +233,8 @@ function renderMatSheet() {
   document.getElementById('mat-challanUnit').value = f.challanUnit || 't';
   renderChips('mat-material', 'matMaterial', f.material, v => { f.material = v; renderMatSheetForm(); }, { values: MAT_MATERIALS, plain: true });
   renderMatSheetForm();
+  matInitZoom();
+  MZ.ptrs.clear();
   setMatZoom(1);
   document.getElementById('mat-retake').style.display = MC.mode === 'new' ? '' : 'none';
   document.getElementById('mat-delete').style.display = MC.mode === 'edit' ? '' : 'none';
@@ -295,28 +297,180 @@ function renderMatTotals() {
     ${check}`;
 }
 
+// ---------- pinch to zoom, drag to move (count view) ----------
+// The photo is moved with a CSS transform; a tap (no drag, no pinch) adds or removes a dot.
+const MZ = { s: 1, tx: 0, ty: 0, ptrs: new Map(), one: null, two: null, moved: false, pinched: false, redraw: 0 };
+const MAT_ZOOM_MAX = 6;
+
+function matApplyZoom() {
+  const view = document.getElementById('mat-view'), inner = document.getElementById('mat-zoom-inner');
+  const vw = view.clientWidth, vh = view.clientHeight, iw = inner.offsetWidth, ih = inner.offsetHeight;
+  MZ.s = Math.min(MAT_ZOOM_MAX, Math.max(1, MZ.s));
+  // smaller than the box: centre it; bigger: no empty space at the edges
+  const cw = iw * MZ.s, ch = ih * MZ.s;
+  MZ.tx = cw <= vw ? (vw - cw) / 2 : Math.min(0, Math.max(vw - cw, MZ.tx));
+  MZ.ty = ch <= vh ? (vh - ch) / 2 : Math.min(0, Math.max(vh - ch, MZ.ty));
+  inner.style.transform = `translate(${MZ.tx}px, ${MZ.ty}px) scale(${MZ.s})`;
+  if (MC) MC.zoom = MZ.s;
+  document.querySelectorAll('#mat-zoom button').forEach(b => b.classList.toggle('on', Math.abs(Number(b.dataset.z) - MZ.s) < 0.05));
+  // sharp dots at the new size (not on every finger move)
+  clearTimeout(MZ.redraw);
+  MZ.redraw = setTimeout(drawMatDots, 120);
+}
+
+// "Fit" shows the WHOLE photo: a tall (portrait) photo is made narrower so nothing is cut off,
+// otherwise bars at the bottom would be counted with their dots out of sight.
+function matLayout() {
+  const view = document.getElementById('mat-view'), inner = document.getElementById('mat-zoom-inner'), img = document.getElementById('mat-img');
+  if (!img.naturalWidth) return;
+  const vw = view.clientWidth, maxH = Math.round(window.innerHeight * 0.52), ar = img.naturalHeight / img.naturalWidth;
+  inner.style.width = Math.floor(Math.min(vw, maxH / ar)) + 'px';
+  view.style.height = Math.round(Math.min(maxH, vw * ar)) + 'px';
+}
+function matImageReady() {
+  matLayout();
+  MZ.s = 1; MZ.tx = 0; MZ.ty = 0;
+  matApplyZoom();
+  drawMatDots();
+}
+
+// zoom to scale s keeping the point (cx, cy) of the view under the same spot
+function matZoomAt(s, cx, cy) {
+  const px = (cx - MZ.tx) / MZ.s, py = (cy - MZ.ty) / MZ.s;
+  MZ.s = Math.min(MAT_ZOOM_MAX, Math.max(1, s));
+  MZ.tx = cx - px * MZ.s; MZ.ty = cy - py * MZ.s;
+  matApplyZoom();
+}
+
 function setMatZoom(z) {
   if (!MC) return;
-  MC.zoom = z;
-  document.getElementById('mat-zoom-inner').style.width = (z * 100) + '%';
-  document.querySelectorAll('#mat-zoom button').forEach(b => b.classList.toggle('on', Number(b.dataset.z) === z));
-  requestAnimationFrame(drawMatDots);
+  const view = document.getElementById('mat-view');
+  if (z === 1) { MZ.s = 1; MZ.tx = 0; MZ.ty = 0; matApplyZoom(); return; }
+  matZoomAt(z, view.clientWidth / 2, view.clientHeight / 2);
 }
+
+function matViewPoint(e) {
+  const r = document.getElementById('mat-view').getBoundingClientRect();
+  return { x: e.clientX - r.left, y: e.clientY - r.top };
+}
+
+function matPointerDown(e) {
+  if (!MC) return;
+  e.currentTarget.setPointerCapture(e.pointerId);
+  MZ.ptrs.set(e.pointerId, matViewPoint(e));
+  if (MZ.ptrs.size === 1) {
+    const p = matViewPoint(e);
+    MZ.one = { x: p.x, y: p.y, tx: MZ.tx, ty: MZ.ty };
+    MZ.moved = false; MZ.pinched = false;
+  } else if (MZ.ptrs.size === 2) {
+    const [a, b] = [...MZ.ptrs.values()];
+    MZ.two = { d: Math.hypot(a.x - b.x, a.y - b.y) || 1, mx: (a.x + b.x) / 2, my: (a.y + b.y) / 2, s: MZ.s, tx: MZ.tx, ty: MZ.ty };
+    MZ.pinched = true;
+  }
+}
+
+function matPointerMove(e) {
+  if (!MZ.ptrs.has(e.pointerId)) return;
+  MZ.ptrs.set(e.pointerId, matViewPoint(e));
+  if (MZ.ptrs.size >= 2 && MZ.two) {
+    const [a, b] = [...MZ.ptrs.values()];
+    const d = Math.hypot(a.x - b.x, a.y - b.y) || 1, mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+    const s = Math.min(MAT_ZOOM_MAX, Math.max(1, MZ.two.s * d / MZ.two.d));
+    // the photo point that was under the fingers stays under them (zoom + move together)
+    const px = (MZ.two.mx - MZ.two.tx) / MZ.two.s, py = (MZ.two.my - MZ.two.ty) / MZ.two.s;
+    MZ.s = s; MZ.tx = mx - px * s; MZ.ty = my - py * s;
+    matApplyZoom();
+  } else if (MZ.ptrs.size === 1 && MZ.one) {
+    const p = MZ.ptrs.get(e.pointerId);
+    const dx = p.x - MZ.one.x, dy = p.y - MZ.one.y;
+    if (!MZ.moved && Math.hypot(dx, dy) > 8) MZ.moved = true;
+    if (MZ.moved && MZ.s > 1) { MZ.tx = MZ.one.tx + dx; MZ.ty = MZ.one.ty + dy; matApplyZoom(); }
+  }
+}
+
+function matPointerUp(e) {
+  if (!MZ.ptrs.has(e.pointerId)) return;
+  const tap = MZ.ptrs.size === 1 && !MZ.moved && !MZ.pinched && e.type === 'pointerup';
+  MZ.ptrs.delete(e.pointerId);
+  if (MZ.ptrs.size === 1) {          // one finger left after a pinch: keep moving from here, no tap
+    const p = [...MZ.ptrs.values()][0];
+    MZ.one = { x: p.x, y: p.y, tx: MZ.tx, ty: MZ.ty };
+    MZ.moved = true; MZ.two = null;
+  }
+  if (MZ.ptrs.size === 0) MZ.two = null;
+  if (tap) matTap(e);
+}
+
+function matWheel(e) {
+  if (!MC) return;
+  e.preventDefault();
+  const p = matViewPoint(e);
+  matZoomAt(MZ.s * (e.deltaY < 0 ? 1.2 : 1 / 1.2), p.x, p.y);
+}
+
+function matInitZoom() {
+  const v = document.getElementById('mat-view');
+  if (v.dataset.zoomReady) return;
+  v.dataset.zoomReady = '1';
+  v.addEventListener('pointerdown', matPointerDown);
+  v.addEventListener('pointermove', matPointerMove);
+  v.addEventListener('pointerup', matPointerUp);
+  v.addEventListener('pointercancel', matPointerUp);
+  v.addEventListener('wheel', matWheel, { passive: false });
+}
+
+// Reading order for the numbers: row by row from the top, left to right in each row,
+// the way bars are counted by hand. pts are [x, y] in pixels; rowTol = how far a bar may sit
+// above/below the row and still belong to it (bundles are staggered).
+function matReadingOrder(pts, rowTol) {
+  const idx = pts.map((p, i) => i).sort((a, b) => pts[a][1] - pts[b][1]);
+  const rows = [];
+  for (const i of idx) {
+    const row = rows[rows.length - 1];
+    if (row && pts[i][1] - row.y0 <= rowTol) row.items.push(i);
+    else rows.push({ y0: pts[i][1], items: [i] });
+  }
+  return rows.flatMap(r => r.items.sort((a, b) => pts[a][0] - pts[b][0]));
+}
+
+// Dot with its number; number only when the dot is big enough on screen to read it
+function matDrawDot(g, x, y, r, n, fill, line, showNum) {
+  g.beginPath(); g.arc(x, y, r, 0, Math.PI * 2);
+  g.fillStyle = fill; g.fill(); g.lineWidth = line; g.strokeStyle = '#fff'; g.stroke();
+  if (!showNum) return;
+  const t = String(n);
+  const fs = r * (t.length >= 3 ? 0.95 : t.length === 2 ? 1.1 : 1.25);
+  g.font = `700 ${fs}px system-ui, -apple-system, Roboto, sans-serif`;
+  g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.lineWidth = Math.max(line, fs * 0.18); g.strokeStyle = 'rgba(0,0,0,0.55)';
+  g.strokeText(t, x, y + fs * 0.04);
+  g.fillStyle = '#fff'; g.fillText(t, x, y + fs * 0.04);
+}
+
+const MAT_NUM_MIN_PX = 9;   // dot radius on screen needed to show its number
 
 function drawMatDots() {
   const img = document.getElementById('mat-img'), cv = document.getElementById('mat-dots');
   if (!MC || !img.naturalWidth) return;
-  const w = img.clientWidth, h = img.clientHeight, dpr = window.devicePixelRatio || 1;
-  cv.width = w * dpr; cv.height = h * dpr;
+  // the canvas is drawn at the zoomed size so dots stay sharp; dots keep a steady size on screen
+  const w = img.clientWidth, h = img.clientHeight, z = MZ.s || 1;
+  const k = Math.min((window.devicePixelRatio || 1) * z, 4096 / Math.max(w, h, 1));
+  cv.width = Math.round(w * k); cv.height = Math.round(h * k);
   cv.style.width = w + 'px'; cv.style.height = h + 'px';
   const g = cv.getContext('2d');
-  g.scale(dpr, dpr);
-  const r = Math.max(4, Math.min(16, MC.dotR * w));
-  MC.pts.forEach(([x, y, u]) => {
-    g.beginPath(); g.arc(x * w, y * h, r, 0, Math.PI * 2);
-    g.fillStyle = u ? 'rgba(59,130,246,0.9)' : 'rgba(34,197,94,0.85)';
-    g.fill(); g.lineWidth = 1.5; g.strokeStyle = '#fff'; g.stroke();
+  g.scale(k, k);
+  // with numbers the dots get a little bigger once zoomed in, so 3-digit numbers fit
+  const rScreen = Math.max(4, Math.min(18, Math.max(MC.dotR * w * z, z > 1.4 ? 11 : 0)));
+  const r = rScreen / z;
+  const showNum = rScreen >= MAT_NUM_MIN_PX;
+  const px = MC.pts.map(([x, y]) => [x * w, y * h]);
+  const order = matReadingOrder(px, Math.max(r, MC.dotR * w) * 1.1);
+  order.forEach((i, n) => {
+    const u = MC.pts[i][2];
+    matDrawDot(g, px[i][0], px[i][1], r, n + 1, u ? 'rgba(59,130,246,0.9)' : 'rgba(34,197,94,0.85)', 1.5 / z, showNum);
   });
+  const hint = document.getElementById('mat-num-hint');
+  if (hint) hint.textContent = MC.pts.length && !showNum ? 'Pinch to zoom in to see the numbers' : '';
   renderMatTotals();
 }
 
@@ -327,7 +481,7 @@ function matTap(ev) {
   const rect = img.getBoundingClientRect();
   const x = (ev.clientX - rect.left) / rect.width, y = (ev.clientY - rect.top) / rect.height;
   if (x < 0 || y < 0 || x > 1 || y > 1) return;
-  const r = Math.max(4, Math.min(16, MC.dotR * rect.width)) * 1.4;
+  const r = Math.max(4, Math.min(16, MC.dotR * rect.width)) * 1.6;   // on-screen size, zoom included
   let best = -1, bd = Infinity;
   MC.pts.forEach(([px, py], i) => {
     const d = Math.hypot((px - x) * rect.width, (py - y) * rect.height);
@@ -493,11 +647,11 @@ function annotatedReceipt(p, maxPx = 1000) {
       c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
       const g = c.getContext('2d');
       g.drawImage(img, 0, 0, c.width, c.height);
-      const r = Math.max(2.5, Math.min(12, (p.mat.dotR || 0.012) * c.width * 0.8));
-      decodePts(p.mat.pts).forEach(([x, y], i) => {
-        g.beginPath(); g.arc(x * c.width, y * c.height, r, 0, Math.PI * 2);
-        g.fillStyle = 'rgba(34,197,94,0.85)'; g.fill();
-        g.lineWidth = 1; g.strokeStyle = '#fff'; g.stroke();
+      const r = Math.max(2.5, Math.min(14, (p.mat.dotR || 0.012) * c.width * 0.9));
+      const px = decodePts(p.mat.pts).map(([x, y]) => [x * c.width, y * c.height]);
+      // numbered like on the phone when there is room to read them
+      matReadingOrder(px, r * 1.1).forEach((i, n) => {
+        matDrawDot(g, px[i][0], px[i][1], r, n + 1, 'rgba(34,197,94,0.85)', 1, r >= 7);
       });
       res({ data: c.toDataURL('image/jpeg', 0.82), w: c.width, h: c.height });
     };
@@ -660,7 +814,7 @@ async function matExcel(rows, imgs, title) {
   return new Blob([buf], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
 }
 
-window.addEventListener('resize', () => { if (MC) drawMatDots(); });
+window.addEventListener('resize', () => { if (MC) { matLayout(); matApplyZoom(); drawMatDots(); } });
 
 // ---------------- help improve AI count (opt-in) ----------------
 // Signed-in users are asked once, after their first receipt, whether they will share
