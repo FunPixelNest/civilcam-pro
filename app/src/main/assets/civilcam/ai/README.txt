@@ -5,6 +5,6 @@ FunPixelNest; no third-party photos were used for training.
 Input:  image, float32 RGB 0-1, 1x3xHxW (H, W multiples of 32).
 Output: peaks 1x1x(H/4)x(W/4) (bar-end score at local maxima, 0 elsewhere),
         logr 1x1x(H/4)x(W/4) (log of bar radius in stride-4 pixels).
-App settings: long side 640, score > 0.25, merge peaks closer than 0.7 x radius.
+App settings: long side 640, score > 0.25, merge peaks closer than 0.9 x radius, drop dots with no neighbour within 4 x radius (tuned 24 Nov after phone tests: double dots and stray background dots).
 Test (real site photos, never used for training, 250 photos, 124 bars on average):
 mean error 7 bars (5.7%), 63% of photos within 5%, 87% within 10%.

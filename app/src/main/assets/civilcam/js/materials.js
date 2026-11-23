@@ -14,7 +14,8 @@ const MAT_GRADES = ['Fe 500', 'Fe 500D', 'Fe 550D', 'Fe 415'];
 const MAT_FREE_AI = 3;               // AI counts a free user can try
 const MAT_AI_SIDE = 640;             // photo is resized to this long side for counting (tested best)
 const MAT_AI_THR = 0.25;             // peak score needed to place a dot (tested best on real photos)
-const MAT_AI_MERGE = 0.7;            // peaks closer than this x bar radius are one bar
+const MAT_AI_MERGE = 0.9;            // peaks closer than this x bar radius are one bar (stops two dots on one end)
+const MAT_AI_LONE = 4;               // a dot with no neighbour within this x radius is not part of the bundle
 
 // kg per metre of a round bar: d² / 162 (d in mm), the usual site formula
 function barKgPerM(dia) { return dia ? (dia * dia) / 162 : 0; }
@@ -129,7 +130,16 @@ const RebarAI = (() => {
     for (const c of cand) {
       if (!kept.some(k => (k[0] - c[0]) ** 2 + (k[1] - c[1]) ** 2 < (MAT_AI_MERGE * Math.max(k[3], c[3])) ** 2)) kept.push(c);
     }
-    const dots = kept.map(([x, y, , r]) => [(x + 0.5) / w4, (y + 0.5) / h4, r * 4 / W]);
+    // bars in a bundle touch each other: drop lone dots on the background or on bar sides
+    let use = kept;
+    if (kept.length >= 8) {
+      const rs = kept.map(k => k[3]).sort((a, b) => a - b), rMed = rs[Math.floor(rs.length / 2)];
+      use = kept.filter(a => {
+        const lim = (MAT_AI_LONE * Math.max(rMed, a[3])) ** 2;
+        return kept.some(b => b !== a && (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2 <= lim);
+      });
+    }
+    const dots = use.map(([x, y, , r]) => [(x + 0.5) / w4, (y + 0.5) / h4, r * 4 / W]);
     return { dots, ms };
   }
   return { load, count };
