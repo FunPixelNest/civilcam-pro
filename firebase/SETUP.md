@@ -104,3 +104,15 @@ This needs version 1.4 (version code 5) or later on the phones.
 - Paying subscribers are not affected.
 
 **Turn it off early:** set `free_pro_until` to an empty value (or a past date) and publish.
+
+
+## AI count training samples (version 1.5)
+Users can choose to share material-receipt photos (bar ends, without the stamp) and their
+checked dots so the AI count can be retrained. They are stored in Firestore under
+`aiTraining/{uid}/samples/{id}`.
+
+1. Publish the new rules: Firebase console > Firestore Database > Rules, paste
+   `firebase/firestore.rules`, then Publish. Until then, sharing quietly fails and
+   samples wait on the phone (up to 8).
+2. Privacy policy and Play Data safety must mention it (see the ml/rebar-count README).
+3. To download them for training: `ml/rebar-count/fetch_samples.py`.

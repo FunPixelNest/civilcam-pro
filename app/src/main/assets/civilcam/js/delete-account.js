@@ -69,6 +69,10 @@ async function deleteMyAccount() {
       }
     }
 
+    // 2b. photos shared to improve the AI count
+    for (const d of await list(`aiTraining/${encodeURIComponent(profile.uid)}/samples`)) { await del(relName(d)); setLoadingSub(`${++n} removed`); }
+    saveJSON('aiShareQueue', []);
+
     // 3. the sign-in account
     setLoadingSub('Deleting the account');
     const res = await new Promise((resolve) => {

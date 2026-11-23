@@ -498,6 +498,8 @@ function renderSyncSheet() {
   document.getElementById('sync-waiting').innerHTML = on && waiting.length
     ? `<div class="section-title">Waiting to upload</div><div class="sw-grid">${waiting.map(p => `<button onclick="closeSheet('sync-sheet');openPhotoModal('${p.id}')"><img src="${p.imageData}" alt=""></button>`).join('')}</div>` : '';
   document.getElementById('sync-wifi').checked = !!loadJSON('syncWifiOnly', false);
+  const aiShareBox = document.getElementById('ai-share');
+  if (aiShareBox) aiShareBox.checked = loadJSON('aiShare', null) === true;
   document.getElementById('sync-wifi').closest('.toggle-row').style.display = on ? '' : 'none';
   document.getElementById('sync-now-btn').style.display = on ? '' : 'none';
   document.getElementById('sync-now-btn').disabled = !navigator.onLine;

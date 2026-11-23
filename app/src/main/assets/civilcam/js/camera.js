@@ -108,6 +108,7 @@ function updateOverlayMeta() {
   if (descBits) parts.push(descBits);
   document.getElementById('dc-sub').textContent = parts.join('  ·  ');
   updateChHint();
+  if (typeof applyMaterialModeUI === 'function') applyMaterialModeUI();
 }
 
 function openDetailsSheet() {
@@ -329,7 +330,15 @@ async function capturePhoto() {
     synced: false
   }, details));
 
-  if (metadataEnabled) drawStamp(ctx, canvas.width, canvas.height, photo);
+  // Material receipt: count the bars first (on the clean photo), stamp and save afterwards
+  if (photo.photoType === 'Material') { openMaterialCount(canvas, photo, sharpness); return; }
+  await storeCapturedPhoto(canvas, photo, sharpness);
+}
+
+// Stamps, saves and files a new photo (also used by material receipts after counting)
+async function storeCapturedPhoto(canvas, photo, sharpness, savedMsg = '') {
+  const ctx = canvas.getContext('2d');
+  if (photo.hasMetadata) drawStamp(ctx, canvas.width, canvas.height, photo);
   photo.imageData = writeExif(canvas.toDataURL('image/jpeg', 0.85), photo);
 
   applyRepeatTo(photo);
@@ -352,7 +361,8 @@ async function capturePhoto() {
   if (sharpness !== null && sharpness < BLUR_LIMIT) {
     showToast('This photo may be blurry', 'danger', { label: 'RETAKE', onClick: () => deletePhotos([photo.id], true) });
   } else if (!wasRepeat) {
-    showToast(photo.hind ? `Saved as hindrance ${photo.hind.ref}` : 'Saved to ' + currentProject.name, 'success');
+    showToast(savedMsg || (photo.hind ? `Saved as hindrance ${photo.hind.ref}` : 'Saved to ' + currentProject.name), 'success',
+      photo.mat ? { label: 'REGISTER', onClick: openMaterialRegister } : null);
   }
 }
 
@@ -375,7 +385,7 @@ function drawStamp(ctx, w, h, p) {
   push(gpsText, '#fcd34d', false);
   if (p.address) push(p.address, '#fde68a', false);
   if (p.engineer && p.engineer.name) push('Engineer: ' + [p.engineer.name, p.engineer.designation].filter(Boolean).join(', '), '#e2e8f0', false);
-  const long = p.photoType === 'Hindrance' ? 8 : 4;
+  const long = p.photoType === 'Hindrance' || p.photoType === 'Material' ? 8 : 4;
   push(fieldsText(p), '#ffffff', false, long);
   push(p.description, '#ffffff', false, long);
 

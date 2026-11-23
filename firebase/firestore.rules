@@ -55,6 +55,21 @@ service cloud.firestore {
       }
     }
 
+    // AI count training samples (opt-in in the app: Backup > Help improve AI count).
+    // Each user adds only their own samples, may list and delete them (Delete account does),
+    // and cannot change one once sent. Only the team reads them all (console / admin tools).
+    match /aiTraining/{uid}/samples/{id} {
+      allow create: if signedIn() && request.auth.uid == uid
+        && request.resource.data.uid == uid
+        && request.resource.data.keys().hasOnly(['uid', 'kind', 'img', 'w', 'h', 'pts', 'count', 'aiCount', 'added',
+             'removed', 'material', 'dia', 'model', 'app', 'createdAt'])
+        && request.resource.data.img is string
+        && request.resource.data.img.size() < 900000
+        && request.resource.data.pts is string
+        && request.resource.data.pts.size() < 60000;
+      allow read, delete: if signedIn() && request.auth.uid == uid;
+    }
+
     // Support & suggestions: anyone signed in can send one; only the team reads them (in the console)
     match /feedback/{id} {
       allow create: if signedIn()

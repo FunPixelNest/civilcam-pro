@@ -26,6 +26,12 @@ const HELP = [
     'Take a photo with type <b>Hindrance</b> (trees, shops, utilities, land not handed over...). It gets a number like H-001 and is listed here.',
     'When it is removed, tap <b>Clear</b> and take a clearance photo from the same spot as proof.',
     'The register goes into reports, so the client sees what is still holding up work.'] },
+  { ic: 'sparkles', t: 'Material receipts: AI count of bars', s: [
+    'When steel arrives, tap <b>AI count</b> at the top of the camera and photograph the <b>cut ends</b> of the bundle: square on, in good light, with the bundle filling the frame.',
+    'The AI puts a green dot on every bar it finds, right on the phone (works offline). <b>Check the dots</b>: tap a missed bar to add it (blue dot), tap a wrong dot to remove it. Use 2× or 3× zoom for big bundles.',
+    'Pick the diameter and bar length: the weight is worked out as count × d²/162 × length. Add the supplier, challan, vehicle and the quantity on the challan to see the difference straight away.',
+    'Each receipt gets a number like MR-001 and the photo is stamped with the count. The <b>Material receipts</b> register (project menu or Reports) gives totals by diameter and a PDF or Excel register with the counted photos.',
+    'AI count is in beta and the count saved is always the one you checked. Free version: 3 AI counts to try; Pro: unlimited.'] },
   { ic: 'file', t: 'Reports', s: [
     'Choose the photos (all, a period, filters, or the ones you selected), a layout (1, 2, 4 or 6 per page, or same location date-wise) and a format.',
     '<b>PDF</b> to submit, <b>Word</b> to edit, <b>Excel</b> photo register, <b>PowerPoint</b> for meetings, <b>Client view</b> (one file that opens in any browser, no app) and <b>Google Earth</b> (photo spots on a map).',

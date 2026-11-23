@@ -32,7 +32,7 @@ const DEFAULT_OPTIONS = {
     'Survey Works', 'Foundation Works', 'Finishing Works', 'Testing & QA', 'Hindrance'
   ],
   side: ['LHS', 'RHS', 'Both Sides', 'Median', 'Centre Line'],
-  photoType: ['General', 'Hindrance'],
+  photoType: ['General', 'Hindrance', 'Material'],
   hindranceField: ['Land owner name', 'Phone no.', 'Survey no.', 'Village / Location', 'Issue', 'Area affected'],
   projectType: ['Road / Highway', 'Building', 'Bridge / Flyover', 'Canal / Irrigation', 'Railway / Metro', 'Pipeline', 'Plant / Industrial']
 };

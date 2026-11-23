@@ -85,6 +85,7 @@
         <i data-ic="folder" data-size="16"></i><span id="cam-project-name">Project</span><i data-ic="chevronDown" data-size="14"></i>
       </button>
       <div class="cam-top-right">
+        <button class="cam-pill ai-pill" id="mat-mode-btn" onclick="toggleMaterialMode()" aria-label="AI count of bars for material receipt"><i data-ic="sparkles" data-size="16"></i><span>AI count</span></button>
         <button class="cam-pill stamp-pill" id="meta-toggle" onclick="toggleMetadata()"><i data-ic="tag" data-size="16"></i><span id="meta-toggle-lbl">Stamp</span></button>
         <button class="cam-sync" id="cam-sync" style="display:none" onclick="openSyncSheet()" aria-label="Photos waiting to upload"><i data-ic="cloud" data-size="15"></i><span>0</span></button>
         <button class="cam-round" id="flash-btn" onclick="toggleFlash()" aria-label="Torch"><i data-ic="flash" data-size="18"></i></button>
@@ -186,6 +187,14 @@
       <div class="export-count">
         <div><div class="export-count-num" id="export-photo-count">0</div><div class="export-count-label" id="export-count-label">photos in this report</div></div>
         <button class="btn small" onclick="switchTab('gallery')">Pick photos</button>
+      </div>
+    </div>
+
+    <div class="export-section">
+      <div class="section-title">Registers</div>
+      <div class="reg-row">
+        <button class="btn" onclick="switchTab('hindrance')"><i data-ic="alert" data-size="18"></i>Hindrance register</button>
+        <button class="btn" onclick="openMaterialRegister()"><i data-ic="sparkles" data-size="18"></i>Material receipts</button>
       </div>
     </div>
 
@@ -417,6 +426,8 @@
     <div class="sync-waiting" id="sync-waiting"></div>
     <label class="toggle-row"><span><b>Upload photos on Wi-Fi only</b><small>Saves mobile data. Details still sync on mobile data.</small></span>
       <input type="checkbox" id="sync-wifi" onchange="saveJSON('syncWifiOnly', this.checked); Sync.updateDot()"></label>
+    <label class="toggle-row"><span><b>Help improve AI count</b><small>Share photos of bar ends and your checked dots with FunPixelNest to train the AI. No location, project or names.</small></span>
+      <input type="checkbox" id="ai-share" onchange="setAiShare(this.checked)"></label>
     <button class="btn primary block" id="sync-now-btn" onclick="Sync.now(true)"><i data-ic="cloud" data-size="18"></i>Upload now</button>
     <button class="btn block" id="sync-signin-btn" onclick="closeSheet('sync-sheet');showAuth()">Sign in to back up</button>
   </div>
@@ -485,6 +496,82 @@
 </div>
 
 <!-- CivilCam Pro -->
+<!-- Material receipt: AI count of bars -->
+<div class="sheet-backdrop" id="mat-sheet">
+  <div class="sheet tall mat-sheet">
+    <div class="mat-head">
+      <div class="sheet-title" id="mat-title">Material receipt</div>
+      <div class="seg" id="mat-zoom">
+        <button data-z="1" onclick="setMatZoom(1)">Fit</button><button data-z="2" onclick="setMatZoom(2)">2×</button><button data-z="3" onclick="setMatZoom(3)">3×</button>
+      </div>
+    </div>
+    <div class="mat-view" id="mat-view">
+      <div class="mat-zoom-inner" id="mat-zoom-inner" onclick="matTap(event)">
+        <img id="mat-img" alt="Photo of the bundle" onload="drawMatDots()">
+        <canvas id="mat-dots"></canvas>
+      </div>
+    </div>
+    <div class="mat-status" id="mat-ai-status"></div>
+    <div class="mat-total" id="mat-total"></div>
+    <div class="mat-legend"><span class="dot g"></span>found by AI <span class="dot b"></span>added by you <button class="link-btn" onclick="matUndoAll()">Clear all dots</button></div>
+
+    <div class="sheet-label">Material</div>
+    <div class="chip-wrap" id="mat-material"></div>
+    <div class="sheet-label" id="mat-dia-label">Bar diameter (mm)</div>
+    <div class="chip-wrap" id="mat-dia"></div>
+    <div id="mat-grade-block"><div class="sheet-label">Grade</div><div class="chip-wrap" id="mat-grade"></div></div>
+    <div id="mat-length-block"><label class="field compact"><span>Length of each bar (m)</span><input class="input" id="mat-length" inputmode="decimal" oninput="renderMatTotals()"></label></div>
+    <div class="sheet-label">Delivery</div>
+    <label class="field compact"><span>Supplier</span><input class="input" id="mat-supplier" placeholder="e.g. steel plant / dealer name"></label>
+    <div class="field-row">
+      <label class="field compact"><span>Challan / invoice no.</span><input class="input" id="mat-challanNo"></label>
+      <label class="field compact"><span>Vehicle no.</span><input class="input" id="mat-vehicleNo" placeholder="TS 09 AB 1234" oninput="this.value=this.value.toUpperCase()"></label>
+    </div>
+    <div class="field-row">
+      <label class="field compact"><span>Quantity on challan</span><input class="input" id="mat-challanQty" inputmode="decimal" oninput="renderMatTotals()"></label>
+      <label class="field compact"><span>Unit</span><select class="input" id="mat-challanUnit" onchange="renderMatTotals()"><option value="t">tonnes</option><option value="nos">nos</option></select></label>
+    </div>
+    <button class="btn primary block lg" onclick="saveMaterialReceipt()"><i data-ic="check"></i>Save receipt</button>
+    <div class="reg-row">
+      <button class="btn" id="mat-retake" onclick="retakeMaterial()"><i data-ic="camera" data-size="18"></i>Retake</button>
+      <button class="btn danger-ghost" id="mat-delete" onclick="deleteMaterialReceipt()"><i data-ic="trash" data-size="18"></i>Delete</button>
+      <button class="btn" onclick="MC=null;closeSheet('mat-sheet')">Cancel</button>
+    </div>
+    <div class="note">AI count (beta): always check the dots before saving. Works best with the cut ends square to the camera, in good light, filling the frame.</div>
+  </div>
+</div>
+
+<div class="sheet-backdrop" id="ai-share-sheet">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">Help the AI count better?</div>
+    <div class="sheet-hint">Share the photos of bar ends that you count, with the dots you checked, with FunPixelNest. We use them only to train the AI count, so it misses fewer bars for everyone.</div>
+    <ul class="ai-share-list">
+      <li><b>Sent:</b> the photo of the bundle (without the stamp), your checked dots, the count, material and size.</li>
+      <li><b>Not sent:</b> location, project, supplier, challan, vehicle or anyone's name.</li>
+      <li>Turn it off any time in <b>Backup</b>. Deleting your account deletes what you shared.</li>
+    </ul>
+    <button class="btn primary block lg" onclick="answerAiShare(true)"><i data-ic="check"></i>Yes, share to improve the AI</button>
+    <button class="btn block" onclick="answerAiShare(false)">No thanks</button>
+  </div>
+</div>
+
+<div class="sheet-backdrop" id="mat-register" onclick="if (event.target === this) closeSheet('mat-register')">
+  <div class="sheet tall">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">Material receipts</div>
+    <div class="sheet-hint">Every bundle counted with AI count. Tap one to check or correct it.</div>
+    <div class="hind-summary mr-summary" id="mr-summary"></div>
+    <div id="mr-bydia"></div>
+    <div id="mr-list"></div>
+    <div class="reg-row">
+      <button class="btn" onclick="exportMaterialRegister('pdf')"><i data-ic="file" data-size="18"></i>Register PDF</button>
+      <button class="btn" onclick="exportMaterialRegister('xlsx')"><i data-ic="file" data-size="18"></i>Register Excel</button>
+    </div>
+    <button class="btn primary block" onclick="closeSheet('mat-register');switchTab('camera');if(currentPhotoType!=='Material')toggleMaterialMode()"><i data-ic="camera" data-size="18"></i>Count another bundle</button>
+  </div>
+</div>
+
 <div class="sheet-backdrop" id="pro-sheet" onclick="if (event.target === this) closeSheet('pro-sheet')">
   <div class="sheet">
     <div class="sheet-handle"></div>
@@ -502,6 +589,7 @@
       <button class="menu-item" onclick="closeSheet('project-menu');openProjectSheet(currentProject)"><span class="menu-ic"><i data-ic="edit" data-size="18"></i></span><span><b>Edit project</b><small>Name, type, chainage, client, contractor</small></span></button>
       <button class="menu-item" onclick="closeSheet('project-menu');openTeam()"><span class="menu-ic"><i data-ic="users" data-size="18"></i></span><span><b>Team: add engineers</b><small id="pm-team">Share this project with other engineers by e-mail</small></span></button>
       <button class="menu-item" onclick="closeSheet('project-menu');switchTab('gallery');openImportSheet()"><span class="menu-ic"><i data-ic="import" data-size="18"></i></span><span><b>Add photos from other camera apps</b><small>Keeps their date, time and GPS</small></span></button>
+      <button class="menu-item" onclick="closeSheet('project-menu');openMaterialRegister()"><span class="menu-ic"><i data-ic="sparkles" data-size="18"></i></span><span><b>Material receipts (AI count)</b><small>Count bars from a photo, weight, challan check, register</small></span></button>
       <button class="menu-item" onclick="closeSheet('project-menu');switchTab('export')"><span class="menu-ic"><i data-ic="file" data-size="18"></i></span><span><b>Make a report</b><small>PDF, Word, Excel, PowerPoint, Google Earth</small></span></button>
       <button class="menu-item" onclick="closeSheet('project-menu');showProjects()"><span class="menu-ic"><i data-ic="folder" data-size="18"></i></span><span><b>Change project / new project</b><small>All your projects</small></span></button>
       <button class="menu-item" onclick="closeSheet('project-menu');openHelp()"><span class="menu-ic"><i data-ic="help" data-size="18"></i></span><span><b>How it works</b><small>A short guide to every option</small></span></button>
@@ -621,6 +709,7 @@
 <script src="js/drive.js"></script>
 <script src="js/onedrive.js"></script>
 <script src="js/hindrance.js"></script>
+<script src="js/materials.js"></script>
 <script src="js/repeat.js"></script>
 <script src="js/import.js"></script>
 <script src="js/team.js"></script>

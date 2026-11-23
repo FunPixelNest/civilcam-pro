@@ -4,7 +4,8 @@
 //       Hindrance / Reports (never on the camera), a short ad may show after a report is created,
 //       and free PDF reports carry the CivilCam Pro logo (large and faded on every page, plus a
 //       small logo in the footer).
-// Pro:  no ads, PDF without the logo, and Word, Excel, PowerPoint, Client view and Google Earth
+// Pro:  no ads, PDF without the logo, and Word, Excel, PowerPoint, Client view and Google Earth,
+//       and unlimited AI count (free users get MAT_FREE_AI tries, see materials.js)
 //       reports. Bought through Google Play (product civilcam_pro: monthly / yearly, 7-day trial).
 // The ads and the purchase run natively (AdsManager.kt, BillingHelper.kt).
 // ============================================================
@@ -198,6 +199,7 @@ function renderPaywall() {
       <li>${ic('check', 16)}Word, Excel and PowerPoint reports</li>
       <li>${ic('check', 16)}Client view and Google Earth files</li>
       ${promo && !pi.adsOff ? '' : `<li>${ic('check', 16)}No ads anywhere in the app</li>`}
+      <li>${ic('check', 16)}Unlimited AI count of bars for material receipts</li>
       <li>${ic('check', 16)}Priority help from the CivilCam team</li>
     </ul>
     ${promo ? `<div class="note">After ${esc(promoUntilText())}, Word, Excel and PowerPoint need Pro again and free PDFs get the CivilCam logo. Subscribe now to keep everything:</div>` : ''}
