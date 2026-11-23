@@ -23,6 +23,10 @@
 
     <uses-feature android:name="android.hardware.camera" android:required="false" />
     <uses-feature android:name="android.hardware.location.gps" android:required="false" />
+    <!-- Phones open in portrait (MainActivity), but portrait is not REQUIRED: without this line
+         Play hides the app from tablets, Chromebooks and other devices (Android 16 tablets
+         ignore the portrait lock and show the app in landscape anyway). -->
+    <uses-feature android:name="android.hardware.screen.portrait" android:required="false" />
 
     <application
         android:allowBackup="true"
